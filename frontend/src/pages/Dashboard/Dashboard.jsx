@@ -1,9 +1,9 @@
 import React, { useState } from "react";
-import Header from "./../../components/Header/Header";
-import Footer from "./../../components/Footer/Footer";
-import Filters from "./../../components/Filter";
-import StatsCards from "./../../components/StatsCards";
-import Charts from "./../../components/Charts";
+import Header from "../../components/Header/Header";
+import Footer from "../../components/Footer/Footer";
+import Filters from "./Filter";
+import StatsCards from "./StatsCards";
+import Charts from "./Charts";
 import "./Dashboard.css";
 
 const Dashboard = () => {
