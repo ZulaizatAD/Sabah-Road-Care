@@ -37,29 +37,30 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div
+      style={{
+        margin: 0,
+        padding: 0,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+        backgroundColor: "#f3f4f6",
+        minHeight: "100vh",
+      }}
+    >
       <Header />
-      <main className="main-content">
-        <div className="bg-white rounded-lg shadow-sm p-6">
+      <main
+        style={{ maxWidth: "1200px", margin: "0 auto", padding: "30px 20px" }}
+      >
+        <div
+          style={{
+            backgroundColor: "white",
+            borderRadius: "12px",
+            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
+            padding: "30px",
+          }}
+        >
           <Filters filters={filters} handleFilterChange={handleFilterChange} />
-          <div className="grid grid-cols-4 gap-4 mb-8">
-            <div className="card">
-              <h3 className="card-title">Total Case</h3>
-              <p className="card-value">45</p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">In Investigation</h3>
-              <p className="card-value">20</p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">Maintenance in Progress</h3>
-              <p className="card-value">15</p>
-            </div>
-            <div className="card">
-              <h3 className="card-title">Case Close</h3>
-              <p className="card-value">10</p>
-            </div>
-          </div>
+          <StatsCards />
           <Charts pieData={pieData} trendData={trendData} />
         </div>
       </main>

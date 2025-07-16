@@ -1,45 +1,92 @@
 import React from "react";
 
-const Filters = ({ filters, handleFilterChange }) => (
-  <div className="mb-8">
-    <h2 className="text-xl font-semibold text-center mb-6">Filter by:</h2>
-    <div className="flex justify-center space-x-4">
-      <div className="bg-gray-200 rounded-full px-6 py-3 min-w-48">
-        <select
-          className="bg-transparent text-center font-medium text-gray-800 w-full outline-none"
-          value={filters.location}
-          onChange={(e) => handleFilterChange("location", e.target.value)}
-        >
-          <option value="">Location:</option>
-          <option value="new-york">New York</option>
-          <option value="london">London</option>
-          <option value="tokyo">Tokyo</option>
-        </select>
-      </div>
-      <div className="bg-gray-200 rounded-full px-6 py-3 min-w-48">
-        <input
-          type="date"
-          className="bg-transparent text-center font-medium text-gray-800 w-full outline-none"
-          value={filters.date}
-          onChange={(e) => handleFilterChange("date", e.target.value)}
-          placeholder="Date:"
-        />
-      </div>
-      <div className="bg-gray-200 rounded-full px-6 py-3 min-w-48">
-        <select
-          className="bg-transparent text-center font-medium text-gray-800 w-full outline-none"
-          value={filters.severity}
-          onChange={(e) => handleFilterChange("severity", e.target.value)}
-        >
-          <option value="">Severity:</option>
-          <option value="low">Low</option>
-          <option value="medium">Medium</option>
-          <option value="high">High</option>
-          <option value="critical">Critical</option>
-        </select>
+const Filters = ({ filters, handleFilterChange }) => {
+  const styles = {
+    filterSection: {
+      marginBottom: "40px",
+    },
+    filterTitle: {
+      fontSize: "24px",
+      fontWeight: "600",
+      textAlign: "center",
+      marginBottom: "30px",
+      color: "#111827",
+    },
+    filterContainer: {
+      display: "flex",
+      justifyContent: "center",
+      gap: "20px",
+      flexWrap: "wrap",
+    },
+    filterItem: {
+      backgroundColor: "#d1d5db",
+      borderRadius: "50px",
+      padding: "12px 24px",
+      minWidth: "200px",
+    },
+    filterSelect: {
+      backgroundColor: "transparent",
+      border: "none",
+      outline: "none",
+      width: "100%",
+      textAlign: "center",
+      fontWeight: "500",
+      color: "#374151",
+      fontSize: "16px",
+    },
+    filterInput: {
+      backgroundColor: "transparent",
+      border: "none",
+      outline: "none",
+      width: "100%",
+      textAlign: "center",
+      fontWeight: "500",
+      color: "#374151",
+      fontSize: "16px",
+    },
+  };
+
+  return (
+    <div style={styles.filterSection}>
+      <h2 style={styles.filterTitle}>Filter by:</h2>
+      <div style={styles.filterContainer}>
+        <div style={styles.filterItem}>
+          <select
+            style={styles.filterSelect}
+            value={filters.location}
+            onChange={(e) => handleFilterChange("location", e.target.value)}
+          >
+            <option value="">Location:</option>
+            <option value="new-york">New York</option>
+            <option value="london">London</option>
+            <option value="tokyo">Tokyo</option>
+          </select>
+        </div>
+        <div style={styles.filterItem}>
+          <input
+            type="date"
+            style={styles.filterInput}
+            value={filters.date}
+            onChange={(e) => handleFilterChange("date", e.target.value)}
+            placeholder="Date:"
+          />
+        </div>
+        <div style={styles.filterItem}>
+          <select
+            style={styles.filterSelect}
+            value={filters.severity}
+            onChange={(e) => handleFilterChange("severity", e.target.value)}
+          >
+            <option value="">Severity:</option>
+            <option value="low">Low</option>
+            <option value="medium">Medium</option>
+            <option value="high">High</option>
+            <option value="critical">Critical</option>
+          </select>
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default Filters;
