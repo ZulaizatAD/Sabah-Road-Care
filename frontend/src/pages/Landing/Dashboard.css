@@ -1,0 +1,37 @@
+/* Dashboard.css */
+
+.dashboard-container {
+  min-height: 100vh;
+  background-color: #f7fafc; /* Equivalent to bg-gray-100 in Tailwind */
+}
+
+.header,
+.footer {
+  background-color: #ffffff; /* Equivalent to bg-white in Tailwind */
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Equivalent to shadow-sm in Tailwind */
+}
+
+.main-content {
+  max-width: 1120px; /* Equivalent to max-w-7xl in Tailwind */
+  margin: 0 auto;
+  padding: 32px 16px; /* Equivalent to px-4 sm:px-6 lg:px-8 py-8 in Tailwind */
+}
+
+.card {
+  background-color: #e2e8f0; /* Equivalent to bg-gray-200 in Tailwind */
+  border-radius: 0.5rem; /* Equivalent to rounded-lg in Tailwind */
+  padding: 24px;
+  text-align: center;
+}
+
+.card-title {
+  font-weight: 600; /* Equivalent to font-semibold in Tailwind */
+  color: #2d3748; /* Equivalent to text-gray-800 in Tailwind */
+  margin-bottom: 8px;
+}
+
+.card-value {
+  font-size: 1.875rem; /* Equivalent to text-3xl in Tailwind */
+  font-weight: 700; /* Equivalent to font-bold in Tailwind */
+  color: #1a202c; /* Equivalent to text-gray-900 in Tailwind */
+}
