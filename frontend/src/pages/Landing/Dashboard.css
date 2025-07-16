@@ -1,66 +1,21 @@
-.dashboard-container {
+.dashboard-body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, sans-serif;
+  background-color: #f3f4f6;
   min-height: 100vh;
-  background-color: #f7fafc; /* Light gray background */
-  display: flex;
-  flex-direction: column;
 }
 
-.header,
-.footer {
-  background-color: #ffffff; /* White background */
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Subtle shadow */
-  padding: 16px;
-}
-
-.main-content {
-  flex: 1;
-  max-width: 1120px; /* Centered content */
+.main {
+  max-width: 1200px;
   margin: 0 auto;
-  padding: 32px 16px;
-  background-color: #ffffff; /* White background for main content */
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Slightly stronger shadow */
+  padding: 30px 20px;
 }
 
-.card {
-  background-color: #e2e8f0; /* Light blue-gray */
-  border-radius: 8px;
-  padding: 24px;
-  text-align: center;
-  transition: transform 0.2s ease-in-out;
-}
-
-.card:hover {
-  transform: translateY(-5px); /* Lift effect on hover */
-}
-
-.card-title {
-  font-weight: 600;
-  color: #2d3748; /* Dark gray */
-  margin-bottom: 8px;
-}
-
-.card-value {
-  font-size: 1.875rem; /* Large font size */
-  font-weight: 700;
-  color: #1a202c; /* Darker gray */
-}
-
-.grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-  margin-bottom: 32px;
-}
-
-@media (max-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr); /* Adjust for smaller screens */
-  }
-}
-
-@media (max-width: 480px) {
-  .grid {
-    grid-template-columns: 1fr; /* Single column on very small screens */
-  }
+.container {
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 30px;
 }

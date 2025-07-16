@@ -1,58 +1,14 @@
 import React from "react";
+import "./Filter.css";
 
 const Filters = ({ filters, handleFilterChange }) => {
-  const styles = {
-    filterSection: {
-      marginBottom: "40px",
-    },
-    filterTitle: {
-      fontSize: "24px",
-      fontWeight: "600",
-      textAlign: "center",
-      marginBottom: "30px",
-      color: "#111827",
-    },
-    filterContainer: {
-      display: "flex",
-      justifyContent: "center",
-      gap: "20px",
-      flexWrap: "wrap",
-    },
-    filterItem: {
-      backgroundColor: "#d1d5db",
-      borderRadius: "50px",
-      padding: "12px 24px",
-      minWidth: "200px",
-    },
-    filterSelect: {
-      backgroundColor: "transparent",
-      border: "none",
-      outline: "none",
-      width: "100%",
-      textAlign: "center",
-      fontWeight: "500",
-      color: "#374151",
-      fontSize: "16px",
-    },
-    filterInput: {
-      backgroundColor: "transparent",
-      border: "none",
-      outline: "none",
-      width: "100%",
-      textAlign: "center",
-      fontWeight: "500",
-      color: "#374151",
-      fontSize: "16px",
-    },
-  };
-
   return (
-    <div style={styles.filterSection}>
-      <h2 style={styles.filterTitle}>Filter by:</h2>
-      <div style={styles.filterContainer}>
-        <div style={styles.filterItem}>
+    <div className="filter-section">
+      <h2 className="filter-title">Filter by:</h2>
+      <div className="filter-container">
+        <div className="filter-item">
           <select
-            style={styles.filterSelect}
+            className="filter-select"
             value={filters.location}
             onChange={(e) => handleFilterChange("location", e.target.value)}
           >
@@ -62,18 +18,18 @@ const Filters = ({ filters, handleFilterChange }) => {
             <option value="tokyo">Tokyo</option>
           </select>
         </div>
-        <div style={styles.filterItem}>
+        <div className="filter-item">
           <input
             type="date"
-            style={styles.filterInput}
+            className="filter-input"
             value={filters.date}
             onChange={(e) => handleFilterChange("date", e.target.value)}
             placeholder="Date:"
           />
         </div>
-        <div style={styles.filterItem}>
+        <div className="filter-item">
           <select
-            style={styles.filterSelect}
+            className="filter-select"
             value={filters.severity}
             onChange={(e) => handleFilterChange("severity", e.target.value)}
           >

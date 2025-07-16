@@ -11,60 +11,15 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import "./Charts.css";
 
 const Charts = ({ pieData, trendData }) => {
-  const styles = {
-    chartsGrid: {
-      display: "grid",
-      gridTemplateColumns: "repeat(auto-fit, minmax(500px, 1fr))",
-      gap: "30px",
-    },
-    chartContainer: {
-      backgroundColor: "#d1d5db",
-      borderRadius: "12px",
-      padding: "30px",
-      position: "relative",
-    },
-    chartTitle: {
-      fontWeight: "600",
-      color: "#374151",
-      marginBottom: "20px",
-      textAlign: "center",
-      fontSize: "18px",
-    },
-    chartSubtitle: {
-      fontSize: "14px",
-      color: "#6b7280",
-      marginBottom: "20px",
-      textAlign: "center",
-    },
-    chartWrapper: {
-      height: "300px",
-      width: "100%",
-    },
-    timeLabel: {
-      position: "absolute",
-      left: "10px",
-      top: "50%",
-      transform: "rotate(-90deg) translateY(-50%)",
-      fontSize: "14px",
-      color: "#6b7280",
-      transformOrigin: "center",
-    },
-    severityLabel: {
-      textAlign: "center",
-      marginTop: "20px",
-      fontSize: "14px",
-      color: "#6b7280",
-    },
-  };
-
   return (
-    <div style={styles.chartsGrid}>
+    <div className="charts-grid">
       {/* Trend Line Chart */}
-      <div style={styles.chartContainer}>
-        <h3 style={styles.chartTitle}>Trendline</h3>
-        <div style={styles.chartWrapper}>
+      <div className="chart-container">
+        <h3 className="chart-title">Trendline</h3>
+        <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trendData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -80,15 +35,15 @@ const Charts = ({ pieData, trendData }) => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <div style={styles.timeLabel}>Time:</div>
-        <div style={styles.severityLabel}>Severity:</div>
+        <div className="time-label">Time:</div>
+        <div className="severity-label">Severity:</div>
       </div>
 
       {/* Pie Chart */}
-      <div style={styles.chartContainer}>
-        <h3 style={styles.chartTitle}>Pie Chart</h3>
-        <p style={styles.chartSubtitle}>% of case</p>
-        <div style={styles.chartWrapper}>
+      <div className="chart-container">
+        <h3 className="chart-title">Pie Chart</h3>
+        <p className="chart-subtitle">% of case</p>
+        <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
               <Pie

@@ -13,6 +13,7 @@ const Dashboard = () => {
     severity: "",
   });
 
+  // Sample data for charts
   const pieData = [
     { name: "Total Case", value: 45, color: "#8884d8" },
     { name: "In Investigation", value: 20, color: "#82ca9d" },
@@ -37,28 +38,10 @@ const Dashboard = () => {
   };
 
   return (
-    <div
-      style={{
-        margin: 0,
-        padding: 0,
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-        backgroundColor: "#f3f4f6",
-        minHeight: "100vh",
-      }}
-    >
+    <div className="dashboard-body">
       <Header />
-      <main
-        style={{ maxWidth: "1200px", margin: "0 auto", padding: "30px 20px" }}
-      >
-        <div
-          style={{
-            backgroundColor: "white",
-            borderRadius: "12px",
-            boxShadow: "0 1px 3px rgba(0, 0, 0, 0.1)",
-            padding: "30px",
-          }}
-        >
+      <main className="main">
+        <div className="container">
           <Filters filters={filters} handleFilterChange={handleFilterChange} />
           <StatsCards />
           <Charts pieData={pieData} trendData={trendData} />
