@@ -6,6 +6,13 @@ import StatsCards from "./../../components/StatsCards";
 import Charts from "./../../components/Charts";
 import "./Dashboard.css";
 
+<div className="dashboard-wrapper">
+  <div className="dashboard-background"></div>
+  <div className="dashboard-content">
+    {/* Your existing dashboard content */}
+  </div>
+</div>;
+
 const Dashboard = () => {
   const [filters, setFilters] = useState({
     location: "",
