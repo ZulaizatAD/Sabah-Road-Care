@@ -49,10 +49,7 @@
   font-weight: 600;
   color: #374151;
   transition: color 0.2s;
-}
-
-.sabah-road-care-button:hover {
-  color: #111827;
+  text-decoration: none;
 }
 
 .nav {

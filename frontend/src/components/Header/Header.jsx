@@ -10,14 +10,9 @@ const Header = () => {
           <div className="logo">
             <img src={assets.SRC_Black} alt="Logo" />
           </div>
-          <button
-            className="sabah-road-care-button" // Changed from homepage-button to sabah-road-care-button
-            onClick={() => (window.location.href = "/")}
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#c4c9d0")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#d1d5db")}
-          >
+          <a className="sabah-road-care-button" href="/">
             Sabah Road Care
-          </button>
+          </a>
         </div>
         <nav className="nav">
           <a href="#" className="nav-link active">
