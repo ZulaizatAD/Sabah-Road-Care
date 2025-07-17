@@ -1,13 +1,13 @@
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  gap: 30px;
+  gap: 20px;
 }
 
 .chart-container {
   background-color: #d1d5db;
   border-radius: 12px;
-  padding: 30px;
+  padding: 10px;
   position: relative;
 }
 

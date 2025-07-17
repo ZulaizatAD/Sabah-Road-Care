@@ -5,17 +5,104 @@
     "Helvetica Neue", Arial, sans-serif;
   background-color: #f3f4f6;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 .main {
   max-width: 1200px;
+  width: 100%;
   margin: 0 auto;
-  padding: 30px 20px;
+  padding: 10px 10px;
+  flex: 1; /* This will make the main content expand to fill available space */
+  box-sizing: border-box; /* Ensures padding doesn't add to width */
 }
 
 .container {
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  padding: 30px;
+  padding: 10px;
+  overflow: auto; /* Prevents content from breaking layout */
+}
+
+.main-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  box-sizing: border-box;
+}
+
+.content-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .main {
+    padding: 20px 15px;
+  }
+
+  .container {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content-section {
+    grid-template-columns: 1fr;
+  }
+
+  .main {
+    padding: 15px 10px;
+  }
+
+  .container {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  .main-container {
+    padding: 0 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .main {
+    padding: 10px;
+  }
+
+  .container {
+    padding: 12px;
+  }
+}
+
+/* Ensure proper spacing between header, main content, and footer */
+header + .main,
+.main + footer {
+  margin-top: 0;
+}
+
+/* Make sure images and other media are responsive */
+img,
+video,
+iframe {
+  max-width: 100%;
+  height: auto;
+}
+
+/* For tables that might be in your dashboard */
+table {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+}
+
+@media (min-width: 768px) {
+  table {
+    display: table;
+  }
 }
