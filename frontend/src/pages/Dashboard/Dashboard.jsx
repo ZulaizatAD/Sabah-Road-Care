@@ -6,6 +6,13 @@ import StatsCards from "./StatsCards";
 import Charts from "./Charts";
 import "./Dashboard.css";
 
+<div className="dashboard-wrapper">
+  <div className="dashboard-background"></div>
+  <div className="dashboard-content">
+    {/* Your existing dashboard content */}
+  </div>
+</div>;
+
 const Dashboard = () => {
   const [filters, setFilters] = useState({
     location: "",
@@ -15,10 +22,9 @@ const Dashboard = () => {
 
   // Sample data for charts
   const pieData = [
-    { name: "Total Case", value: 45, color: "#8884d8" },
-    { name: "In Investigation", value: 20, color: "#82ca9d" },
-    { name: "Maintenance in Progress", value: 15, color: "#ffc658" },
-    { name: "Case Close", value: 10, color: "#ff7c7c" },
+    { name: "Low", value: 20, color: "#82ca9d" },
+    { name: "Medium", value: 15, color: "#ffc658" },
+    { name: "High", value: 10, color: "#ff7c7c" },
   ];
 
   const trendData = [

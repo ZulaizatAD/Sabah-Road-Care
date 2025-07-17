@@ -41,8 +41,8 @@ const Charts = ({ pieData, trendData }) => {
 
       {/* Pie Chart */}
       <div className="chart-container">
-        <h3 className="chart-title">Pie Chart</h3>
-        <p className="chart-subtitle">% of case</p>
+        <h3 className="chart-title">% of Case</h3>
+        <p className="chart-subtitle">Based on severity</p>
         <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>

@@ -4,6 +4,7 @@
   position: sticky;
   top: 0;
   z-index: 100;
+  width: 100%;
 }
 
 .header-content {
@@ -14,6 +15,7 @@
   justify-content: space-between;
   align-items: center;
   height: 70px;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .header-left {
@@ -23,19 +25,19 @@
 }
 
 .logo {
-  width: 50px;
-  height: 35px;
+  width: 65px;
+  height: 65px;
   display: flex;
   align-items: center;
   justify-content: center;
   border-radius: 4px;
-  overflow: hidden; /* This will ensure the image stays within the container */
+  overflow: hidden;
 }
 
 .logo img {
   width: 100%;
   height: 100%;
-  object-fit: contain; /* This will maintain the aspect ratio of the image */
+  object-fit: contain;
 }
 
 .sabah-road-care-button {
@@ -47,11 +49,9 @@
   font-weight: 600;
   color: #374151;
   transition: color 0.2s;
+  text-decoration: none;
 }
 
-.sabah-road-care-button:hover {
-  color: #111827;
-}
 .nav {
   display: flex;
   gap: 30px;
@@ -68,4 +68,39 @@
 .nav-link.active {
   color: #111827;
   font-weight: 600;
+}
+
+/* Add media queries for responsive design */
+@media (max-width: 768px) {
+  .header-content {
+    height: auto;
+    padding: 15px 20px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav {
+    margin-top: 15px;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+}
+
+@media (max-width: 480px) {
+  .nav {
+    gap: 15px;
+  }
+
+  .sabah-road-care-button {
+    font-size: 16px;
+  }
+
+  .nav-link {
+    font-size: 14px;
+  }
 }
