@@ -1,8 +1,15 @@
 import React from 'react'
+import Header from '../../components/Header/Header'
+import Footer from '../../components/Footer/Footer'
+import UserReport from './UserReport/UserReport'
 
 const Homepage = () => {
   return (
-    <div>Homepage</div>
+    <div>
+      <Header />
+      <UserReport />
+      <Footer />
+    </div>
   )
 }
 
