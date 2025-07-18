@@ -31,7 +31,7 @@
   width: 100%;
 }
 
-.time-label {
+.month {
   position: absolute;
   left: 10px;
   top: 50%;
@@ -41,9 +41,9 @@
   transform-origin: center;
 }
 
-.severity-label {
+.number-of-case {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 10px;
   font-size: 14px;
   color: #6b7280;
 }
