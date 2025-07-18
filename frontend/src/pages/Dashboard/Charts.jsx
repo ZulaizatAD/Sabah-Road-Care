@@ -22,7 +22,7 @@ const Charts = ({ pieData, trendData }) => {
         <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={trendData}>
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="4 3" />
               <XAxis dataKey="month" />
               <YAxis />
               <Tooltip />
@@ -35,14 +35,13 @@ const Charts = ({ pieData, trendData }) => {
             </LineChart>
           </ResponsiveContainer>
         </div>
-        <div className="time-label">Time:</div>
-        <div className="severity-label">Severity:</div>
+        <div className="number-of-case">No. of Case:</div>
+        <div className="month">Month:</div>
       </div>
 
       {/* Pie Chart */}
       <div className="chart-container">
         <h3 className="chart-title">% of Case</h3>
-        <p className="chart-subtitle">Based on severity</p>
         <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
             <PieChart>
