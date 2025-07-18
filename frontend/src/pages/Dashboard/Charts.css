@@ -9,6 +9,7 @@
   border-radius: 12px;
   padding: 10px;
   position: relative;
+  margin-bottom: 10px;
 }
 
 .chart-title {
@@ -27,7 +28,7 @@
 }
 
 .chart-wrapper {
-  height: 220px;
+  height: 240px; // Adjust the height as needed
   width: 100%;
 }
 
