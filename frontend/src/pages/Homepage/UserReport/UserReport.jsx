@@ -1,48 +1,308 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import FormSection from "../mini-component/FormSection";
 import "./UserReport.css";
+import PhotoUpload from "../mini-component/PhotoUpload";
 
+// UserReport Component
+// Main component for user reporting form
+// Handles form data, validation, location services and submission
 const UserReport = () => {
+  // Hook for navigation
+  const navigate = useNavigate();
+
+  // Main form state - stores all form data
+  const [formData, setFormData] = useState({
+    description: "",
+    district: "",
+    photos: [null, null, null],
+    location: {
+      latitude: null,
+      longitude: null,
+      address: "",
+    },
+    remarks: "",
+  });
+
+  // Form validation errors & track if form is being submitted (prevents double submission)
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // List all districts in Sabah for the dropdown
+  const sabahDistricts = [
+    { value: "", label: "Select District" },
+    { value: "kota-kinabalu", label: "Kota Kinabalu" },
+    { value: "sandakan", label: "Sandakan" },
+    { value: "tawau", label: "Tawau" },
+    { value: "lahad-datu", label: "Lahad Datu" },
+    { value: "keningau", label: "Keningau" },
+    { value: "kudat", label: "Kudat" },
+    { value: "semporna", label: "Semporna" },
+    { value: "beaufort", label: "Beaufort" },
+    { value: "kuala-penyu", label: "Kuala Penyu" },
+    { value: "papar", label: "Papar" },
+    { value: "penampang", label: "Penampang" },
+    { value: "putatan", label: "Putatan" },
+    { value: "ranau", label: "Ranau" },
+    { value: "kota-belud", label: "Kota Belud" },
+    { value: "tuaran", label: "Tuaran" },
+  ];
+
+  // Handle input changes - textfields and dropdowns
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+
+    // Clear any existing error when user starts typing
+    if (errors[field]) {
+      setErrors((prev) => ({
+        ...prev,
+        [field]: "",
+      }));
+    }
+  };
+
+  // Handles photo upload for 3 angles - create copy of photos array, update specific index with the new file, update form data
+  const handlePhotoUpload = (index, file) => {
+    const newPhotos = [...formData.photos];
+    newPhotos[index] = file;
+    setFormData((prev) => ({
+      ...prev,
+      photos: newPhotos,
+    }));
+  };
+
+  // Get user's current GPS location using browser's Geolocation API
+  // Check if geolocation is supported by the browser
+  const getCurrentLocation = () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          setFormData((prev) => ({
+            ...prev,
+            location: {
+              ...prev.location,
+              latitude,
+              longitude,
+            },
+          }));
+          // convert coordinates to human-radable address
+          reverseGeocode(latitude, longitude);
+        },
+        (error) => {
+          console.error("Error getting location:", error);
+          alert(
+            "Unable to get your location. Please enable location services."
+          );
+        }
+      );
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  };
+
+  // Convert GPS coordinates to human-readable address
+  const reverseGeocode = async (lat, lng) => {
+    try {
+      // TODO: Implement actual geocoding service (Google Maps, etc.)
+      // For now, just display coordinates as placeholder
+      setFormData((prev) => ({
+        ...prev,
+        location: {
+          ...prev.location,
+          address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+        },
+      }));
+    } catch (error) {
+      console.error("Geocoding error:", error);
+    }
+  };
+  // Validate all form fields before submission
+  const validateForm = () => {
+    const newErrors = {};
+
+    // Validate description field
+    if (!formData.description.trim()) {
+      newErrors.description = "Description is required";
+    } else if (formData.description.length < 10) {
+      newErrors.description = "Description must be at least 10 characters";
+    }
+
+    // Validate district selection
+    if (!formData.district) {
+      newErrors.district = "Please select a district";
+    }
+    // Validate photo uploads (must have all 3 photos)
+    const uploadedPhotos = formData.photos.filter((photo) => photo !== null);
+    if (uploadedPhotos.length < 3) {
+      newErrors.photos = "Please upload at least 3 photo";
+    }
+
+    // Validate location (must have GPS coordinates)
+    // if (!formData.location.latitude || !formData.location.longitude) {
+    //   newErrors.location = 'Please tag your location';
+    // }
+
+    // Update errors state and return validation result
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // TODO: Implement actual API call
+      console.log("Form data to submit:", formData);
+
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Navigate to success page or show success message
+      alert("Report submitted successfully!");
+      navigate("/homepage");
+    } catch (error) {
+      console.error("Submission error:", error);
+      alert("Failed to submit report. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="user-report">
       <header className="report-header">
-        <button className="back-button">← Back to Home</button>
+        <button className="back-button" onClick={() => navigate("/homepage")}>
+          ← Back to Home
+        </button>
         <h1>📋 Report Pothole</h1>
         <button className="save-draft-btn">Save Draft</button>
       </header>
 
-      <form action="" className="report-form">
+      {/* Main Form */}
+      <form className="report-form" onSubmit={handleSubmit}>
         {/* Description Section */}
-        <div className="char-count">
-          <p>Description</p>
-        </div>
+        <FormSection title="📝 DESCRIPTION" error={errors.description}>
+          <textarea
+            value={formData.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+            placeholder="Brief description of the pothole (e.g., 'Large pothole blocking left lane')"
+            maxLength={200}
+            className={errors.description ? "error" : ""}
+          />
+          <div className="char-count">{formData.description.length}/200</div>
+        </FormSection>
 
         {/* District Section */}
-        <div className="char-count">
-          <p>District</p>
-        </div>
+        <FormSection title="🏙 DISTRICT" error={errors.district}>
+          <select
+            value={formData.district}
+            onChange={(e) => handleInputChange("district", e.target.value)}
+            className={errors.district ? "error" : ""}
+          >
+            {sabahDistricts.map((district) => (
+              <option key={district.value} value={district.value}>
+                {district.label}
+              </option>
+            ))}
+          </select>
+        </FormSection>
 
         {/* Location Section */}
-        <div className="char-count">
-          <p>📍 Tag Current Location</p>
-        </div>
+        <FormSection title="🗺️ LOCATION" error={errors.location}>
+          <div className="location-controls">
+            <button
+              type="button"
+              className="location-btn primary"
+              onClick={getCurrentLocation}
+            >
+              📍 Tag Current Location
+            </button>
+            <button
+              type="button"
+              className="location-btn secondary"
+              onClick={() => alert("Map picker coming soon!")}
+            >
+              🗺️ Pick on Map
+            </button>
+          </div>
+
+          {/* Display location info if available */}
+          {formData.location.latitude && (
+            <div className="location-info">
+              <p>
+                <strong>Latitude:</strong>{" "}
+                {formData.location.latitude.toFixed(6)}
+              </p>
+              <p>
+                <strong>Longitude:</strong>{" "}
+                {formData.location.longitude.toFixed(6)}
+              </p>
+              <p>
+                <strong>Address:</strong> {formData.location.address}
+              </p>
+            </div>
+          )}
+        </FormSection>
 
         {/* Photos Section */}
-        <div className="photo-grid">
-          <p>📸 Upload Photos</p>
-        </div>
+        <FormSection
+          title="📸 PHOTOS (Required: 3 angles)"
+          error={errors.photos}
+        >
+          <div className="photo-grid">
+            <PhotoUpload
+              label="Angle 1: Front/Top View"
+              guideline="Show pothole from the front / top"
+              onUpload={(file) => handlePhotoUpload(0, file)}
+              photo={formData.photos[0]}
+            />
+            <PhotoUpload
+              label="Angle 2: Side View"
+              guideline="Capture depth and width"
+              onUpload={(file) => handlePhotoUpload(1, file)}
+              photo={formData.photos[1]}
+            />
+            <PhotoUpload
+              label="Angle 3: Close-up View"
+              guideline="Detail shot for analysis"
+              onUpload={(file) => handlePhotoUpload(2, file)}
+              photo={formData.photos[2]}
+            />
+          </div>
+        </FormSection>
 
         {/* Remarks Section */}
-        <div className="char-count">
-          <p>Remarks</p>
-        </div>
+        <FormSection title="📝 REMARKS (Optional)">
+          <textarea
+            value={formData.remarks}
+            onChange={(e) => handleInputChange("remarks", e.target.value)}
+            placeholder="Additional details about the pothole (traffic impact, size estimate, urgency, etc.)"
+            maxLength={500}
+          />
+          <div className="char-count">{formData.remarks.length}/500</div>
+        </FormSection>
 
-        {/* Submit Button */}
+        {/* Form Submit Action */}
         <div className="form-actions">
-          <button type="button" className="cancel-btn">
+          <button
+            type="button"
+            className="cancel-btn"
+            onClick={() => navigate("/homepage")}
+          >
             Cancel
           </button>
-          <button type="submit" className="submit-btn">
-            Submit
+          <button type="submit" className="submit-btn" disabled={isSubmitting}>
+            {isSubmitting ? "Submitting..." : "Submit Report"}
           </button>
         </div>
       </form>

@@ -27,12 +27,12 @@ const Header = () => {
           <div className="logo">
             <img src={assets.SRC_Black} alt="Logo" />
           </div>
-          <a className="sabah-road-care-button" href="/">
+          <a className="sabah-road-care-button" href="/homepage">
             Sabah Road Care
           </a>
         </div>
         <nav className="nav">
-          <a href="#" className="nav-link active">
+          <a href="/dashboard" className="nav-link active">
             Dashboard
           </a>
           <a href="#" className="nav-link">
