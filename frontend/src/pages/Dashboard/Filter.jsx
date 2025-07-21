@@ -1,7 +1,7 @@
 import React from "react";
 import "./Filter.css";
 
-const Filter = ({ filters, handleFilterChange }) => {
+const Filter = ({ filters, handleFilterChange, handleShare }) => {
   return (
     <div className="filter-container">
       <span className="filter-label">Filter by:</span>
@@ -39,6 +39,9 @@ const Filter = ({ filters, handleFilterChange }) => {
           </select>
         </div>
       </div>
+      <button className="share-btn" onClick={handleShare}>
+        Share
+      </button>
     </div>
   );
 };
