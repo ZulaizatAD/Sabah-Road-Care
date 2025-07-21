@@ -13,15 +13,14 @@ const UserReport = () => {
 
   // Main form state - stores all form data
   const [formData, setFormData] = useState({
-    description: "",
-    district: "",
     photos: [null, null, null],
     location: {
       latitude: null,
       longitude: null,
       address: "",
     },
-    remarks: "",
+    district: "",
+    description: "",
   });
 
   // Form validation errors & track if form is being submitted (prevents double submission)
@@ -124,17 +123,6 @@ const UserReport = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate description field
-    if (!formData.description.trim()) {
-      newErrors.description = "Description is required";
-    } else if (formData.description.length < 10) {
-      newErrors.description = "Description must be at least 10 characters";
-    }
-
-    // Validate district selection
-    if (!formData.district) {
-      newErrors.district = "Please select a district";
-    }
     // Validate photo uploads (must have all 3 photos)
     const uploadedPhotos = formData.photos.filter((photo) => photo !== null);
     if (uploadedPhotos.length < 3) {
@@ -142,9 +130,14 @@ const UserReport = () => {
     }
 
     // Validate location (must have GPS coordinates)
-    // if (!formData.location.latitude || !formData.location.longitude) {
-    //   newErrors.location = 'Please tag your location';
-    // }
+    if (!formData.location.latitude || !formData.location.longitude) {
+      newErrors.location = "Please tag your location";
+    }
+
+    // Validate district selection
+    if (!formData.district) {
+      newErrors.district = "Please select a district";
+    }
 
     // Update errors state and return validation result
     setErrors(newErrors);
@@ -161,15 +154,33 @@ const UserReport = () => {
     setIsSubmitting(true);
 
     try {
-      // TODO: Implement actual API call
-      console.log("Form data to submit:", formData);
+      const submitData = new FormData();
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      submitData.append("description", formData.description);
+      submitData.append("district", formData.district);
+      submitData.append("latitude", formData.location.latitude);
+      submitData.append("longitude", formData.location.longitude);
+      submitData.append("address", formData.location.address);
 
-      // Navigate to success page or show success message
-      alert("Report submitted successfully!");
-      navigate("/homepage");
+      formData.photos.forEach((photo, index) => {
+        if (photo) {
+          submitData.append(`photo${index + 1}`, photo);
+        }
+      });
+
+      //API call to submit report
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        body: submitData,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (response.ok) {
+        alert("Report submitted successfully!");
+        navigate("/homepage");
+      }
     } catch (error) {
       console.error("Submission error:", error);
       alert("Failed to submit report. Please try again.");
@@ -190,33 +201,32 @@ const UserReport = () => {
 
       {/* Main Form */}
       <form className="report-form" onSubmit={handleSubmit}>
-        {/* Description Section */}
-        <FormSection title="📝 DESCRIPTION" error={errors.description}>
-          <textarea
-            value={formData.description}
-            onChange={(e) => handleInputChange("description", e.target.value)}
-            placeholder="Brief description of the pothole (e.g., 'Large pothole blocking left lane')"
-            maxLength={200}
-            className={errors.description ? "error" : ""}
-          />
-          <div className="char-count">{formData.description.length}/200</div>
+        {/* Photos Section */}
+        <FormSection
+          title="📸 PHOTOS (Required: 3 angles)"
+          error={errors.photos}
+        >
+          <div className="photo-grid">
+            <PhotoUpload
+              label="Angle 1: Front/Top View"
+              guideline="Show pothole from the front / top"
+              onUpload={(file) => handlePhotoUpload(0, file)}
+              photo={formData.photos[0]}
+            />
+            <PhotoUpload
+              label="Angle 2: Side View"
+              guideline="Capture depth and width"
+              onUpload={(file) => handlePhotoUpload(1, file)}
+              photo={formData.photos[1]}
+            />
+            <PhotoUpload
+              label="Angle 3: Close-up View"
+              guideline="Detail shot for analysis"
+              onUpload={(file) => handlePhotoUpload(2, file)}
+              photo={formData.photos[2]}
+            />
+          </div>
         </FormSection>
-
-        {/* District Section */}
-        <FormSection title="🏙 DISTRICT" error={errors.district}>
-          <select
-            value={formData.district}
-            onChange={(e) => handleInputChange("district", e.target.value)}
-            className={errors.district ? "error" : ""}
-          >
-            {sabahDistricts.map((district) => (
-              <option key={district.value} value={district.value}>
-                {district.label}
-              </option>
-            ))}
-          </select>
-        </FormSection>
-
         {/* Location Section */}
         <FormSection title="🗺️ LOCATION" error={errors.location}>
           <div className="location-controls">
@@ -253,43 +263,30 @@ const UserReport = () => {
             </div>
           )}
         </FormSection>
-
-        {/* Photos Section */}
-        <FormSection
-          title="📸 PHOTOS (Required: 3 angles)"
-          error={errors.photos}
-        >
-          <div className="photo-grid">
-            <PhotoUpload
-              label="Angle 1: Front/Top View"
-              guideline="Show pothole from the front / top"
-              onUpload={(file) => handlePhotoUpload(0, file)}
-              photo={formData.photos[0]}
-            />
-            <PhotoUpload
-              label="Angle 2: Side View"
-              guideline="Capture depth and width"
-              onUpload={(file) => handlePhotoUpload(1, file)}
-              photo={formData.photos[1]}
-            />
-            <PhotoUpload
-              label="Angle 3: Close-up View"
-              guideline="Detail shot for analysis"
-              onUpload={(file) => handlePhotoUpload(2, file)}
-              photo={formData.photos[2]}
-            />
-          </div>
+        {/* District Section */}
+        <FormSection title="🏙 DISTRICT" error={errors.district}>
+          <select
+            value={formData.district}
+            onChange={(e) => handleInputChange("district", e.target.value)}
+            className={errors.district ? "error" : ""}
+          >
+            {sabahDistricts.map((district) => (
+              <option key={district.value} value={district.value}>
+                {district.label}
+              </option>
+            ))}
+          </select>
         </FormSection>
-
-        {/* Remarks Section */}
-        <FormSection title="📝 REMARKS (Optional)">
+        {/* Description Section */}
+        <FormSection title="📝 DESCRIPTION" error={errors.description}>
           <textarea
-            value={formData.remarks}
-            onChange={(e) => handleInputChange("remarks", e.target.value)}
-            placeholder="Additional details about the pothole (traffic impact, size estimate, urgency, etc.)"
-            maxLength={500}
+            value={formData.description}
+            onChange={(e) => handleInputChange("description", e.target.value)}
+            placeholder="Brief description of the pothole (e.g., 'Large pothole blocking left lane')"
+            maxLength={200}
+            className={errors.description ? "error" : ""}
           />
-          <div className="char-count">{formData.remarks.length}/500</div>
+          <div className="char-count">{formData.description.length}/200</div>
         </FormSection>
 
         {/* Form Submit Action */}
