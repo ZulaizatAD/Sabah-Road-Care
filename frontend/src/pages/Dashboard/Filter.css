@@ -1,8 +1,10 @@
 .filter-container {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  margin-bottom: 2rem;
   display: flex;
   align-items: center;
-  gap: 20px;
-  height: 60px;
 }
 
 .filter-label {
@@ -16,6 +18,7 @@
   display: flex;
   gap: 15px;
   align-items: center;
+  flex-grow: 1;
 }
 
 .filter-dropdown {
@@ -48,4 +51,23 @@
 .filter-select:hover,
 .filter-date:hover {
   background-color: #d8dadd;
+}
+
+.share-btn {
+  background-color: #2196f3;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 30px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  margin-right: 10px;
+}
+
+.share-btn:hover {
+  background-color: #1976d2;
 }

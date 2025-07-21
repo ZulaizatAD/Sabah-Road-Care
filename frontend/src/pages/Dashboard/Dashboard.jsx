@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
-import Filters from "./Filter";
+import Filter from "./Filter";
 import StatsCards from "./StatsCards";
 import Charts from "./Charts";
 import "./Dashboard.css";
-import Share from "./Share";
 
 const Dashboard = () => {
   const [filters, setFilters] = useState({
@@ -37,6 +36,11 @@ const Dashboard = () => {
     }));
   };
 
+  const handleShare = () => {
+    // Implement share functionality here
+    alert("Share functionality is not yet implemented.");
+  };
+
   return (
     <div className="dashboard-wrapper">
       <div className="dashboard-background"></div>
@@ -44,10 +48,10 @@ const Dashboard = () => {
         <Header />
         <main className="main">
           <div className="container">
-            <Share /> {/* Add the Share button here */}
-            <Filters
+            <Filter
               filters={filters}
               handleFilterChange={handleFilterChange}
+              handleShare={handleShare} // Pass the handleShare function
             />
             <StatsCards />
             <Charts pieData={pieData} trendData={trendData} />
