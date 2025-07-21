@@ -89,7 +89,14 @@ const PhotoUpload = ({ label, guideline, onUpload, photo }) => {
           // Show placeholder when no image is selected
           <div className="photo-placeholder" onClick={handleCameraCapture}>
             <div className="camera-icon">📷</div>
-            <div className="upload-text">
+
+            {/* Desktop Text */}
+            <div className="upload-text upload-text-desktop">
+              <div>Upload Photo</div>
+            </div>
+
+            {/* Mobile Text */}
+            <div className="upload-text upload-text-mobile">
               <div>Tap to capture</div>
               <small>or upload photo</small>
             </div>
