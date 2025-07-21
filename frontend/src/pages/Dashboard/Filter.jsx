@@ -1,33 +1,32 @@
 import React from "react";
 import "./Filter.css";
 
-const Filters = ({ filters, handleFilterChange }) => {
+const Filter = ({ filters, handleFilterChange }) => {
   return (
-    <div className="filter-section">
-      <h2 className="filter-title">Filter by:</h2>
-      <div className="filter-container">
-        <div className="filter-item">
+    <div className="filter-container">
+      <span className="filter-label">Filter by:</span>
+      <div className="filter-inputs">
+        <div className="filter-dropdown">
           <select
             className="filter-select"
             value={filters.location}
             onChange={(e) => handleFilterChange("location", e.target.value)}
           >
             <option value="">Location:</option>
-            <option value="new-york">New York</option>
-            <option value="london">London</option>
-            <option value="tokyo">Tokyo</option>
+            <option value="office1">Office 1</option>
+            <option value="office2">Office 2</option>
+            <option value="office3">Office 3</option>
           </select>
         </div>
-        <div className="filter-item">
+        <div className="filter-dropdown">
           <input
             type="date"
-            className="filter-input"
+            className="filter-date"
             value={filters.date}
             onChange={(e) => handleFilterChange("date", e.target.value)}
-            placeholder="Date:"
           />
         </div>
-        <div className="filter-item">
+        <div className="filter-dropdown">
           <select
             className="filter-select"
             value={filters.severity}
@@ -44,4 +43,4 @@ const Filters = ({ filters, handleFilterChange }) => {
   );
 };
 
-export default Filters;
+export default Filter;

@@ -5,13 +5,7 @@ import Filters from "./Filter";
 import StatsCards from "./StatsCards";
 import Charts from "./Charts";
 import "./Dashboard.css";
-
-<div className="dashboard-wrapper">
-  <div className="dashboard-background"></div>
-  <div className="dashboard-content">
-    {/* Your existing dashboard content */}
-  </div>
-</div>;
+import Share from "./Share";
 
 const Dashboard = () => {
   const [filters, setFilters] = useState({
@@ -44,16 +38,23 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-body">
-      <Header />
-      <main className="main">
-        <div className="container">
-          <Filters filters={filters} handleFilterChange={handleFilterChange} />
-          <StatsCards />
-          <Charts pieData={pieData} trendData={trendData} />
-        </div>
-      </main>
-      <Footer />
+    <div className="dashboard-wrapper">
+      <div className="dashboard-background"></div>
+      <div className="dashboard-content">
+        <Header />
+        <main className="main">
+          <div className="container">
+            <Share /> {/* Add the Share button here */}
+            <Filters
+              filters={filters}
+              handleFilterChange={handleFilterChange}
+            />
+            <StatsCards />
+            <Charts pieData={pieData} trendData={trendData} />
+          </div>
+        </main>
+        <Footer />
+      </div>
     </div>
   );
 };
