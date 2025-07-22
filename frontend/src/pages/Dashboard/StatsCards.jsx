@@ -1,5 +1,4 @@
 import React from "react";
-import "./StatsCards.css";
 
 const StatsCards = () => {
   return (

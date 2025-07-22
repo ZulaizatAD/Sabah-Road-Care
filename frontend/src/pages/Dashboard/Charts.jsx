@@ -11,7 +11,6 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
-import "./Charts.css";
 
 const Charts = ({ pieData, trendData }) => {
   return (
