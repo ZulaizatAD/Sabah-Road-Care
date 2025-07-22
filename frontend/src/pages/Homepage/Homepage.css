@@ -1,0 +1,13 @@
+.background-image {
+  background-image:     linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+    url('/SRCBackground.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+@media (max-width: 768px) {
+  .background-image {
+    background-attachment: scroll; /* Better performance on mobile */
+  }
+}
