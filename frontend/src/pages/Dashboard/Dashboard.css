@@ -5,35 +5,11 @@
   background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
-.dashboard-background {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(
-      circle at 20% 80%,
-      rgba(120, 119, 198, 0.3) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 80% 20%,
-      rgba(255, 119, 198, 0.15) 0%,
-      transparent 50%
-    ),
-    radial-gradient(
-      circle at 40% 40%,
-      rgba(120, 219, 255, 0.15) 0%,
-      transparent 50%
-    );
-  z-index: -1;
-}
-
 /* Main Content Styles */
 .main {
   max-width: 1200px;
   margin: 10px auto; /* Center content and add top margin */
-  padding: 0 20px;
+  padding: 0 10px;
 }
 
 /* Container Styles */
@@ -42,7 +18,7 @@
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  padding: 20px;
+  padding: 10px;
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
@@ -51,20 +27,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
 }
 
 .filter-container {
   flex-grow: 1;
   background: rgba(255, 255, 255, 0.8);
   backdrop-filter: blur(10px);
-  padding: 25px;
+  padding: 10px;
   border-radius: 15px;
-  margin-bottom: 30px;
   display: flex;
   align-items: center;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .filter-label {
@@ -154,7 +126,7 @@
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
-  gap: 30px;
+  gap: 20px;
 }
 
 .chart-container {
@@ -165,9 +137,8 @@
   );
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  padding: 30px;
   position: relative;
-  margin-bottom: 0px;
+  padding: 10px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
@@ -201,7 +172,7 @@
 .chart-title {
   font-weight: 700;
   color: #2d3748;
-  margin-bottom: 8px;
+  padding: 10px;
   text-align: center;
   font-size: 22px;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -215,7 +186,6 @@
 .chart-subtitle {
   font-size: 14px;
   color: #718096;
-  margin-bottom: 20px;
   text-align: center;
   font-style: italic;
 }
@@ -230,7 +200,6 @@
 
 .month {
   position: absolute;
-  left: 15px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-size: 14px;
@@ -238,21 +207,17 @@
   transform-origin: center;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
-  padding: 4px 8px;
   border-radius: 6px;
   backdrop-filter: blur(5px);
 }
 
 .number-of-case {
   text-align: center;
-  margin-top: 10px;
   font-size: 14px;
   color: #718096;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
-  padding: 6px 12px;
   border-radius: 8px;
-  display: inline-block;
   backdrop-filter: blur(5px);
 }
 
@@ -293,7 +258,7 @@
   );
   backdrop-filter: blur(10px);
   border-radius: 16px;
-  padding: 25px;
+  padding: 10px;
   text-align: center;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.3);
