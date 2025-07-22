@@ -1,4 +1,25 @@
 import React from "react";
+
+const sabahDistricts = [
+  { value: "", label: "Sabah" },
+  { value: "kota-kinabalu", label: "Kota Kinabalu" },
+  { value: "sandakan", label: "Sandakan" },
+  { value: "tawau", label: "Tawau" },
+  { value: "penampang", label: "Penampang" },
+  { value: "putatan", label: "Putatan" },
+  { value: "papar", label: "Papar" },
+  { value: "tuaran", label: "Tuaran" },
+  { value: "kudat", label: "Kudat" },
+  { value: "beaufort", label: "Beaufort" },
+  { value: "ranau", label: "Ranau" },
+  { value: "kota-belud", label: "Kota Belud" },
+  { value: "keningau", label: "Keningau" },
+  { value: "semporna", label: "Semporna" },
+  { value: "kuala-penyu", label: "Kuala Penyu" },
+  { value: "lahad-datu", label: "Lahad Datu" },
+  { value: "others", label: "Others" },
+];
+
 const Filter = ({ filters, handleFilterChange, handleShare }) => {
   return (
     <div className="filter-container">
@@ -10,10 +31,11 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
             value={filters.location}
             onChange={(e) => handleFilterChange("location", e.target.value)}
           >
-            <option value="">Location:</option>
-            <option value="office1">Office 1</option>
-            <option value="office2">Office 2</option>
-            <option value="office3">Office 3</option>
+            {sabahDistricts.map((district) => (
+              <option key={district.value} value={district.value}>
+                {district.label}
+              </option>
+            ))}
           </select>
         </div>
         <div className="filter-dropdown">

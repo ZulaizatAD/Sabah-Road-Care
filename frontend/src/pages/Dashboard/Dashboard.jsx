@@ -23,9 +23,9 @@ const Dashboard = () => {
   const trendData = [
     { month: "Jan", cases: 30 },
     { month: "Feb", cases: 45 },
-    { month: "Mar", cases: 35 },
+    { month: "Mar", cases: 45 },
     { month: "Apr", cases: 55 },
-    { month: "May", cases: 40 },
+    { month: "May", cases: 60 },
     { month: "Jun", cases: 60 },
   ];
 
@@ -42,10 +42,9 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="dashboard-wrapper">
-      <div className="dashboard-background"></div>
+    <div>
+      <Header />
       <div className="dashboard-content">
-        <Header />
         <main className="main">
           <div className="container">
             <Filter
@@ -57,8 +56,8 @@ const Dashboard = () => {
             <Charts pieData={pieData} trendData={trendData} />
           </div>
         </main>
-        <Footer />
       </div>
+      <Footer />
     </div>
   );
 };

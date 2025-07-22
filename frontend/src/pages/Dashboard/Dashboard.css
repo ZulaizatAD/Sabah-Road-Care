@@ -1,20 +1,27 @@
-/* Dashboard Wrapper Styles */
-.dashboard-wrapper {
-  position: relative;
-  min-height: 100vh;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+.dashboard-content {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+    url("/SRCBackground.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+@media (max-width: 768px) {
+  .background-image {
+    background-attachment: scroll; /* Better performance on mobile */
+  }
 }
 
 /* Main Content Styles */
 .main {
   max-width: 1200px;
-  margin: 10px auto; /* Center content and add top margin */
-  padding: 0 10px;
+  margin: auto; /* Center content and add top margin */
+  padding: 10px 10px;
 }
 
 /* Container Styles */
 .container {
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255, 253, 253, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
@@ -246,7 +253,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 20px;
-  margin-bottom: 20px;
+  padding: 10px 0px;
 }
 
 /* Individual Stats Card Styles */
@@ -268,7 +275,7 @@
   animation: fadeInUp 0.6s ease-out;
 }
 
-.stat-card::before {
+/* .stat-card::before {
   content: "";
   position: absolute;
   top: 0;
@@ -278,9 +285,9 @@
   background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
   background-size: 300% 300%;
   animation: gradientShift 3s ease infinite;
-}
+} */
 
-@keyframes gradientShift {
+/* @keyframes gradientShift {
   0%,
   100% {
     background-position: 0% 50%;
@@ -288,14 +295,14 @@
   50% {
     background-position: 100% 50%;
   }
-}
+} */
 
 .stat-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-/* Specific Gradient for Each Card */
+/* Specific Gradient for Each Card
 .stat-card:nth-child(1)::before {
   background: linear-gradient(90deg, #4facfe, #00f2fe);
 }
@@ -310,7 +317,7 @@
 
 .stat-card:nth-child(4)::before {
   background: linear-gradient(90deg, #a8edea, #fed6e3);
-}
+} */
 
 /* Title and Value Styles */
 .stat-title {
@@ -330,7 +337,7 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Animation Delay for Each Card */
+/* Animation Delay for Each Card
 .stat-card:nth-child(1) {
   animation-delay: 0.1s;
 }
@@ -345,7 +352,7 @@
 
 .stat-card:nth-child(4) {
   animation-delay: 0.4s;
-}
+} */
 
 @keyframes fadeInUp {
   from {
