@@ -248,8 +248,6 @@ const UserReport = () => {
 
       {/* Main Form */}
       <form className="report-form" onSubmit={handleSubmit}>
-        {/* LEFT COLUMN */}
-        <div className="left-column">
           {/* Photos Section */}
           <FormSection
             title="📸 PHOTOS (Required: 3 angles)"
@@ -276,10 +274,7 @@ const UserReport = () => {
               />
             </div>
           </FormSection>
-        </div>
 
-        {/* RIGHT COLUMN */}
-        <div className="right-column">
           {/* Location Section */}
           <FormSection title="🗺️ LOCATION" error={errors.location}>
             <div className="location-controls">
@@ -344,7 +339,6 @@ const UserReport = () => {
             />
             <div className="char-count">{formData.description.length}/200</div>
           </FormSection>
-        </div>
 
         {/* Form Submit Action */}
         <div className="form-actions">
