@@ -1,6 +1,4 @@
-import React from "react";
 import "./Filter.css";
-
 const Filter = ({ filters, handleFilterChange, handleShare }) => {
   return (
     <div className="filter-container">
