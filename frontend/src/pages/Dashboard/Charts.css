@@ -1,50 +1,146 @@
 .charts-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(520px, 1fr));
+  gap: 30px;
 }
 
 .chart-container {
-  background-color: #d1d5db;
-  border-radius: 12px;
-  padding: 10px;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.95) 0%,
+    rgba(255, 255, 255, 0.8) 100%
+  );
+  backdrop-filter: blur(10px);
+  border-radius: 20px;
+  padding: 30px;
   position: relative;
   margin-bottom: 0px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  transition: all 0.3s ease;
+}
+
+.chart-container:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15);
 }
 
 .chart-title {
-  font-weight: 600;
-  color: #374151;
-  margin-bottom: 10px;
+  font-weight: 700;
+  color: #2d3748;
+  margin-bottom: 8px;
   text-align: center;
-  font-size: 18px;
+  font-size: 22px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .chart-subtitle {
   font-size: 14px;
-  color: #6b7280;
-  margin-bottom: 20px;
+  color: #718096;
+  margin-bottom: 25px;
   text-align: center;
+  font-style: italic;
 }
 
 .chart-wrapper {
-  height: 240px;
+  height: 280px;
   width: 100%;
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .month {
   position: absolute;
-  left: 10px;
+  left: 15px;
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-size: 14px;
-  color: #6b7280;
+  color: #718096;
   transform-origin: center;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 4px 8px;
+  border-radius: 6px;
+  backdrop-filter: blur(5px);
 }
 
 .number-of-case {
   text-align: center;
-  margin-top: 10px;
+  margin-top: 15px;
   font-size: 14px;
-  color: #6b7280;
+  color: #718096;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.8);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: inline-block;
+  backdrop-filter: blur(5px);
+}
+
+/* Custom styles for recharts */
+.recharts-cartesian-axis-tick-value {
+  font-size: 12px;
+  fill: #4a5568;
+  font-weight: 500;
+}
+
+.recharts-tooltip-wrapper {
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.recharts-default-tooltip {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+/* Animation for charts */
+.chart-container {
+  animation: slideIn 0.8s ease-out;
+}
+
+.chart-container:nth-child(1) {
+  animation-delay: 0.2s;
+}
+.chart-container:nth-child(2) {
+  animation-delay: 0.4s;
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 768px) {
+  .charts-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+
+  .chart-container {
+    padding: 20px;
+  }
+
+  .chart-wrapper {
+    height: 240px;
+  }
+
+  .chart-title {
+    font-size: 18px;
+  }
 }
