@@ -1,3 +1,19 @@
+/* Common Styles */
+:root {
+  --primary-color: #667eea;
+  --secondary-color: #764ba2;
+  --background-gradient: linear-gradient(
+    135deg,
+    var(--primary-color) 0%,
+    var(--secondary-color) 100%
+  );
+  --font-color-dark: #2d3748;
+  --font-color-light: #718096;
+  --box-shadow-light: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --box-shadow-heavy: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+/* Dashboard Content */
 .dashboard-content {
   background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
     url("/SRCBackground.png");
@@ -6,17 +22,13 @@
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
-@media (max-width: 768px) {
-  .background-image {
-    background-attachment: scroll; /* Better performance on mobile */
-  }
-}
 
 /* Main Content Styles */
 .main {
   max-width: 1200px;
-  margin: auto; /* Center content and add top margin */
-  padding: 10px 10px;
+  margin: auto;
+  padding: 10px;
+  min-height: 85vh;
 }
 
 /* Container Styles */
@@ -24,9 +36,9 @@
   background: rgba(255, 253, 253, 0.95);
   backdrop-filter: blur(10px);
   border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-  padding: 10px;
+  box-shadow: var(--box-shadow-heavy);
   border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 10px;
 }
 
 /* Filter and Share Container Styles */
@@ -34,6 +46,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .filter-container {
@@ -44,12 +57,13 @@
   border-radius: 15px;
   display: flex;
   align-items: center;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .filter-label {
   font-size: 18px;
   font-weight: 600;
-  color: #2d3748;
+  color: var(--font-color-dark);
   margin-right: 20px;
   min-width: 90px;
 }
@@ -59,10 +73,7 @@
   gap: 20px;
   align-items: center;
   flex-grow: 1;
-}
-
-.filter-dropdown {
-  position: relative;
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .filter-select,
@@ -74,24 +85,24 @@
   border-radius: 25px;
   background: white;
   font-size: 14px;
-  color: #2d3748;
+  color: var(--font-color-dark);
   cursor: pointer;
   outline: none;
   appearance: none;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--box-shadow-light);
 }
 
 .filter-select:hover,
 .filter-date:hover {
-  border-color: #667eea;
+  border-color: var(--primary-color);
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
 .filter-select:focus,
 .filter-date:focus {
-  border-color: #667eea;
+  border-color: var(--primary-color);
   box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
 }
 
@@ -107,7 +118,7 @@
 }
 
 .share-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--background-gradient);
   color: white;
   border: none;
   padding: 12px 30px;
@@ -178,11 +189,11 @@
 
 .chart-title {
   font-weight: 700;
-  color: #2d3748;
+  color: var(--font-color-dark);
   padding: 10px;
   text-align: center;
   font-size: 22px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--background-gradient);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -192,7 +203,7 @@
 
 .chart-subtitle {
   font-size: 14px;
-  color: #718096;
+  color: var(--font-color-light);
   text-align: center;
   font-style: italic;
 }
@@ -210,7 +221,7 @@
   top: 50%;
   transform: rotate(-90deg) translateY(-50%);
   font-size: 14px;
-  color: #718096;
+  color: var(--font-color-light);
   transform-origin: center;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
@@ -221,7 +232,7 @@
 .number-of-case {
   text-align: center;
   font-size: 14px;
-  color: #718096;
+  color: var(--font-color-light);
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 8px;
@@ -237,7 +248,7 @@
 
 .recharts-tooltip-wrapper {
   border-radius: 8px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+  box-shadow: var(--box-shadow-heavy);
 }
 
 .recharts-default-tooltip {
@@ -269,60 +280,21 @@
   text-align: center;
   transition: all 0.3s ease;
   border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--box-shadow-heavy);
   position: relative;
   overflow: hidden;
   animation: fadeInUp 0.6s ease-out;
 }
-
-/* .stat-card::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #667eea, #764ba2, #f093fb, #f5576c);
-  background-size: 300% 300%;
-  animation: gradientShift 3s ease infinite;
-} */
-
-/* @keyframes gradientShift {
-  0%,
-  100% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-} */
 
 .stat-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
 }
 
-/* Specific Gradient for Each Card
-.stat-card:nth-child(1)::before {
-  background: linear-gradient(90deg, #4facfe, #00f2fe);
-}
-
-.stat-card:nth-child(2)::before {
-  background: linear-gradient(90deg, #43e97b, #38f9d7);
-}
-
-.stat-card:nth-child(3)::before {
-  background: linear-gradient(90deg, #fa709a, #fee140);
-}
-
-.stat-card:nth-child(4)::before {
-  background: linear-gradient(90deg, #a8edea, #fed6e3);
-} */
-
 /* Title and Value Styles */
 .stat-title {
   font-weight: 600;
-  color: #2d3748;
+  color: var(--font-color-dark);
   margin-bottom: 15px;
   font-size: 16px;
   text-transform: uppercase;
@@ -336,23 +308,6 @@
   margin: 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
-/* Animation Delay for Each Card
-.stat-card:nth-child(1) {
-  animation-delay: 0.1s;
-}
-
-.stat-card:nth-child(2) {
-  animation-delay: 0.2s;
-}
-
-.stat-card:nth-child(3) {
-  animation-delay: 0.3s;
-}
-
-.stat-card:nth-child(4) {
-  animation-delay: 0.4s;
-} */
 
 @keyframes fadeInUp {
   from {
@@ -373,32 +328,32 @@
   }
 
   .chart-container {
-    padding: 20px;
+    padding: 15px;
   }
 
   .chart-wrapper {
-    height: 240px;
+    height: 220px;
   }
 
   .chart-title {
-    font-size: 18px;
+    font-size: 16px;
   }
 
   .filter-container {
     flex-direction: column;
     align-items: stretch;
-    gap: 15px;
-    padding: 20px;
+    gap: 10px;
+    padding: 15px;
   }
 
   .filter-label {
     margin-right: 0;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
   }
 
   .filter-inputs {
     flex-direction: column;
-    gap: 15px;
+    gap: 10px;
   }
 
   .filter-select,
@@ -413,15 +368,15 @@
   }
 
   .stats-grid {
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px;
   }
 
   .stat-card {
-    padding: 20px;
+    padding: 15px;
   }
 
   .stat-value {
-    font-size: 36px;
+    font-size: 32px;
   }
 }
