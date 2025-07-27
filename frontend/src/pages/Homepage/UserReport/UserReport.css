@@ -39,26 +39,23 @@
 .save-draft-btn:hover {
   background: #4b5563;
 }
-.instructions-section {
-  background: white;
-  border-radius: 8px;
-  padding: 25px;
-  margin-bottom: 30px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+.step-instruction {
+  margin-bottom: 15px;
 }
-.instructions-content h2 {
-  font-family: "Inter", sans-serif;
-  font-size: 20px;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 20px;
-  text-align: center;
+.step-instruction .step {
+  background: #f0f9ff;
+  border-left: 4px solid #2563eb;
+  margin-bottom: 0;
 }
-.instruction-steps {
-  display: grid;
-  gap: 8px;
-  margin-bottom: 20px;
+.step-instruction .step:hover {
+  background: #e0f2fe;
 }
+.step-instruction .step.expanded {
+  background: #dbeafe;
+  border-left-color: #1d4ed8;
+}
+
 .step {
   background: #f8fafc;
   border-radius: 8px;
@@ -67,6 +64,7 @@
   transition: all 0.3s cubic-bezier(0.4, 0.2, 1);
   cursor: pointer;
   user-select: none;
+  margin-bottom: 8px;
 }
 .step:hover {
   background: #f1f5f9;
@@ -204,7 +202,7 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 .form-section {
-  margin-bottom: 30px;
+  margin-bottom: 25px;
 }
 .section-title {
   font-size: 18px;
@@ -511,13 +509,6 @@
   .user-report {
     padding: 15px;
   }
-  .instructions-section {
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  .instructions-content h2 {
-    font-size: 18px;
-  }
   .step-header {
     padding: 12px;
     gap: 12px;
@@ -537,9 +528,14 @@
   .step-content strong {
     font-size: 14px;
   }
-
   .step-content p {
     font-size: 13px;
+  }
+  .step-instruction {
+    margin-bottom: 12px;
+  }
+  .form-section {
+    margin-bottom: 20px;
   }
   .instructions-note {
     padding: 12px;

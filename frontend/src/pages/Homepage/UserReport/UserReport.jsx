@@ -45,7 +45,7 @@ const UserReport = () => {
     { value: "semporna", label: "Semporna" },
     { value: "kuala-penyu", label: "Kuala Penyu" },
     { value: "lahad-datu", label: "Lahad Datu" },
-    { value: "others", label: "Others" },
+    { value: "others", label: "OTHERS" },
   ];
 
   // Handle input changes - textfields and dropdowns
@@ -204,69 +204,24 @@ const UserReport = () => {
         <button className="save-draft-btn">Save Draft</button>
       </header>
 
-      {/* Instruction Section */}
-      <div className="instructions-section">
-        <div className="instructions-content">
-          <h2>📋 Instruction</h2>
-          <div className="instruction-steps">
-            <div className="step expanded" onClick={(e) => toggleStep(e, 0)}>
-              <div className="step-header">
-                <span className="step-number">1</span>
-                <h3 className="step-title">Take Photos</h3>
-                <span className="step-toggle">▼</span>
-              </div>
-              <div className="step-content">
-                <p>
-                  Please upload 3 clear image from different angles (front view,
-                  side view, and close-up)
-                </p>
-              </div>
-            </div>
-            <div className="step expanded" onClick={(e) => toggleStep(e, 0)}>
-              <div className="step-header">
-                <span className="step-number">2</span>
-                <h3 className="step-title">Tag Location</h3>
-                <span className="step-toggle">▼</span>
-              </div>
-              <div className="step-content">
-                <p>Use GPS to mark the location of your report</p>
-              </div>
-            </div>
-            <div className="step expanded" onClick={(e) => toggleStep(e, 0)}>
-              <div className="step-header">
-                <span className="step-number">3</span>
-                <h3 className="step-title">Select District</h3>
-                <span className="step-toggle">▼</span>
-              </div>
-              <div className="step-content">
-                <p>Choose the district location of your report</p>
-              </div>
-            </div>
-            <div className="step expanded" onClick={(e) => toggleStep(e, 0)}>
-              <div className="step-header">
-                <span className="step-number">4</span>
-                <h3 className="step-title">Submit Report</h3>
-                <span className="step-toggle">▼</span>
-              </div>
-              <div className="step-content">
-                <p>
-                  Optional - Provide additional detail (Size, Actual Location,
-                  Nearby Vicinity, etc.) <br /> Submit your Report!
-                </p>
-              </div>
-            </div>
-          </div>
-          <div className="instructions-note">
-            <p>
-              <strong>Note:</strong> Your report will help us improve the
-              quality of our service
-            </p>
-          </div>
-        </div>
-      </div>
-
       {/* Main Form */}
       <form className="report-form" onSubmit={handleSubmit}>
+        {/* Step 1 Instruction */}
+        <div className="step-instruction">
+          <div className="step expanded" onClick={(e) => toggleStep(e, 0)}>
+            <div className="step-header">
+              <span className="step-number">1</span>
+              <h3 className="step-title">Take Photos</h3>
+              <span className="step-toggle">▼</span>
+            </div>
+            <div className="step-content">
+              <p>
+                Please upload 3 clear image from different angles (front view,
+                side view, and close-up)
+              </p>
+            </div>
+          </div>
+        </div>
         {/* Photos Section */}
         <FormSection
           title="📸 PHOTOS (Required: 3 angles)"
@@ -293,6 +248,20 @@ const UserReport = () => {
             />
           </div>
         </FormSection>
+
+        {/* Step 2 Instruction */}
+        <div className="step-instruction">
+          <div className="step" onClick={(e) => toggleStep(e, 1)}>
+            <div className="step-header">
+              <span className="step-number">2</span>
+              <h3 className="step-title">Tag Location</h3>
+              <span className="step-toggle">▼</span>
+            </div>
+            <div className="step-content">
+              <p>Use GPS to mark the actual location of your report</p>
+            </div>
+          </div>
+        </div>
 
         {/* Location Section */}
         <FormSection title="🗺️ LOCATION" error={errors.location}>
@@ -330,6 +299,23 @@ const UserReport = () => {
             </div>
           )}
         </FormSection>
+
+        {/* Step 3 Instruction */}
+        <div className="step-instruction">
+          <div className="step" onClick={(e) => toggleStep(e, 2)}>
+            <div className="step-header">
+              <span className="step-number">3</span>
+              <h3 className="step-title">Select District</h3>
+              <span className="step-toggle">▼</span>
+            </div>
+            <div className="step-content">
+              <p>
+                Choose your district location from the dropdown menu. Select
+                OTHERS if not on the list.
+              </p>
+            </div>
+          </div>
+        </div>
         {/* District Section */}
         <FormSection title="🏙 DISTRICT" error={errors.district}>
           <select
@@ -344,6 +330,23 @@ const UserReport = () => {
             ))}
           </select>
         </FormSection>
+
+        {/* Step 4 Instruction */}
+        <div className="step-instruction">
+          <div className="step" onClick={(e) => toggleStep(e, 3)}>
+            <div className="step-header">
+              <span className="step-number">4</span>
+              <h3 className="step-title">Add Description</h3>
+              <span className="step-toggle">▼</span>
+            </div>
+            <div className="step-content">
+              <p>
+                Optional - You can provide additional details (size, nearby
+                vicinity, landmark, etc.) <br /> Submit Your Report!
+              </p>
+            </div>
+          </div>
+        </div>
         {/* Description Section */}
         <FormSection
           title="📝 REMARKS / DESCRIPTION"
@@ -358,7 +361,12 @@ const UserReport = () => {
           />
           <div className="char-count">{formData.description.length}/200</div>
         </FormSection>
-
+        <div className="instructions-note">
+          <p>
+            <strong>Note:</strong> Your report will help us improve the quality
+            of our service
+          </p>
+        </div>
         {/* Form Submit Action */}
         <div className="form-actions">
           <button
