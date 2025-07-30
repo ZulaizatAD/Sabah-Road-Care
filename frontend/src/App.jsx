@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard/Dashboard'
 import Information from './pages/Information/Information'
 import ProfileUpdate from './pages/ProfileUpdate/ProfileUpdate'
 import Confirm from './pages/Confirm/Confirm'
+import UserSubmit from './pages/UserSubmit/UserSubmit'
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
         <Route path="/homepage" element={<Homepage />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/information" element={<Information />} />
+        <Route path="/history" element={<UserSubmit />} />
         <Route path="/profileupdate" element={<ProfileUpdate />} />
         <Route path="/confirm" element={<Confirm />} />
       </Routes>

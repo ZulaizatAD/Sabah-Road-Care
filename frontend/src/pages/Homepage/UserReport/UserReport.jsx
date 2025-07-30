@@ -296,6 +296,7 @@ const UserReport = () => {
 
           {/* Step 2 Instruction */}
           <div className="step-instruction">
+
             <div className="step" onClick={(e) => toggleStep(e, 1)}>
               <div className="step-header">
                 <span className="step-number">2</span>
@@ -466,7 +467,7 @@ const UserReport = () => {
           </div>
           <button
             className="view-all-btn"
-            onClick={() => navigate("/submissions")}
+            onClick={() => navigate("/history")}
           >
             View All Submissions
           </button>
@@ -478,7 +479,7 @@ const UserReport = () => {
           <div className="action-buttons">
             <button
               className="action-btn reports"
-              onClick={() => navigate("/my-reports")}
+              onClick={() => navigate("/history")}
             >
               <span className="action-icon">📊</span>
               <span className="action-text">My Reports</span>
