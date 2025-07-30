@@ -32,7 +32,6 @@ const ReportHistory = () => {
       severity: "Severe",
       description: "Large pothole causing traffic disruption on main road",
       similarReports: 5,
-      assignedTeam: "Road Maintenance Unit A",
       completionDate: "2024-01-20",
     },
     {
@@ -48,7 +47,6 @@ const ReportHistory = () => {
       severity: "Moderate",
       description: "Pothole near school area affecting student safety",
       similarReports: 3,
-      assignedTeam: "Road Maintenance Unit B",
       completionDate: null,
     },
     {
@@ -64,7 +62,6 @@ const ReportHistory = () => {
       severity: "Minor",
       description: "Small pothole on quiet residential street",
       similarReports: 1,
-      assignedTeam: "Road Maintenance Unit C",
       completionDate: null,
     },
     {
@@ -80,7 +77,6 @@ const ReportHistory = () => {
       severity: "Severe",
       description: "Major road damage requiring immediate attention",
       similarReports: 8,
-      assignedTeam: "Emergency Response Team",
       completionDate: null,
     },
     {
@@ -96,7 +92,6 @@ const ReportHistory = () => {
       severity: "Minor",
       description: "Multiple small potholes reported in the area",
       similarReports: 2,
-      assignedTeam: null,
       completionDate: null,
     },
     {
@@ -112,7 +107,6 @@ const ReportHistory = () => {
       severity: "Severe",
       description: "Emergency pothole repair on major highway",
       similarReports: 12,
-      assignedTeam: "Highway Emergency Unit",
       completionDate: "2024-01-12",
     },
   ];
@@ -259,12 +253,6 @@ const ReportHistory = () => {
     <div className="report-history">
       <header className="page-header">
         <div className="header-content">
-          <button
-            className="back-button"
-            onClick={() => navigate("/dashboard")}
-          >
-            ← Back
-          </button>
           <div className="header-title">
             <h1>Report History</h1>
             <p>View and manage all your submitted reports.</p>
@@ -407,12 +395,6 @@ const ReportHistory = () => {
               </div>
 
               <div className="report-meta">
-                {report.assignedTeam && (
-                  <div className="meta-item">
-                    <span className="meta-icon">👥</span>
-                    <span className="meta-text">{report.assignedTeam}</span>
-                  </div>
-                )}
                 {report.completionDate && (
                   <div className="meta-item">
                     <span className="meta-icon">✅</span>
