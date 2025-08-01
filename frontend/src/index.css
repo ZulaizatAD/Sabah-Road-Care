@@ -3,6 +3,10 @@
   --primary-green: #33e611; /* Bright safety green */
   --primary-green-dark: #2bc20f; /* Darker green for hover */
   --primary-green-light: #66f044; /* Lighter green for backgrounds */
+  --hover-green-subtle: #E8F5E8;      /* Very light green for backgrounds */
+  --hover-gray-subtle: #F8F9FA;       /* Very light gray for gentle hover */
+  --hover-border-subtle: #D4E6D4;     /* Light green for borders */
+  --shadow-subtle: rgba(51, 230, 17, 0.08);  /* Very light green shadow */
 
   /* Asphalt Colors */
   --asphalt-dark: #2c2c2c; /* Dark asphalt */
