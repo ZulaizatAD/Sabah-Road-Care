@@ -109,6 +109,100 @@ const ReportHistory = () => {
       similarReports: 12,
       completionDate: "2024-01-12",
     },
+    {
+      id: 7,
+      documentNumber: "RPT-2024-007",
+      title: "Deep Pothole at Traffic Light",
+      location: "Jalan Lintas, Kota Kinabalu",
+      district: "Kota Kinabalu",
+      submissionDate: "2024-01-09",
+      lastUpdated: "2024-01-11",
+      status: "In Progress",
+      priority: "High",
+      severity: "Severe",
+      description:
+        "Deep pothole at busy traffic intersection causing vehicle damage",
+      similarReports: 7,
+      completionDate: null,
+    },
+    {
+      id: 8,
+      documentNumber: "RPT-2024-008",
+      title: "Road Surface Deterioration",
+      location: "Jalan Semporna, Semporna",
+      district: "Semporna",
+      submissionDate: "2024-01-08",
+      lastUpdated: "2024-01-10",
+      status: "Approved",
+      priority: "Medium",
+      severity: "Moderate",
+      description: "Multiple cracks and small potholes forming on main road",
+      similarReports: 4,
+      completionDate: null,
+    },
+    {
+      id: 9,
+      documentNumber: "RPT-2024-009",
+      title: "Pothole Near Hospital",
+      location: "Jalan Hospital, Tawau",
+      district: "Tawau",
+      submissionDate: "2024-01-07",
+      lastUpdated: "2024-01-09",
+      status: "Under Review",
+      priority: "High",
+      severity: "Moderate",
+      description:
+        "Pothole affecting ambulance access to hospital emergency entrance",
+      similarReports: 6,
+      completionDate: null,
+    },
+    {
+      id: 10,
+      documentNumber: "RPT-2024-010",
+      title: "Minor Road Crack",
+      location: "Jalan Kudat, Kudat",
+      district: "Kudat",
+      submissionDate: "2024-01-06",
+      lastUpdated: "2024-01-08",
+      status: "Completed",
+      priority: "Low",
+      severity: "Minor",
+      description:
+        "Small crack in road surface, preventive maintenance completed",
+      similarReports: 1,
+      completionDate: "2024-01-08",
+    },
+    {
+      id: 11,
+      documentNumber: "RPT-2024-011",
+      title: "Large Pothole at Bus Stop",
+      location: "Jalan Lahad Datu, Lahad Datu",
+      district: "Lahad Datu",
+      submissionDate: "2024-01-05",
+      lastUpdated: "2024-01-07",
+      status: "In Progress",
+      priority: "Medium",
+      severity: "Moderate",
+      description: "Pothole at bus stop area affecting public transportation",
+      similarReports: 3,
+      completionDate: null,
+    },
+    {
+      id: 12,
+      documentNumber: "RPT-2024-012",
+      title: "Critical Bridge Approach Damage",
+      location: "Jalan Keningau Bridge, Keningau",
+      district: "Keningau",
+      submissionDate: "2024-01-04",
+      lastUpdated: "2024-01-06",
+      status: "Under Review",
+      priority: "Critical",
+      severity: "Severe",
+      description:
+        "Severe road damage at bridge approach requiring urgent attention",
+      similarReports: 9,
+      completionDate: null,
+    },
   ];
 
   const districts = [
@@ -118,6 +212,10 @@ const ReportHistory = () => {
     "Penampang",
     "Beaufort",
     "Ranau",
+    "Semporna",
+    "Kudat",
+    "Lahad Datu",
+    "Keningau",
   ];
   const statuses = [
     "Under Review",
@@ -251,11 +349,11 @@ const ReportHistory = () => {
 
   return (
     <div className="report-history">
-      <header className="page-header">
-        <div className="header-content">
+      <header className="history-page-header">
+        <div className="history-header-content">
           <div className="header-title">
             <h1>Report History</h1>
-            <p>View and manage all your submitted reports.</p>
+            <p>View and track all your submitted reports.</p>
           </div>
           <button
             className="new-report-btn"
@@ -277,7 +375,9 @@ const ReportHistory = () => {
             aria-label="Search reports"
             id="search-input"
           />
-          <span className="search-icon" aria-hidden="true">🔍</span>
+          <span className="search-icon" aria-hidden="true">
+            🔍
+          </span>
         </div>
 
         <div className="filters">
@@ -354,11 +454,8 @@ const ReportHistory = () => {
       {/* Reports Grid/List */}
       <div className={`reports-container ${viewMode}`}>
         {currentReports.map((report) => (
-          <div
-            key={report.id}
-            className="report-card"
-          >
-            <div className="report-header">
+          <div key={report.id} className="report-card">
+            <div className="history-card-header">
               <div className="report-number">#{report.documentNumber}</div>
               <div className="report-badges">
                 <span
@@ -404,6 +501,13 @@ const ReportHistory = () => {
                     </span>
                   </div>
                 )}
+              </div>
+
+              <div className="similar-reports">
+                <span className="similar-count">
+                  📊 {report.similarReports} similar report
+                  {report.similarReports !== 1 ? "s" : ""} submitted
+                </span>
               </div>
             </div>
           </div>
