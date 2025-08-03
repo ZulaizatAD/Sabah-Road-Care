@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -318,33 +319,47 @@ const ReportHistory = () => {
   };
 
   const exportToCSV = () => {
-    const csvContent = [
-      [
-        "Document Number",
-        "Title",
-        "Location",
-        "Status",
-        "Priority",
-        "Submission Date",
-      ],
-      ...filteredReports.map((report) => [
-        report.documentNumber,
-        report.title,
-        report.location,
-        report.status,
-        report.priority,
-        report.submissionDate,
-      ]),
-    ]
-      .map((row) => row.join(","))
-      .join("\n");
+    try {
+      const csvContent = [
+        [
+          "Document Number",
+          "Title",
+          "Location",
+          "Status",
+          "Priority",
+          "Submission Date",
+        ],
+        ...filteredReports.map((report) => [
+          report.documentNumber,
+          report.title,
+          report.location,
+          report.status,
+          report.priority,
+          report.submissionDate,
+        ]),
+      ]
+        .map((row) => row.join(","))
+        .join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "report-history.csv";
-    a.click();
+      const blob = new Blob([csvContent], { type: "text/csv" });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `report-history-${
+        new Date().toISOString().split("T")[0]
+      }.csv`;
+      a.click();
+
+      toast.success("📥 Report exported successfully!", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.error("Failed to export report. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
   };
 
   return (

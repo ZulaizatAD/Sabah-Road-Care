@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import FormSection from "./mini-component/FormSection";
 import PhotoUpload from "./mini-component/PhotoUpload";
 import "./Homepage.css";
@@ -128,6 +129,10 @@ const Homepage = () => {
   // Check if geolocation is supported by the browser
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
+      const locationToast = toast.loading("Getting your location...", {
+        position: "top-right",
+      });
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
@@ -139,18 +144,33 @@ const Homepage = () => {
               longitude,
             },
           }));
+
+          toast.dismiss(locationToast);
+          toast.success("📍 Location tagged successfully!", {
+            position: "top-right",
+            autoClose: 2000,
+          });
+
           // convert coordinates to human-radable address
           reverseGeocode(latitude, longitude);
         },
         (error) => {
-          console.error("Error getting location:", error);
-          alert(
-            "Unable to get your location. Please enable location services."
+          toast.dismiss(locationToast);
+          toast.error(
+            "Unable to get your location. Please enable location services.",
+            {
+              position: "top-right",
+              autoClose: 4000,
+            }
           );
+          console.error("Error getting location:", error);
         }
       );
     } else {
-      alert("Geolocation is not supported by this browser.");
+      toast.error("Geolocation is not supported by this browser.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
     }
   };
 
@@ -195,14 +215,45 @@ const Homepage = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  // Save Draft Function
+  const handleSaveDraft = () => {
+    try {
+      // Save to localStorage or send to API
+      const draftData = {
+        ...formData,
+        savedAt: new Date().toISOString(),
+      };
+      localStorage.setItem("potholeReportDraft", JSON.stringify(draftData));
+
+      toast.success("Draft saved successfully! 📝", {
+        position: "top-right",
+        autoClose: 2000,
+      });
+    } catch (error) {
+      toast.error("Failed to save draft. Please try again.", {
+        position: "top-right",
+        autoClose: 3000,
+      });
+    }
+  };
+
+  // Form Submission Function
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      return;
+      toast.error("Please fill in all required fields correctly.", {
+        position: "top-right",
+        autoClose: 4000,
+      });
     }
 
     setIsSubmitting(true);
+
+    // Show loading toast
+    const loadingToast = toast.loading("Submitting your report...", {
+      position: "top-right",
+    });
 
     try {
       const submitData = new FormData();
@@ -229,16 +280,58 @@ const Homepage = () => {
       });
 
       if (response.ok) {
-        alert("Report submitted successfully!");
-        navigate("/homepage");
+        // Dismiss loading toast and show success
+        toast.dismiss(loadingToast);
+        toast.success(
+          "Report submitted successfully! Thank you for helping improve our roads.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+          }
+        );
+
+        // Clear draft from localStorage
+        localStorage.removeItem("potholeReportDraft");
+
+        // Reset form or navigate
+        setTimeout(() => {
+          navigate("/history");
+        }, 2000);
+      } else {
+        throw new Error("Failed to submit report");
       }
     } catch (error) {
+      // Dismiss loading toast and show error
+      toast.dismiss(loadingToast);
+      toast.error(
+        "❌ Failed to submit report. Please check your connection and try again.",
+        {
+          position: "top-right",
+          autoClose: 5000,
+        }
+      );
       console.error("Submission error:", error);
-      alert("Failed to submit report. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+   // Load draft on component mount
+  useEffect(() => {
+    const savedDraft = localStorage.getItem('potholeReportDraft');
+    if (savedDraft) {
+      try {
+        const draftData = JSON.parse(savedDraft);
+        toast.info('📋 Draft loaded! Continue where you left off.', {
+          position: "top-right",
+          autoClose: 3000,
+        });
+        setFormData(draftData);
+      } catch (error) {
+        console.error('Error loading draft:', error);
+      }
+    }
+  }, []); 
 
   return (
     <div className="user-report">
@@ -246,7 +339,6 @@ const Homepage = () => {
       <div className="main-content">
         <header className="report-header">
           <h1>MAKE A REPORT!</h1>
-          <button className="save-draft-btn">Save Draft</button>
         </header>
 
         {/* Main Form */}
@@ -296,7 +388,6 @@ const Homepage = () => {
 
           {/* Step 2 Instruction */}
           <div className="step-instruction">
-
             <div className="step" onClick={(e) => toggleStep(e, 1)}>
               <div className="step-header">
                 <span className="step-number">2</span>
@@ -417,10 +508,10 @@ const Homepage = () => {
           <div className="form-actions">
             <button
               type="button"
-              className="cancel-btn"
-              onClick={() => navigate("/homepage")}
+              className="save-draft-btn"
+              onClick={handleSaveDraft}
             >
-              Cancel
+              Save Draft
             </button>
             <button
               type="submit"
@@ -465,10 +556,7 @@ const Homepage = () => {
               </div>
             ))}
           </div>
-          <button
-            className="view-all-btn"
-            onClick={() => navigate("/history")}
-          >
+          <button className="view-all-btn" onClick={() => navigate("/history")}>
             View All Submissions
           </button>
         </div>

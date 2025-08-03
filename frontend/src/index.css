@@ -58,3 +58,8 @@
 ::-webkit-scrollbar {
   display: none;
 }
+
+/* Custom Toastify Styles */
+.Toastify__toast {
+  border-radius: 8px;
+}
