@@ -118,12 +118,34 @@ const Homepage = () => {
 
   // Handles photo upload for 3 angles - create copy of photos array, update specific index with the new file, update form data
   const handlePhotoUpload = (index, file) => {
+    if (!formData.photos || !Array.isArray(formData.photos)) {
+      console.error("Photos array not properly initialized");
+      setFormData((prev) => ({
+        ...prev,
+        photos: [null, null, null],
+      }));
+      return;
+    }
+
+    if (index < 0 || index >= 3) {
+      console.error("Invalid photo index:", index);
+      return;
+    }
+
     const newPhotos = [...formData.photos];
     newPhotos[index] = file;
+
     setFormData((prev) => ({
       ...prev,
       photos: newPhotos,
     }));
+
+    if (file) {
+      toast.success(`📸 Photo ${index + 1} uploaded successfully!`, {
+        position: "top-right",
+        autoClose: 1500,
+      });
+    }
   };
 
   // Get user's current GPS location using browser's Geolocation API
@@ -195,13 +217,21 @@ const Homepage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate photo uploads (must have all 3 photos)
-    const uploadedPhotos = formData.photos.filter((photo) => photo !== null);
-    if (uploadedPhotos.length < 3) {
-      newErrors.photos = "Please upload at least 3 photo";
+    // Validate photos array exists and has files
+    if (!formData.photos || !Array.isArray(formData.photos)) {
+      newErrors.photos = "Photos array not initialized";
+      return false;
     }
 
-    // Validate location (must have GPS coordinates)
+    // Validate photo uploads (must have all 3 photos)
+    const uploadedPhotos = formData.photos.filter(
+      (photo) => photo !== null && photo !== undefined
+    );
+    if (uploadedPhotos.length < 3) {
+      newErrors.photos = "Please upload all 3 photo";
+    }
+
+    // Validate location
     if (!formData.location.latitude || !formData.location.longitude) {
       newErrors.location = "Please tag your location";
     }
@@ -221,15 +251,25 @@ const Homepage = () => {
     try {
       // Save to localStorage or send to API
       const draftData = {
-        ...formData,
+        description: formData.description,
+        district: formData.district,
+        location: formData.location,
+        remarks: formData.remarks,
+        // Don't save photos (File objects can't be serialized)
         savedAt: new Date().toISOString(),
+        id: Date.now(),
       };
+
       localStorage.setItem("potholeReportDraft", JSON.stringify(draftData));
 
-      toast.success("Draft saved successfully! 📝", {
-        position: "top-right",
-        autoClose: 2000,
-      });
+      toast.success(
+        "Draft saved successfully! 📝 (Photos will need to be re-uploaded)",
+        {
+          toastId: "draft-saved",
+          position: "top-right",
+          autoClose: 3000,
+        }
+      );
     } catch (error) {
       toast.error("Failed to save draft. Please try again.", {
         position: "top-right",
@@ -247,6 +287,7 @@ const Homepage = () => {
         position: "top-right",
         autoClose: 4000,
       });
+      return;
     }
 
     setIsSubmitting(true);
@@ -265,11 +306,13 @@ const Homepage = () => {
       submitData.append("longitude", formData.location.longitude);
       submitData.append("address", formData.location.address);
 
-      formData.photos.forEach((photo, index) => {
-        if (photo) {
-          submitData.append(`photo${index + 1}`, photo);
-        }
-      });
+      if (formData.photos && Array.isArray(formData.photos)) {
+        formData.photos.forEach((photo, index) => {
+          if (photo && photo instanceof File) {
+            submitData.append(`photo_${index + 1}`, photo);
+          }
+        });
+      }
 
       //API call to submit report
       const response = await fetch("/api/reports", {
@@ -293,6 +336,12 @@ const Homepage = () => {
 
         // Clear draft from localStorage
         localStorage.removeItem("potholeReportDraft");
+        setFormData({
+          photos: [null, null, null],
+          location: { latitude: null, longitude: null, address: "" },
+          district: "",
+          description: "",
+        });
 
         // Reset form or navigate
         setTimeout(() => {
@@ -317,22 +366,46 @@ const Homepage = () => {
     }
   };
 
-   // Load draft on component mount
+  // Load draft on component mount
   useEffect(() => {
-    const savedDraft = localStorage.getItem('potholeReportDraft');
+    const savedDraft = localStorage.getItem("potholeReportDraft");
     if (savedDraft) {
       try {
         const draftData = JSON.parse(savedDraft);
-        toast.info('📋 Draft loaded! Continue where you left off.', {
-          position: "top-right",
-          autoClose: 3000,
-        });
-        setFormData(draftData);
+
+        const cleanDraftData = {
+          description: draftData.description || "",
+          district: draftData.district || "",
+          location: draftData.location || {
+            latitude: null,
+            longitude: null,
+            address: "",
+          },
+          photos: [null, null, null],
+          savedAt: draftData.savedAt,
+        };
+
+        // Only show toast for recent drafts
+        const savedAt = new Date(draftData.savedAt);
+        const hoursDiff = (new Date() - savedAt) / (1000 * 60 * 60);
+
+        if (hoursDiff < 24) {
+          toast.info(
+            "📋 Draft loaded! Continue where you left off.",
+            {
+              toastId: "draft-loaded",
+              position: "top-right",
+              autoClose: 4000,
+            }
+          );
+        }
+        setFormData(cleanDraftData);
       } catch (error) {
-        console.error('Error loading draft:', error);
+        console.error("Error loading draft:", error);
+        localStorage.removeItem("potholeReportDraft");
       }
     }
-  }, []); 
+  }, []);
 
   return (
     <div className="user-report">
@@ -561,7 +634,7 @@ const Homepage = () => {
             View All Submissions
           </button>
         </div>
-            <QuickAction />
+        <QuickAction />
       </div>
     </div>
   );

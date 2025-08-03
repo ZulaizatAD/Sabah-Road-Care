@@ -22,7 +22,7 @@
 
 /* Header */
 .history-page-header {
-  background: linear-gradient(135deg, var(--white) 0%, var(--gray-50) 100%);
+  background: var(--gray-700);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 24px;
@@ -39,36 +39,33 @@
 .header-title h1 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--asphalt-dark);
+  color: var(--white);
   margin: 0 0 4px 0;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .header-title p {
-  color: var(--gray-600);
+  color: var(--white);
   margin: 0;
   font-size: 16px;
 }
 
 .new-report-btn {
-  background: linear-gradient(
-    135deg,
-    var(--primary-green) 0%,
-    var(--primary-green-dark) 100%
-  );
-  color: var(--asphalt-dark);
-  border: none;
+  background: var(--asphalt-light);
+  color: var(--white);
+  border: 2px solid var(--primary-green-darkest);
   padding: 12px 20px;
   border-radius: 8px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(51, 230, 17, 0.3);
 }
 
 .new-report-btn:hover {
-  background: var(--primary-green-dark);
+  background: var(--asphalt-dark);
   transform: translateY(-1px);
+  border: 2px solid var(--primary-green);
 }
 
 /* Controls Section */

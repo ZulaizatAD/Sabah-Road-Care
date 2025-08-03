@@ -17,7 +17,7 @@ const ReportHistory = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState("grid");
-  const reportsPerPage = 9;
+  const reportsPerPage = 8;
 
   // Dummy data
   const dummyReports = [
