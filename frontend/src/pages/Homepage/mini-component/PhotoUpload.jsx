@@ -1,4 +1,5 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import { toast } from "react-toastify";
 
 // Handles photo capture/upload function
 // Support camera capture and gallery selection
@@ -8,27 +9,50 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
   // State for storing image preview
   const fileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // handle file selection from input
+  // Update preview when photo prop changes
+  useEffect(() => {
+    if (photo && photo instanceof File) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setPreviewUrl(e.target.result);
+      };
+      reader.readAsDataURL(photo);
+    } else if (!photo) {
+      setPreviewUrl(null);
+    }
+  }, [photo]);
+
   // Validates file type and size, creates preview, and calls onUpload
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
+      setIsLoading(true);
       // Validate file type - MUST be an image
       if (!file.type.startsWith("image/")) {
-        alert("Please select an image file");
+        toast.error("Please select an image file (JPG, PNG, etc.)");
+        setIsLoading(false);
         return;
       }
       // Validate file size - maximum 5MB
       if (file.size > 5 * 1024 * 1024) {
-        alert("File size must be less than 5MB");
+        toast.error("File size must be less than 5MB");
+        setIsLoading(false);
         return;
       }
       // Create preview using FileReader API
       const reader = new FileReader();
       reader.onload = (e) => {
         setPreviewUrl(e.target.result);
+        setIsLoading(false);
       };
+
+      reader.onerror = () => {
+        toast.error("Error reading file");
+        setIsLoading(false);
+      };
+
       reader.readAsDataURL(file);
 
       if (typeof onUpload === "function") {
@@ -69,7 +93,12 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
       </div>
 
       <div className="photo-container">
-        {previewUrl ? (
+        {isLoading ? (
+          <div className="photo-loading">
+            <div className="loading-spinner"></div>
+            <div>Processing image...</div>
+          </div>
+        ) : previewUrl ? (
           <div className="photo-preview">
             <img src={previewUrl} alt="Preview" />
             <button
@@ -85,14 +114,12 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
           // Show placeholder when no image is selected
           <div className="photo-placeholder" onClick={handleCameraCapture}>
             <div className="camera-icon">📷</div>
-
             {/* Desktop Text */}
             <div className="upload-text">
               <div className="upload-text-desktop">
                 <div>Upload Photo</div>
               </div>
             </div>
-
             {/* Mobile Text */}
             <div className="upload-text upload-text-mobile">
               <div>Tap to capture</div>

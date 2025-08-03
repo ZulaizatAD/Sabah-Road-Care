@@ -28,6 +28,7 @@ const App = () => {
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/faqs" element={<FAQs />} />
+          <Route path="*" element={<Homepage />} />
         </Routes>
       </main>
       <Footer />

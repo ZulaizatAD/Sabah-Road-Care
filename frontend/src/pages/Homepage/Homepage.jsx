@@ -5,6 +5,7 @@ import FormSection from "./mini-component/FormSection";
 import PhotoUpload from "./mini-component/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import "./Homepage.css";
+import CommunityStats from "../../components/CommunityStats/CommunityStats";
 
 // UserReport Component
 // Main component for user reporting form
@@ -390,14 +391,11 @@ const Homepage = () => {
         const hoursDiff = (new Date() - savedAt) / (1000 * 60 * 60);
 
         if (hoursDiff < 24) {
-          toast.info(
-            "📋 Draft loaded! Continue where you left off.",
-            {
-              toastId: "draft-loaded",
-              position: "top-right",
-              autoClose: 4000,
-            }
-          );
+          toast.info("📋 Draft loaded! Continue where you left off.", {
+            toastId: "draft-loaded",
+            position: "top-right",
+            autoClose: 4000,
+          });
         }
         setFormData(cleanDraftData);
       } catch (error) {
@@ -412,9 +410,11 @@ const Homepage = () => {
       {/* Left Side - Main Form */}
       <div className="main-content">
         <header className="report-header">
-          <h1>MAKE A REPORT!</h1>
+          <h1>WELCOME TO SABAH ROAD CARE</h1>
+          <p className="subtitle">
+            Report road damage to help improve our community
+          </p>
         </header>
-
         {/* Main Form */}
         <form className="report-form" onSubmit={handleSubmit}>
           {/* Step 1 Instruction */}
@@ -600,6 +600,7 @@ const Homepage = () => {
 
       {/* Right Side - Recent Submissions History */}
       <div className="sidebar">
+        <CommunityStats />
         <div className="recent-submissions">
           <h3 className="sidebar-title">Recent Submissions</h3>
           <div className="submissions-list">
@@ -634,6 +635,7 @@ const Homepage = () => {
             View All Submissions
           </button>
         </div>
+        
         <QuickAction />
       </div>
     </div>
