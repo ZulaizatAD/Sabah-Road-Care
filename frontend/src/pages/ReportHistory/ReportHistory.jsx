@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import QuickAction from "../../components/QuickAction/QuickAction";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -364,222 +365,233 @@ const ReportHistory = () => {
 
   return (
     <div className="report-history">
-      <header className="history-page-header">
-        <div className="history-header-content">
-          <div className="header-title">
-            <h1>Report History</h1>
-            <p>View and track all your submitted reports.</p>
-          </div>
-          <button
-            className="new-report-btn"
-            onClick={() => navigate("/homepage")}
-          >
-            + Submit New Report
-          </button>
-        </div>
-      </header>
-
-      {/* Filters and Controls */}
-      <div className="controls-section">
-        <div className="search-bar">
-          <input
-            type="text"
-            placeholder="Search reports by title, location, or document number..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            aria-label="Search reports"
-            id="search-input"
-          />
-          <span className="search-icon" aria-hidden="true">
-            🔍
-          </span>
-        </div>
-
-        <div className="filters">
-          <select
-            value={filters.status}
-            onChange={(e) => handleFilterChange("status", e.target.value)}
-          >
-            <option value="all">All Status</option>
-            {statuses.map((status) => (
-              <option key={status} value={status}>
-                {status}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={filters.district}
-            onChange={(e) => handleFilterChange("district", e.target.value)}
-          >
-            <option value="all">All Districts</option>
-            {districts.map((district) => (
-              <option key={district} value={district}>
-                {district}
-              </option>
-            ))}
-          </select>
-
-          <select
-            value={filters.priority}
-            onChange={(e) => handleFilterChange("priority", e.target.value)}
-          >
-            <option value="all">All Priority</option>
-            {priorities.map((priority) => (
-              <option key={priority} value={priority}>
-                {priority}
-              </option>
-            ))}
-          </select>
-
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-            <option value="date-desc">Latest First</option>
-            <option value="date-asc">Oldest First</option>
-            <option value="priority">Priority</option>
-            <option value="status">Status</option>
-          </select>
-        </div>
-
-        <div className="view-controls">
-          <button
-            className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
-            onClick={() => setViewMode("grid")}
-          >
-            ⊞ Grid
-          </button>
-          <button
-            className={`view-btn ${viewMode === "list" ? "active" : ""}`}
-            onClick={() => setViewMode("list")}
-          >
-            ☰ List
-          </button>
-          <button className="export-btn" onClick={exportToCSV}>
-            📥 Export CSV
-          </button>
-        </div>
-      </div>
-
-      {/* Results Info */}
-      <div className="results-info">
-        <p>
-          Showing {currentReports.length} of {filteredReports.length} reports
-        </p>
-      </div>
-
-      {/* Reports Grid/List */}
-      <div className={`reports-container ${viewMode}`}>
-        {currentReports.map((report) => (
-          <div key={report.id} className="report-card">
-            <div className="history-card-header">
-              <div className="report-number">#{report.documentNumber}</div>
-              <div className="report-badges">
-                <span
-                  className={`status-badge ${getStatusColor(report.status)}`}
-                >
-                  {report.status}
-                </span>
-                <span
-                  className={`priority-badge ${getPriorityColor(
-                    report.priority
-                  )}`}
-                >
-                  {report.priority}
-                </span>
-              </div>
+      {/* Left Side - Main Content */}
+      <div className="main-content">
+        {/* Header */}
+        <header className="history-page-header">
+          <div className="history-header-content">
+            <div className="header-title">
+              <h1>Report History</h1>
+              <p>View and track all your submitted reports.</p>
             </div>
+            <button
+              className="new-report-btn"
+              onClick={() => navigate("/homepage")}
+            >
+              + Submit New Report
+            </button>
+          </div>
+        </header>
 
-            <div className="report-content">
-              <h3 className="report-title">{report.title}</h3>
-              <p className="report-location">📍 {report.location}</p>
-              <p className="report-description">{report.description}</p>
+        {/* Filters and Controls */}
+        <div className="controls-section">
+          <div className="search-bar">
+            <input
+              type="text"
+              placeholder="Search reports by title, location, or document number..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Search reports"
+              id="search-input"
+            />
+            <span className="search-icon" aria-hidden="true">
+              🔍
+            </span>
+          </div>
 
-              <div className="report-details">
-                <div className="detail-item">
-                  <span className="detail-label">Submitted:</span>
-                  <span className="detail-value">
-                    {new Date(report.submissionDate).toLocaleDateString()}
+          <div className="filters">
+            <select
+              value={filters.status}
+              onChange={(e) => handleFilterChange("status", e.target.value)}
+            >
+              <option value="all">All Status</option>
+              {statuses.map((status) => (
+                <option key={status} value={status}>
+                  {status}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filters.district}
+              onChange={(e) => handleFilterChange("district", e.target.value)}
+            >
+              <option value="all">All Districts</option>
+              {districts.map((district) => (
+                <option key={district} value={district}>
+                  {district}
+                </option>
+              ))}
+            </select>
+
+            <select
+              value={filters.priority}
+              onChange={(e) => handleFilterChange("priority", e.target.value)}
+            >
+              <option value="all">All Priority</option>
+              {priorities.map((priority) => (
+                <option key={priority} value={priority}>
+                  {priority}
+                </option>
+              ))}
+            </select>
+
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+              <option value="date-desc">Latest First</option>
+              <option value="date-asc">Oldest First</option>
+              <option value="priority">Priority</option>
+              <option value="status">Status</option>
+            </select>
+          </div>
+
+          <div className="view-controls">
+            <button
+              className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+              onClick={() => setViewMode("grid")}
+            >
+              ⊞ Grid
+            </button>
+            <button
+              className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+              onClick={() => setViewMode("list")}
+            >
+              ☰ List
+            </button>
+            <button className="export-btn" onClick={exportToCSV}>
+              📥 Export CSV
+            </button>
+          </div>
+        </div>
+
+        {/* Results Info */}
+        <div className="results-info">
+          <p>
+            Showing {currentReports.length} of {filteredReports.length} reports
+          </p>
+        </div>
+
+        {/* Reports Grid/List */}
+        <div className={`reports-container ${viewMode}`}>
+          {currentReports.map((report) => (
+            <div key={report.id} className="report-card">
+              <div className="history-card-header">
+                <div className="report-number">#{report.documentNumber}</div>
+                <div className="report-badges">
+                  <span
+                    className={`status-badge ${getStatusColor(report.status)}`}
+                  >
+                    {report.status}
+                  </span>
+                  <span
+                    className={`priority-badge ${getPriorityColor(
+                      report.priority
+                    )}`}
+                  >
+                    {report.priority}
                   </span>
                 </div>
-                <div className="detail-item">
-                  <span className="detail-label">Similar Reports:</span>
-                  <span className="detail-value">{report.similarReports}</span>
-                </div>
               </div>
 
-              <div className="report-meta">
-                {report.completionDate && (
-                  <div className="meta-item">
-                    <span className="meta-icon">✅</span>
-                    <span className="meta-text">
-                      Completed:{" "}
-                      {new Date(report.completionDate).toLocaleDateString()}
+              <div className="report-content">
+                <h3 className="report-title">{report.title}</h3>
+                <p className="report-location">📍 {report.location}</p>
+                <p className="report-description">{report.description}</p>
+
+                <div className="report-details">
+                  <div className="detail-item">
+                    <span className="detail-label">Submitted:</span>
+                    <span className="detail-value">
+                      {new Date(report.submissionDate).toLocaleDateString()}
                     </span>
                   </div>
-                )}
-              </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Similar Reports:</span>
+                    <span className="detail-value">
+                      {report.similarReports}
+                    </span>
+                  </div>
+                </div>
 
-              <div className="similar-reports">
-                <span className="similar-count">
-                  📊 {report.similarReports} similar report
-                  {report.similarReports !== 1 ? "s" : ""} submitted
-                </span>
+                <div className="report-meta">
+                  {report.completionDate && (
+                    <div className="meta-item">
+                      <span className="meta-icon">✅</span>
+                      <span className="meta-text">
+                        Completed:{" "}
+                        {new Date(report.completionDate).toLocaleDateString()}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="similar-reports">
+                  <span className="similar-count">
+                    📊 {report.similarReports} similar report
+                    {report.similarReports !== 1 ? "s" : ""} submitted
+                  </span>
+                </div>
               </div>
             </div>
+          ))}
+        </div>
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="pagination">
+            <button
+              className="page-btn"
+              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+              disabled={currentPage === 1}
+            >
+              ← Previous
+            </button>
+
+            <div className="page-numbers">
+              {[...Array(totalPages)].map((_, index) => (
+                <button
+                  key={index + 1}
+                  className={`page-number ${
+                    currentPage === index + 1 ? "active" : ""
+                  }`}
+                  onClick={() => setCurrentPage(index + 1)}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <button
+              className="page-btn"
+              onClick={() =>
+                setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+              }
+              disabled={currentPage === totalPages}
+            >
+              Next →
+            </button>
           </div>
-        ))}
+        )}
+
+        {/* Empty State */}
+        {filteredReports.length === 0 && (
+          <div className="empty-state">
+            <div className="empty-icon">📭</div>
+            <h3>No reports found</h3>
+            <p>Try adjusting your search criteria or filters</p>
+            <button
+              className="create-report-btn"
+              onClick={() => navigate("/report")}
+            >
+              Create Your First Report
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="pagination">
-          <button
-            className="page-btn"
-            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-            disabled={currentPage === 1}
-          >
-            ← Previous
-          </button>
-
-          <div className="page-numbers">
-            {[...Array(totalPages)].map((_, index) => (
-              <button
-                key={index + 1}
-                className={`page-number ${
-                  currentPage === index + 1 ? "active" : ""
-                }`}
-                onClick={() => setCurrentPage(index + 1)}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-
-          <button
-            className="page-btn"
-            onClick={() =>
-              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-            }
-            disabled={currentPage === totalPages}
-          >
-            Next →
-          </button>
-        </div>
-      )}
-
-      {/* Empty State */}
-      {filteredReports.length === 0 && (
-        <div className="empty-state">
-          <div className="empty-icon">📭</div>
-          <h3>No reports found</h3>
-          <p>Try adjusting your search criteria or filters</p>
-          <button
-            className="create-report-btn"
-            onClick={() => navigate("/report")}
-          >
-            Create Your First Report
-          </button>
-        </div>
-      )}
+      {/* Right Side - Quick Actions */}
+      <div className="sidebar-history">
+        <QuickAction />
+      </div>
     </div>
   );
 };

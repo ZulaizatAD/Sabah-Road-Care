@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import FormSection from "./mini-component/FormSection";
 import PhotoUpload from "./mini-component/PhotoUpload";
+import QuickAction from "../../components/QuickAction/QuickAction";
 import "./Homepage.css";
 
 // UserReport Component
@@ -560,37 +561,7 @@ const Homepage = () => {
             View All Submissions
           </button>
         </div>
-
-        {/* Quick Actions Section */}
-        <div className="quick-actions">
-          <h3 className="sidebar-title">Quick Actions</h3>
-          <div className="action-buttons">
-            <button
-              className="action-btn reports"
-              onClick={() => navigate("/history")}
-            >
-              <span className="action-icon">📊</span>
-              <span className="action-text">My Reports</span>
-              <span className="action-arrow">→</span>
-            </button>
-            <button
-              className="action-btn dashboard"
-              onClick={() => navigate("/dashboard")}
-            >
-              <span className="action-icon">🏠</span>
-              <span className="action-text">Dashboard</span>
-              <span className="action-arrow">→</span>
-            </button>
-            <button
-              className="action-btn profile"
-              onClick={() => navigate("/profile")}
-            >
-              <span className="action-icon">👤</span>
-              <span className="action-text">Update Profile</span>
-              <span className="action-arrow">→</span>
-            </button>
-          </div>
-        </div>
+            <QuickAction />
       </div>
     </div>
   );
