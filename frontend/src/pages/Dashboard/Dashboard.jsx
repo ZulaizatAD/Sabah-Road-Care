@@ -43,7 +43,6 @@ const Dashboard = () => {
 
   return (
     <div>
-      <Header />
       <div className="dashboard-content">
         <main className="main">
           <div className="container">
@@ -56,9 +55,6 @@ const Dashboard = () => {
             <Charts pieData={pieData} trendData={trendData} />
           </div>
         </main>
-      </div>
-      <div>
-        <Footer />
       </div>
     </div>
   );

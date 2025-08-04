@@ -1,23 +1,58 @@
-import React from "react";
-import "./Footer.css";
+import React from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import './Footer.css';
 
 const Footer = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // Don't show footer on login page
+  if (location.pathname === '/') {
+    return null;
+  }
+
+  // Handle navigation
+  const handleNavigation = (path) => {
+    navigate(path);
+  };
+
   return (
     <footer className="footer">
-      <div className="footer-content">
-        <div>© Sabah Road Care</div>
+      <div className="footer-container">
+        {/* Left Side - Copyright (switched from right) */}
+        <div className="footer-copyright">
+          <span className="copyright-text">© Sabah Road Care</span>
+        </div>
+
+        {/* Right Side - Links (switched from left) */}
         <div className="footer-links">
-          <a href="#" className="footer-link">
+          <button 
+            className="footer-link"
+            onClick={() => handleNavigation('/contact')}
+          >
             Contact Us
-          </a>
-          <span className="separator">|</span>
-          <a href="#" className="footer-link">
+          </button>
+          <span className="footer-divider">|</span>
+          <button 
+            className="footer-link"
+            onClick={() => handleNavigation('/faqs')}
+          >
+            About Us
+          </button>
+          <span className="footer-divider">|</span>
+          <button 
+            className="footer-link"
+            onClick={() => handleNavigation('/faqs')}
+          >
             Privacy Policy
-          </a>
-          <span className="separator">|</span>
-          <a href="#" className="footer-link">
+          </button>
+          <span className="footer-divider">|</span>
+          <button 
+            className="footer-link"
+            onClick={() => handleNavigation('/faqs')}
+          >
             Terms and Conditions
-          </a>
+          </button>
         </div>
       </div>
     </footer>
