@@ -7,7 +7,23 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
+# API keys and secrets
+*.key
+*.pem
+config/keys.js
+
+# Dependencies
+node_modules/
+
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build
 dist
 dist-ssr
 *.local
