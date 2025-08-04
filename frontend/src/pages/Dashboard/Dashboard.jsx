@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Header from "../../components/Header/Header";
 import Footer from "../../components/Footer/Footer";
 import Filter from "./Filter";
-import StatsCards from "./StatsCards";
+import StatsCards from "./StatusCards";
 import Charts from "./Charts";
 import "./Dashboard.css";
 

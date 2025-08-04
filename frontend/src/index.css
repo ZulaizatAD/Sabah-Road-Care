@@ -23,6 +23,14 @@
   --danger-red: #dc2626; /* Error/critical red */
   --info-blue: #2563eb; /* Information blue */
 
+  /*Case porgress*/
+  --total-case: #1f4788;
+  --under-review: #ffc107;
+  --approved: #4caf50;
+  --in-progress: #00acc1;
+  --complete: #2196f3;
+  --rejected: #f44336;
+
   /* Neutral Colors */
   --white: #ffffff;
   --gray-50: #f9fafb;
