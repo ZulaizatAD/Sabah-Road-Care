@@ -147,12 +147,12 @@
   margin-bottom: 1.5rem;
 }
 
-.input-group {
+.login-input-group {
   position: relative;
   margin: 1rem 0;
 }
 
-.input-group input {
+.login-input-group input {
   width: 100%;
   padding: 1rem 1rem 1rem 3rem;
   border: none;
@@ -166,13 +166,13 @@
   box-sizing: border-box;
 }
 
-.input-group input:focus {
+.login-input-group input:focus {
   border-color: var(--primary-green);
   box-shadow: 0 0 0 3px rgba(51, 230, 17, 0.2);
   background: #333;
 }
 
-.input-group input::placeholder {
+.login-input-group input::placeholder {
   color: #888;
 }
 
@@ -406,7 +406,7 @@
     font-size: 1.5rem;
   }
 
-  .input-group input {
+  .login-input-group input {
     padding: 0.9rem 0.9rem 0.9rem 2.8rem;
     font-size: 0.95rem;
   }
@@ -472,7 +472,7 @@
 }
 
 /* Error states */
-.input-group.error input {
+.login-input-group.error input {
   border-color: var(--danger-red);
   box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
 }

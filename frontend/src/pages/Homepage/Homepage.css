@@ -316,6 +316,7 @@
   gap: 12px;
   margin-bottom: 16px;
 }
+
 .location-btn {
   padding: 14px 20px;
   border: none;
@@ -327,6 +328,7 @@
   position: relative;
   overflow: hidden;
 }
+
 .location-btn.primary {
   background: linear-gradient(
     135deg,
@@ -336,21 +338,26 @@
   color: var(--asphalt-dark);
   box-shadow: 0 4px 12px rgba(51, 230, 17, 0.3);
 }
+
 .location-btn.primary:hover {
   transform: none;
   box-shadow: none;
   background: var(--primary-green-dark);
 }
+
 .location-btn.secondary {
   background: var(--asphalt-light);
   color: var(--white);
   border: 2px solid var(--asphalt-medium);
 }
+
 .location-btn.secondary:hover {
   background: var(--asphalt-medium);
   transform: none;
   box-shadow: none;
 }
+
+/* Location Info Display */
 .location-info {
   background: var(--asphalt-subtle);
   padding: 16px 20px;
@@ -358,11 +365,96 @@
   border-left: 4px solid var(--primary-green);
   box-shadow: 0 2px 8px rgba(51, 230, 17, 0.1);
 }
+
 .location-info p {
   margin: 6px 0;
   font-size: 14px;
   color: var(--asphalt-dark);
   font-weight: 500;
+}
+
+.location-details {
+  margin-bottom: 16px;
+}
+
+.location-primary {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.location-icon {
+  font-size: 18px;
+}
+
+.road-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--asphalt-dark);
+}
+
+.location-secondary {
+  margin-bottom: 8px;
+  align-items: center;
+}
+
+.full-address {
+  font-size: 14px;
+  color: var(--gray-600);
+  line-height: 1.4;
+}
+
+.location-coordinates {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.coordinates-label {
+  font-size: 12px;
+  color: var(--gray-500);
+  font-weight: 500;
+}
+
+.coordinates-value {
+  font-size: 12px;
+  color: var(--asphalt-dark);
+  font-family: monospace;
+  background: var(--white);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--gray-200);
+}
+
+.change-location-btn {
+  background: var(--gray-200);
+  color: var(--asphalt-dark);
+  border: 2px solid var(--gray-300);
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.change-location-btn:hover {
+  background: var(--hover-green-subtle);
+  border-color: var(--primary-green);
+}
+
+.location-btn:focus,
+.change-location-btn:focus {
+  outline: 2px solid var(--primary-green);
+  outline-offset: 2px;
+}
+
+.location-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* Photo Upload Styling */
@@ -555,8 +647,12 @@
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Error Messages */
@@ -624,7 +720,7 @@
   position: sticky;
   top: 20px;
   height: fit-content;
-    display: flex;
+  display: flex;
   flex-direction: column;
   gap: 20px;
 }
@@ -848,7 +944,7 @@
   .action-text {
     font-size: 13px;
   }
-    .sidebar {
+  .sidebar {
     position: static;
     margin-top: 20px;
   }
@@ -889,6 +985,37 @@
 
   .location-controls {
     flex-direction: column;
+    gap: 8px;
+  }
+
+  .location-btn {
+    width: 100%;
+    padding: 12px 16px;
+  }
+
+  .location-primary {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .road-name {
+    font-size: 16px;
+  }
+
+  .location-coordinates {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+  }
+
+  .change-location-btn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .location-info {
+    padding: 14px 16px;
   }
 
   .photo-grid {
@@ -951,5 +1078,18 @@
 
   .camera-icon {
     font-size: 28px;
+  }
+
+  .location-btn {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+
+  .road-name {
+    font-size: 15px;
+  }
+
+  .full-address {
+    font-size: 13px;
   }
 }
