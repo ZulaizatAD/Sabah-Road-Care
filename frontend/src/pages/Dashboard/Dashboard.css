@@ -44,6 +44,7 @@
   box-shadow: var(--box-shadow-heavy);
   border: 1px solid rgba(255, 255, 255, 0.2);
   padding: 10px;
+  border-top: 8px solid var(--approved);
 }
 
 /* Filter and Share Container Styles */
@@ -224,19 +225,20 @@
 .month {
   position: absolute;
   top: 50%;
-  transform: rotate(-90deg) translateY(-50%);
-  font-size: 14px;
+  transform: rotate(-90deg) translateY(-99%);
+  font-size: 18px;
   color: var(--font-color-light);
   transform-origin: center;
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
   border-radius: 6px;
   backdrop-filter: blur(5px);
+  margin-left: -10px;
 }
 
 .number-of-case {
   text-align: center;
-  font-size: 14px;
+  font-size: 18px;
   color: var(--font-color-light);
   font-weight: 600;
   background: rgba(255, 255, 255, 0.8);
@@ -315,7 +317,7 @@
   /* Approved - top row, third column */
   grid-column: 3;
   grid-row: 1;
-  border-top: 5px solid #4caf50; /* Approved */
+  border-top: 5px solid #4caf70; /* Approved */
 }
 
 .status-card:nth-child(4) {
@@ -329,7 +331,7 @@
   /* Complete - bottom row, spans two columns (2-3) */
   grid-column: 2 / 4;
   grid-row: 2;
-  border-top: 5px solid #2196f3; /* Complete */
+  border-top: 5px solid #4caf50; /* Complete */
 }
 
 .status-card:nth-child(6) {

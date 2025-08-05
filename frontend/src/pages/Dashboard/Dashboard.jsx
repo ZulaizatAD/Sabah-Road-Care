@@ -21,12 +21,12 @@ const Dashboard = () => {
   ];
 
   const trendData = [
-    { month: "Jan", cases: 30 },
+    { month: "Jan", cases: 20 },
     { month: "Feb", cases: 45 },
     { month: "Mar", cases: 45 },
-    { month: "Apr", cases: 55 },
+    { month: "Apr", cases: 50 },
     { month: "May", cases: 60 },
-    { month: "Jun", cases: 60 },
+    { month: "Jun", cases: 70 },
   ];
 
   const handleFilterChange = (filterType, value) => {
