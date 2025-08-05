@@ -14,7 +14,7 @@
 }
 
 /* Report Header */
-.report-header {
+/* .report-header {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -22,6 +22,20 @@
   margin-bottom: 30px;
   padding: 24px;
   background: var(--gray-500);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(44, 44, 44, 0.1);
+  border-left: 4px solid var(--primary-green);
+  text-align: center;
+} */
+
+.report-header {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  padding: 24px;
+  background: linear-gradient(to bottom, var(--gray-500) 0%, var(--gray-700) 100%);
   border-radius: 12px;
   box-shadow: 0 4px 6px rgba(44, 44, 44, 0.1);
   border-left: 4px solid var(--primary-green);
