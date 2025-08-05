@@ -3,6 +3,7 @@
   width: 100%;
   max-width: 400px;
   margin: auto;
+  margin-top: 50px;  /* Added this line to create space at the top */
   margin-bottom: 30px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
