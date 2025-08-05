@@ -96,7 +96,7 @@ const Login = () => {
             <p>Access your Sabah Road Care account</p>
           </div>
           <form onSubmit={handleSubmit} className="login-form">
-            <div className="input-group">
+            <div className="login-input-group">
               <input
                 type="email"
                 name="email"
@@ -108,7 +108,7 @@ const Login = () => {
               />
             </div>
 
-            <div className="input-group">
+            <div className="login-input-group">
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
