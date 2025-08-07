@@ -93,7 +93,7 @@ const Login = () => {
         <div className="neumorphic-card">
           <div className="card-header">
             <h2>SIGN IN</h2>
-            <p>Access your Sabah Road Care account</p>
+            {/* <p>Access your Sabah Road Care account</p> */}
           </div>
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-input-group">

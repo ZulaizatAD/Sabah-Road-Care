@@ -1,6 +1,8 @@
 .background-image {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)),
+  background-image: linear-gradient(rgba(16, 16, 16, 0.7), rgba(0, 0, 0, 0.9)),
     url("/SRCBackground.png");
+
+  background-image: blur(30px);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
