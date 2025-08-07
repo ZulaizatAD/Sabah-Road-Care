@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import "./ReportHistory.css";
-import CommunityStats from "../../components/CommunityStats/CommunityStats";
 
 const ReportHistory = () => {
   const navigate = useNavigate();
@@ -591,7 +590,6 @@ const ReportHistory = () => {
 
       {/* Right Side - Quick Actions */}
       <div className="sidebar-history">
-        <CommunityStats />
         <QuickAction />
       </div>
     </div>

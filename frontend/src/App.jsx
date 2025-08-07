@@ -1,5 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
+import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
+import DevTools from "./components/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Login from "./pages/Login/Login";
@@ -12,9 +14,11 @@ import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import FAQs from "./pages/FAQs/FAQs";
 import "./App.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
+    <EnvironmentCheck>
     <div className="app-container background-image">
       <Header />
       <main className="main-content">
@@ -45,7 +49,9 @@ const App = () => {
         pauseOnHover
         theme="light"
       />
+      <DevTools />
     </div>
+    </EnvironmentCheck>
   );
 };
 

@@ -4,8 +4,9 @@ import { toast } from "react-toastify";
 import FormSection from "./mini-component/FormSection";
 import PhotoUpload from "./mini-component/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
+import MapPicker from "../../components/MapPicker/MapPicker";
 import "./Homepage.css";
-import CommunityStats from "../../components/CommunityStats/CommunityStats";
+import config from "../../config/environment";
 
 // UserReport Component
 // Main component for user reporting form
@@ -21,6 +22,7 @@ const Homepage = () => {
       latitude: null,
       longitude: null,
       address: "",
+      roadName: "",
     },
     district: "",
     description: "",
@@ -29,6 +31,7 @@ const Homepage = () => {
   // Form validation errors & track if form is being submitted (prevents double submission)
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showMapPicker, setShowMapPicker] = useState(false);
 
   // List all districts in Sabah for the dropdown
   const sabahDistricts = [
@@ -198,20 +201,114 @@ const Homepage = () => {
     }
   };
 
+  // Handle location selection from map
+  const handleMapLocationSelect = (locationData) => {
+    setFormData((prev) => ({
+      ...prev,
+      location: {
+        latitude: locationData.latitude,
+        longitude: locationData.longitude,
+        address: locationData.address,
+        roadName: locationData.roadName,
+      },
+    }));
+
+    // Clear any existing error
+    if (errors.location) {
+      setErrors((prev) => ({
+        ...prev,
+        location: "",
+      }));
+    }
+
+    toast.success("📍 Location tagged successfully!", {
+      position: "top-right",
+      autoClose: 2000,
+    });
+  };
+
   // Convert GPS coordinates to human-readable address
   const reverseGeocode = async (lat, lng) => {
     try {
-      // TODO: Implement actual geocoding service (Google Maps, etc.)
-      // For now, just display coordinates as placeholder
+      if (!config.googleMaps.apiKey) {
+        console.warn("Google Maps API key not configured");
+        setFormData((prev) => ({
+          ...prev,
+          location: {
+            ...prev.location,
+            address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+            roadName: "Coordinates only",
+          },
+        }));
+        return;
+      }
+
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${config.googleMaps.apiKey}`
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+
+        if (data.results && data.results.length > 0) {
+          const result = data.results[0];
+          const addressComponents = result.address_components;
+
+          let roadName = "";
+          let area = "";
+          let city = "";
+
+          addressComponents.forEach((component) => {
+            const types = component.types;
+
+            if (types.includes("route")) {
+              roadName = component.long_name;
+            } else if (
+              types.includes("sublocality") ||
+              types.includes("neighborhood")
+            ) {
+              area = component.long_name;
+            } else if (
+              types.includes("locality") ||
+              types.includes("administrative_area_level_2")
+            ) {
+              city = component.long_name;
+            }
+          });
+
+          let formattedAddress = "";
+          if (roadName) {
+            formattedAddress = roadName;
+            if (area && area !== roadName) {
+              formattedAddress += `, ${area}`;
+            }
+            if (city && city !== area) {
+              formattedAddress += `, ${city}`;
+            }
+          } else {
+            formattedAddress = result.formatted_address;
+          }
+
+          setFormData((prev) => ({
+            ...prev,
+            location: {
+              ...prev.location,
+              address: formattedAddress,
+              roadName: roadName || "Road name not available",
+            },
+          }));
+        }
+      }
+    } catch (error) {
+      console.error("Geocoding error:", error);
       setFormData((prev) => ({
         ...prev,
         location: {
           ...prev.location,
           address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
+          roadName: "Coordinates only",
         },
       }));
-    } catch (error) {
-      console.error("Geocoding error:", error);
     }
   };
   // Validate all form fields before submission
@@ -487,26 +584,42 @@ const Homepage = () => {
               <button
                 type="button"
                 className="location-btn secondary"
-                onClick={() => alert("Map picker coming soon!")}
+                onClick={() => setShowMapPicker(true)}
               >
                 🗺️ Pick on Map
               </button>
             </div>
 
-            {/* Display location info if available */}
+            {/* Display location info */}
             {formData.location.latitude && (
               <div className="location-info">
-                <p>
-                  <strong>Latitude:</strong>{" "}
-                  {formData.location.latitude.toFixed(6)}
-                </p>
-                <p>
-                  <strong>Longitude:</strong>{" "}
-                  {formData.location.longitude.toFixed(6)}
-                </p>
-                <p>
-                  <strong>Address:</strong> {formData.location.address}
-                </p>
+                <div className="location-details">
+                  <div className="location-primary">
+                    <span className="location-icon">🛣️</span>
+                    <span className="road-name">
+                      {formData.location.roadName || "Road name not available"}
+                    </span>
+                  </div>
+                  <div className="location-secondary">
+                    <span className="full-address">
+                      {formData.location.address}
+                    </span>
+                  </div>
+                  <div className="location-coordinates">
+                    <span className="coordinates-label">Coordinates:</span>
+                    <span className="coordinates-value">
+                      {formData.location.latitude.toFixed(6)},{" "}
+                      {formData.location.longitude.toFixed(6)}
+                    </span>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  className="change-location-btn"
+                  onClick={() => setShowMapPicker(true)}
+                >
+                  📝 Change Location
+                </button>
               </div>
             )}
           </FormSection>
@@ -600,7 +713,6 @@ const Homepage = () => {
 
       {/* Right Side - Recent Submissions History */}
       <div className="sidebar">
-        <CommunityStats />
         <div className="recent-submissions">
           <h3 className="sidebar-title">Recent Submissions</h3>
           <div className="submissions-list">
@@ -635,9 +747,22 @@ const Homepage = () => {
             View All Submissions
           </button>
         </div>
-        
+
         <QuickAction />
       </div>
+      <MapPicker
+        isVisible={showMapPicker}
+        onClose={() => setShowMapPicker(false)}
+        onLocationSelect={handleMapLocationSelect}
+        initialLocation={
+          formData.location.latitude && formData.location.longitude
+            ? {
+                lat: formData.location.latitude,
+                lng: formData.location.longitude,
+              }
+            : null
+        }
+      />
     </div>
   );
 };
