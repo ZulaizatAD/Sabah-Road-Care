@@ -8,6 +8,7 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -26,8 +27,17 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
+    if (
+      !formData.email ||
+      !formData.password ||
+      (isSignUp && !formData.confirmPassword)
+    ) {
       toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (isSignUp && formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -147,6 +157,20 @@ const Login = () => {
                 {showPassword ? "🙈" : "👁️"}
               </button>
             </div>
+
+            {isSignUp && (
+              <div className="login-input-group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            )}
 
             <div className="form-options">
               <label className="remember-me">
