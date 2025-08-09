@@ -379,8 +379,8 @@
 
 button.toggle-auth-btn,
 .toggle-auth-btn {
-  all: unset !important;
-  cursor: pointer !important;
+  all: unset;
+  cursor: pointer;
   color: #33e611 !important;
   text-decoration: none !important;
   font-weight: 700 !important;
@@ -400,6 +400,11 @@ button.toggle-auth-btn:hover,
     flex-direction: column;
     height: auto;
     min-height: 100vh;
+  }
+
+  .welcome-content {
+    max-width: 100%;
+    margin-left: 0rem;
   }
 
   .logo-container {
@@ -473,7 +478,7 @@ button.toggle-auth-btn:hover,
 
   .neumorphic-card {
     padding: 1.5rem 1rem;
-    border-radius: rem;
+    border-radius: 1rem;
   }
 
   .form-options {
