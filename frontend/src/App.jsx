@@ -13,13 +13,21 @@ import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import FAQs from "./pages/FAQs/FAQs";
+import FunFactsPage from "./pages/FunFacts/FunFactsPage";
+import FunFactsModel from "./pages/FunFacts/FunFactsModel";
+import FunFactsCard from "./pages/FunFacts/FunFactsCard";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
     <EnvironmentCheck>
-    <div className="app-container background-image">
+      <div className="app-container">
+        <video autoPlay muted loop id="background-video">
+          <source src="./assets/VideoFiles/GreyBackgroundAE_Loop_002.webm" type="video/webm" />
+          Your browser does not support the video tag.
+        </video>
+        <div className="background-overlay"></div>
       <Header />
       <main className="main-content">
         <Routes>
@@ -32,6 +40,9 @@ const App = () => {
           <Route path="/confirm" element={<Confirm />} />
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/faqs" element={<FAQs />} />
+          <Route path="/FunFactsPage" element={<FunFactsPage />} />
+          <Route path="/FunFactModal" element={<FunFactsModel />} />
+          <Route path="/FunFactCard" element={<FunFactsCard />} />
           <Route path="*" element={<Homepage />} />
         </Routes>
       </main>

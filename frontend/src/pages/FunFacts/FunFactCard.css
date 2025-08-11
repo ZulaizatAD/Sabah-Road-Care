@@ -1,0 +1,59 @@
+.funfact-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform-origin: center;
+  transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(400px) translateY(-50%);
+  width: 250px;
+  height: 150px;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 16px;
+  cursor: pointer;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s ease, background 0.3s ease;
+  pointer-events: auto;
+}
+
+.funfact-card:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(420px) translateY(-50%) scale(1.05);
+}
+
+.funfact-card-title {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--white);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+@media (max-width: 768px) {
+  .funfact-card {
+    width: 200px;
+    height: 120px;
+    transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(300px) translateY(-50%);
+  }
+  .funfact-card:hover {
+    transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(320px) translateY(-50%) scale(1.05);
+  }
+}
+
+@media (max-width: 480px) {
+  .funfact-card {
+    width: 150px;
+    height: 90px;
+    transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(200px) translateY(-50%);
+  }
+  .funfact-card:hover {
+    transform: rotateY(calc(var(--card-index) * 36deg)) translateZ(220px) translateY(-50%) scale(1.05);
+  }
+  .funfact-card-title {
+    font-size: 1rem;
+  }
+}

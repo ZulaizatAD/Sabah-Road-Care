@@ -1,13 +1,35 @@
 .background-image {
-  background-image: linear-gradient(rgba(16, 16, 16, 0.7), rgba(0, 0, 0, 0.9)),
-    url("/SRCBackground.png");
-
-  background-image: blur(30px);
+  /* This is the original image-based background */
+  background-image: linear-gradient(rgba(74, 74, 74, 0.7), rgba(0, 0, 0, 0.9)),
+    url("/assets/MountKinabalu001.png");
+  filter: blur(30px); /* Use filter for blur effect */
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
   min-height: 100vh;
+}
+
+#background-video {
+  /* Use the ID selector as in your JSX */
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2;
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(rgba(203, 166, 166, 0.7), rgba(0, 0, 0, 0.9));
+  z-index: -1;
 }
 
 .app-container {
@@ -20,6 +42,8 @@
   flex: 1;
   margin: 0 auto;
   width: 100%;
+  position: relative; /* Ensure main content is on top of the background */
+  z-index: 1; /* Bring content to the front */
 }
 
 @media (max-width: 768px) {
@@ -29,4 +53,4 @@
   .main-content {
     padding: 1rem 0.5rem;
   }
-}
+};

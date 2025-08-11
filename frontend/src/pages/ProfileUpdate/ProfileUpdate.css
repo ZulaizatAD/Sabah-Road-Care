@@ -47,7 +47,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  color: rgb(0, 0, 0);
+  color: rgb(255, 255, 255);
   font-weight: 600;
   font-size: 1.1rem;
   cursor: pointer;
@@ -100,7 +100,7 @@
   );
   width: 100%;
   background-color: rgba(255, 255, 255, 0.2);
-  color: white;
+  color: rgb(0, 0, 0);
   border-radius: 20px;
   padding: 12px 16px;
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -116,7 +116,7 @@
 }
 
 .input-group input::placeholder {
-  color: rgba(229, 231, 235, 0.7);
+  color: rgba(54, 54, 54, 0.7);
 }
 
 /* Password input group */
@@ -149,7 +149,7 @@
 .update-button {
   width: 100%;
   background: linear-gradient(135deg, #33e611, #2bc20f);
-  color: white;
+  color: rgb(0, 0, 0);
   font-weight: 600;
   padding: 14px;
   border: none;
