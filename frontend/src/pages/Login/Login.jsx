@@ -8,10 +8,11 @@ const Login = () => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    
+    confirmPassword: "",
   });
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -26,8 +27,17 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!formData.email || !formData.password) {
+    if (
+      !formData.email ||
+      !formData.password ||
+      (isSignUp && !formData.confirmPassword)
+    ) {
       toast.error("Please fill in all fields");
+      return;
+    }
+
+    if (isSignUp && formData.password !== formData.confirmPassword) {
+      toast.error("Passwords do not match");
       return;
     }
 
@@ -39,7 +49,13 @@ const Login = () => {
 
       // For demo purposes - accept any email/password
       if (formData.email && formData.password) {
-        toast.success("Welcome to Sabah Road Care! 🚗");
+        if (isSignUp) {
+          toast.success(
+            "Account created successfully! Welcome to Sabah Road Care! 🚗"
+          );
+        } else {
+          toast.success("Welcome back to Sabah Road Care! 🚗");
+        }
 
         // Store user session (replace with actual token)
         localStorage.setItem("userToken", "demo-token");
@@ -53,7 +69,11 @@ const Login = () => {
         throw new Error("Invalid credentials");
       }
     } catch (error) {
-      toast.error("Login failed. Please try again.");
+      toast.error(
+        isSignUp
+          ? "Sign up failed. Please try again."
+          : "Login failed. Please try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -80,7 +100,9 @@ const Login = () => {
         <div className="welcome-content">
           <h1>WELCOME</h1>
           <p className="subtitle">Help make our roads safer.</p>
-          <p className="description">Report potholes in your area with just a few clicks.</p>
+          <p className="description">
+            Report potholes in your area with just a few clicks.
+          </p>
           <button className="demo-btn" onClick={handleDemoLogin}>
             Try Demo Login
           </button>
@@ -89,12 +111,20 @@ const Login = () => {
 
       <div className="right-panel">
         <div className="logo-container">
-          <img src="/SRC-test.png" alt="Sabah Road Care" className="login-logo" />
+          <img
+            src="/SRC-test.png"
+            alt="Sabah Road Care"
+            className="login-logo"
+          />
         </div>
         <div className="neumorphic-card">
           <div className="card-header">
-            <h2>SIGN IN</h2>
-            {/* <p>Access your Sabah Road Care account</p> */}
+            <h2>{isSignUp ? "SIGN UP" : "SIGN IN"}</h2>
+            <p>
+              {isSignUp
+                ? "Create your Sabah Road Care account"
+                : "Access your Sabah Road Care account"}
+            </p>
           </div>
           <form onSubmit={handleSubmit} className="login-form">
             <div className="login-input-group">
@@ -128,6 +158,20 @@ const Login = () => {
               </button>
             </div>
 
+            {isSignUp && (
+              <div className="login-input-group">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="confirmPassword"
+                  placeholder="Confirm password"
+                  value={formData.confirmPassword}
+                  onChange={handleInputChange}
+                  required
+                  disabled={isLoading}
+                />
+              </div>
+            )}
+
             <div className="form-options">
               <label className="remember-me">
                 <input type="checkbox" />
@@ -146,8 +190,10 @@ const Login = () => {
               {isLoading ? (
                 <>
                   <span className="loading-spinner"></span>
-                  Signing in...
+                  {isSignUp ? "Creating Account..." : "Signing in..."}
                 </>
+              ) : isSignUp ? (
+                "CREATE ACCOUNT"
               ) : (
                 "SIGN IN"
               )}
@@ -165,11 +211,20 @@ const Login = () => {
               src="https://developers.google.com/identity/images/g-logo.png"
               alt="Google"
             />
-            Sign in with Google
+            {isSignUp ? "Sign up with Google" : "Sign in with Google"}
           </button>
           <div className="signup-link">
             <p>
-              Don't have an account? <a href="#">Sign up here</a>
+              {isSignUp
+                ? "Already have an account? "
+                : "Don't have an account? "}
+              <button
+                type="button"
+                className="toggle-auth-btn"
+                onClick={() => setIsSignUp(!isSignUp)}
+              >
+                {isSignUp ? "Sign in here" : "Sign up here"}
+              </button>
             </p>
           </div>
         </div>
