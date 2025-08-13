@@ -1,10 +1,3 @@
-body,
-html {
-  margin: 0;
-  padding: 0;
-  font-family: "Arial", sans-serif;
-}
-
 .contact-page {
   background: url("/Users/come/Documents/GitHub/Sabah-Road-Care/frontend/src/assets/SRCBackground.png")
     no-repeat center center fixed;
