@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
-import DevTools from "./components/DevTools/DevTools";
+import EnvironmentCheck from "./utils/EnvironmentCheck";
+import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import Login from "./pages/Login/Login";

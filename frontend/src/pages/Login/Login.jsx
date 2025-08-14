@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+// import { useUser } from "../../context/UserContext";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
+  // const { login, register } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -90,6 +92,7 @@ const Login = () => {
     setFormData({
       email: "demo@sabahroadcare.my",
       password: "demo123",
+      confirmPassword: "",
     });
     toast.info("Demo credentials filled! Click Sign In to continue.");
   };
