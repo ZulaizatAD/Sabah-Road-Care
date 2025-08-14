@@ -482,8 +482,7 @@ button.toggle-auth-btn:hover,
   }
 
   .form-options {
-    flex-direction: column;
-    gap: 0.8rem;
+    gap: 1rem;
     align-items: flex-start;
   }
 }
