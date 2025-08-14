@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import FormSection from "./mini-component/FormSection";
-import PhotoUpload from "./mini-component/PhotoUpload";
+import FormSection from "./Section/FormSection";
+import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
 import "./Homepage.css";
