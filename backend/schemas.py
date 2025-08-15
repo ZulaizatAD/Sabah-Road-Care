@@ -1,6 +1,6 @@
-# backend/schemas.py
 from pydantic import BaseModel
 from datetime import datetime
+from typing import Optional
 
 class CaseBase(BaseModel):
     case_id: str
@@ -17,4 +17,4 @@ class CaseBase(BaseModel):
     photo_close: str
 
     class Config:
-        from_attributes = True
+        from_attributes = True  # Enables compatibility with SQLAlchemy models
