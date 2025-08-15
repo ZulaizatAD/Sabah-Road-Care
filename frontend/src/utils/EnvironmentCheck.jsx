@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { validateConfig } from "../../config/environment";
+import { validateConfig } from "../config/environment";
 
 const EnvironmentCheck = ({ children }) => {
   const [isConfigValid, setIsConfigValid] = useState(false);
