@@ -13,9 +13,7 @@ import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import FAQs from "./pages/FAQs/FAQs";
-import FunFactsPage from "./pages/FunFacts/FunFactsPage";
-import FunFactsModel from "./pages/FunFacts/FunFactsModel";
-import FunFactsCard from "./pages/FunFacts/FunFactsCard";
+import FunFactPage from "./pages/FunFacts/FunFactPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,45 +21,45 @@ const App = () => {
   return (
     <EnvironmentCheck>
       <div className="app-container">
+        {/* Background video - only show on non-funfact pages */}
         <video autoPlay muted loop id="background-video">
           <source src="./assets/VideoFiles/GreyBackgroundAE_Loop_002.webm" type="video/webm" />
           Your browser does not support the video tag.
         </video>
         <div className="background-overlay"></div>
-      <Header />
-      <main className="main-content">
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/homepage" element={<Homepage />} />
-          <Route path="/dashboard" element={<Dashboard />} />
-          <Route path="/information" element={<Information />} />
-          <Route path="/history" element={<ReportHistory />} />
-          <Route path="/profileupdate" element={<ProfileUpdate />} />
-          <Route path="/confirm" element={<Confirm />} />
-          <Route path="/contact" element={<ContactUs />} />
-          <Route path="/faqs" element={<FAQs />} />
-          <Route path="/FunFactsPage" element={<FunFactsPage />} />
-          <Route path="/FunFactModal" element={<FunFactsModel />} />
-          <Route path="/FunFactCard" element={<FunFactsCard />} />
-          <Route path="*" element={<Homepage />} />
-        </Routes>
-      </main>
-      <Footer />
-    
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <DevTools />
-    </div>
+        
+        <Header />
+        <main className="main-content">
+          <Routes>
+            <Route path="/" element={<Login />} />
+            <Route path="/homepage" element={<Homepage />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/information" element={<Information />} />
+            <Route path="/funfacts" element={<FunFactPage />} />
+            <Route path="/history" element={<ReportHistory />} />
+            <Route path="/profileupdate" element={<ProfileUpdate />} />
+            <Route path="/confirm" element={<Confirm />} />
+            <Route path="/contact" element={<ContactUs />} />
+            <Route path="/faqs" element={<FAQs />} />
+            <Route path="*" element={<Homepage />} />
+          </Routes>
+        </main>
+        <Footer />
+        
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <DevTools />
+      </div>
     </EnvironmentCheck>
   );
 };

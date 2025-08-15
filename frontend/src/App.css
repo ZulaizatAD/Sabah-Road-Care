@@ -1,7 +1,7 @@
 .background-image {
   /* This is the original image-based background */
   background-image: linear-gradient(rgba(74, 74, 74, 0.7), rgba(0, 0, 0, 0.9)),
-    url("/assets/MountKinabalu001.png");
+    url("/GreyBackgroundAE_Loop_002");
   filter: blur(30px); /* Use filter for blur effect */
   background-size: cover;
   background-position: center;
@@ -9,6 +9,44 @@
   background-attachment: fixed;
   min-height: 100vh;
 }
+
+.app-container:has(.funfact-page) #background-video,
+.app-container:has(.funfact-page) .background-overlay {
+  display: none;
+}
+
+/* Ensure funfact page takes full viewport */
+.app-container:has(.funfact-page) .main-content {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 1;
+}
+
+/* Hide header and footer on funfact page */
+.app-container:has(.funfact-page) header,
+.app-container:has(.funfact-page) footer {
+  display: none;
+}
+
+/* Alternative approach if :has() is not supported */
+.funfact-fullscreen {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+  background: black;
+}
+
+.funfact-fullscreen ~ header,
+.funfact-fullscreen ~ footer {
+  display: none !important;
+}
+
 
 #background-video {
   /* Use the ID selector as in your JSX */
@@ -53,4 +91,4 @@
   .main-content {
     padding: 1rem 0.5rem;
   }
-};
+}; 
