@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+// import { useUser } from "../../context/UserContext";
 import FormSection from "./Section/FormSection";
 import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
+// import { generateLocationHash, checkDuplicateSubmission } from "../../utils/duplicateDetection";
 import "./Homepage.css";
 import config from "../../config/environment";
 
-// UserReport Component
-// Main component for user reporting form
 // Handles form data, validation, location services and submission
 const Homepage = () => {
   // Hook for navigation
   const navigate = useNavigate();
+  // const { user } = useUser();
 
   // Main form state - stores all form data
   const [formData, setFormData] = useState({
@@ -32,6 +33,7 @@ const Homepage = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
+  // const [duplicateCheck, setDuplicateCheck] = useState(null);
 
   // List all districts in Sabah for the dropdown
   const sabahDistricts = [
@@ -153,7 +155,6 @@ const Homepage = () => {
   };
 
   // Get user's current GPS location using browser's Geolocation API
-  // Check if geolocation is supported by the browser
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       const locationToast = toast.loading("Getting your location...", {
@@ -173,7 +174,7 @@ const Homepage = () => {
           }));
 
           toast.dismiss(locationToast);
-          toast.success("📍 Location tagged successfully!", {
+          toast.success("Location tagged successfully!", {
             position: "top-right",
             autoClose: 2000,
           });
@@ -352,7 +353,6 @@ const Homepage = () => {
         description: formData.description,
         district: formData.district,
         location: formData.location,
-        remarks: formData.remarks,
         // Don't save photos (File objects can't be serialized)
         savedAt: new Date().toISOString(),
         id: Date.now(),
@@ -388,6 +388,43 @@ const Homepage = () => {
       return;
     }
 
+    // Generate location hash for duplicate detection
+    const locationHash = generateLocationHash(
+      formData.location.latitude,
+      formData.location.longitude
+    );
+
+    // Check for duplicate submission by same user
+    try {
+      const duplicateResult = await checkDuplicateSubmission(
+        user?.id || localStorage.getItem("userId"),
+        locationHash
+      );
+
+      if (duplicateResult.isDuplicate) {
+        toast.error(
+          "You've already reported this location in the last 24 hours!"
+        );
+        return;
+      }
+
+      // Check for existing reports at same location
+      const existingReports = await fetch(
+        `/api/reports/location/${locationHash}`
+      );
+      if (existingReports.ok) {
+        const reports = await existingReports.json();
+        if (reports.length > 0) {
+          toast.info(
+            `${reports.length} similar report(s) found at this location. Your report will help increase priority!`
+          );
+        }
+      }
+    } catch (error) {
+      console.error("Duplicate check failed:", error);
+      // Continue with submission even if duplicate check fails
+    }
+
     setIsSubmitting(true);
 
     // Show loading toast
@@ -403,6 +440,7 @@ const Homepage = () => {
       submitData.append("latitude", formData.location.latitude);
       submitData.append("longitude", formData.location.longitude);
       submitData.append("address", formData.location.address);
+      submitData.append("locationHash", locationHash);
 
       if (formData.photos && Array.isArray(formData.photos)) {
         formData.photos.forEach((photo, index) => {
@@ -685,12 +723,14 @@ const Homepage = () => {
             />
             <div className="char-count">{formData.description.length}/200</div>
           </FormSection>
+
           <div className="instructions-note">
             <p>
               <strong>Note:</strong> Your report will help us improve the
               quality of our service
             </p>
           </div>
+          
           {/* Form Submit Action */}
           <div className="form-actions">
             <button
