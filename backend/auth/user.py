@@ -2,15 +2,15 @@
 import os
 from datetime import datetime, timedelta, timezone
 from typing import Annotated
-
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
-from . import models, schemas
-from .database import get_db
+from models.user import User
+import models
+import schemas
+from database import get_db
 
 # --- Security settings ---
 SECRET_KEY = os.getenv("JWT_SECRET", "CHANGE_ME_DEV_ONLY_SUPER_SECRET")
