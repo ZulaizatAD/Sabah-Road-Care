@@ -10,6 +10,27 @@
   min-height: 100vh;
 }
 
+#background-video {
+  /* Use the ID selector as in your JSX */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -2;
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: linear-gradient(rgba(203, 166, 166, 0.7), rgba(0, 0, 0, 0.9));
+  z-index: -1;
+}
+
 .app-container:has(.funfact-page) #background-video,
 .app-container:has(.funfact-page) .background-overlay {
   display: none;
