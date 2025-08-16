@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
 import "./Header.css";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, isLoggedIn, logout } = useUser();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -39,6 +42,12 @@ const Header = () => {
     navigate(path);
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
+  };
+
+  // Simple logout handler
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
   };
 
   // Toggle dropdown
@@ -115,53 +124,70 @@ const Header = () => {
           </div>
 
           {/* Profile Dropdown */}
-          <div className="nav-dropdown" ref={profileRef}>
-            <button
-              className={`nav-item dropdown-trigger ${
-                isActive("/history") || isActive("/profileupdate")
-                  ? "active"
-                  : ""
-              } ${activeDropdown === "profile" ? "open" : ""}`}
-              onClick={() => toggleDropdown("profile")}
-            >
-              <span className="nav-icon">👤</span>
-              <span className="nav-text">Profile</span>
-              <span
-                className={`dropdown-arrow ${
-                  activeDropdown === "profile" ? "open" : ""
-                }`}
+          {isLoggedIn && (
+            <div className="nav-dropdown" ref={profileRef}>
+              <button
+                className={`nav-item dropdown-trigger ${
+                  isActive("/history") || isActive("/profileupdate")
+                    ? "active"
+                    : ""
+                } ${activeDropdown === "profile" ? "open" : ""}`}
+                onClick={() => toggleDropdown("profile")}
               >
-                ▼
-              </span>
-            </button>
+                <span className="nav-icon">👤</span>
+                <span className="nav-text">Profile</span>
+                <span
+                  className={`dropdown-arrow ${
+                    activeDropdown === "profile" ? "open" : ""
+                  }`}
+                >
+                  ▼
+                </span>
+              </button>
 
-            {activeDropdown === "profile" && (
-              <div className="dropdown-menu">
-                <button
-                  className="dropdown-item"
-                  onClick={() => handleNavigation("/history")}
-                >
-                  <span className="dropdown-icon">📋</span>
-                  <span className="dropdown-text">User History</span>
-                </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() => handleNavigation("/profileupdate")}
-                >
-                  <span className="dropdown-icon">⚙️</span>
-                  <span className="dropdown-text">Update Account</span>
-                </button>
-                <div className="dropdown-divider"></div>
-                <button
-                  className="dropdown-item logout"
-                  onClick={() => handleNavigation("/")}
-                >
-                  <span className="dropdown-icon">🚪</span>
-                  <span className="dropdown-text">Log Out</span>
-                </button>
-              </div>
-            )}
-          </div>
+              {activeDropdown === "profile" && (
+                <div className="dropdown-menu">
+                  {/* User Info Display */}
+                  {user && (
+                    <div className="user-info-dropdown">
+                      <div className="user-email">{user.email}</div>
+                      <div className="dropdown-divider"></div>
+                    </div>
+                  )}
+
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/history")}
+                  >
+                    <span className="dropdown-icon">📋</span>
+                    <span className="dropdown-text">User History</span>
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/profileupdate")}
+                  >
+                    <span className="dropdown-icon">⚙️</span>
+                    <span className="dropdown-text">Update Account</span>
+                  </button>
+                  <button
+                    className="dropdown-item"
+                    onClick={() => handleNavigation("/profileupdate")}
+                  >
+                    <span className="dropdown-icon">⚙️</span>
+                    <span className="dropdown-text">Update Account</span>
+                  </button>
+                  <div className="dropdown-divider"></div>
+                  <button
+                    className="dropdown-item logout"
+                    onClick={handleLogout}
+                  >
+                    <span className="dropdown-icon">🚪</span>
+                    <span className="dropdown-text">Log Out</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </nav>
 
         {/* Mobile Menu Toggle */}
@@ -181,6 +207,14 @@ const Header = () => {
       {/* Mobile Navigation Menu */}
       <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-menu-content">
+          {/* User Info in Mobile - Only if logged in */}
+          {isLoggedIn && user && (
+            <div className="mobile-user-info">
+              <div className="mobile-user-email">{user.email}</div>
+              <div className="mobile-user-divider"></div>
+            </div>
+          )}
+
           {/* Mobile Dashboard */}
           <button
             className={`mobile-nav-item ${
@@ -215,40 +249,53 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Profile Section */}
-          <div className="mobile-nav-section">
-            <div className="mobile-section-title">
-              <span className="mobile-section-icon">👤</span>
-              <span className="mobile-section-text">Profile</span>
+          {/* Mobile Profile Section - Only if logged in */}
+          {isLoggedIn && (
+            <div className="mobile-nav-section">
+              <div className="mobile-section-title">
+                <span className="mobile-section-icon">👤</span>
+                <span className="mobile-section-text">Profile</span>
+              </div>
+              <div className="mobile-section-items">
+                <button
+                  className={`mobile-nav-subitem ${
+                    isActive("/history") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigation("/history")}
+                >
+                  <span className="mobile-nav-icon">📋</span>
+                  <span className="mobile-nav-text">User History</span>
+                </button>
+                <button
+                  className={`mobile-nav-subitem ${
+                    isActive("/profileupdate") ? "active" : ""
+                  }`}
+                  onClick={() => handleNavigation("/profileupdate")}
+                >
+                  <span className="mobile-nav-icon">⚙️</span>
+                  <span className="mobile-nav-text">Update Account</span>
+                </button>
+                <button
+                  className="mobile-nav-subitem logout"
+                  onClick={handleLogout}
+                >
+                  <span className="mobile-nav-icon">🚪</span>
+                  <span className="mobile-nav-text">Log Out</span>
+                </button>
+              </div>
             </div>
-            <div className="mobile-section-items">
-              <button
-                className={`mobile-nav-subitem ${
-                  isActive("/history") ? "active" : ""
-                }`}
-                onClick={() => handleNavigation("/history")}
-              >
-                <span className="mobile-nav-icon">📋</span>
-                <span className="mobile-nav-text">User History</span>
-              </button>
-              <button
-                className={`mobile-nav-subitem ${
-                  isActive("/profileupdate") ? "active" : ""
-                }`}
-                onClick={() => handleNavigation("/profileupdate")}
-              >
-                <span className="mobile-nav-icon">⚙️</span>
-                <span className="mobile-nav-text">Update Account</span>
-              </button>
-              <button
-                className="mobile-nav-subitem logout"
-                onClick={() => handleNavigation("/")}
-              >
-                <span className="mobile-nav-icon">🚪</span>
-                <span className="mobile-nav-text">Log Out</span>
-              </button>
-            </div>
-          </div>
+          )}
+
+          {/* Mobile Login Button - Only if not logged in */}
+          {!isLoggedIn && (
+            <button
+              className="mobile-nav-item login-btn"
+              onClick={() => handleNavigation("/")}
+            >
+              <span className="mobile-nav-icon">🔑</span>
+              <span className="mobile-nav-text">Login</span>
+            </button>
+          )}
         </div>
       </div>
 
