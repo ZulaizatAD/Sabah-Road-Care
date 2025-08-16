@@ -542,3 +542,24 @@ export default {
     formatTimeRemaining,
     DUPLICATE_DETECTION_CONSTANTS
 };
+
+export const safeDuplicateCheck = (newReport, userReports, allReports, options) => {
+    try {
+        return checkDuplicateSubmission(newReport, userReports, allReports, options);
+    } catch (error) {
+        console.error('Duplicate detection error:', error);
+        // Fallback to allow submission
+        return {
+            isUserDuplicate: false,
+            canSubmit: true,
+            similarReportsCount: 0,
+            similarReports: [],
+            severityMultiplier: 1.0,
+            priorityBoost: 0,
+            uniqueUsers: 0,
+            locationHash: null,
+            blockingMessage: 'Duplicate detection unavailable - proceeding with submission',
+            infoMessage: 'Unable to check for similar reports'
+        };
+    }
+};

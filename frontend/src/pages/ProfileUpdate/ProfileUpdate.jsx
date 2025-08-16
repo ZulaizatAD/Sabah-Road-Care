@@ -15,6 +15,7 @@ const ProfileUpdate = () => {
   const { user, updateUser, logout } = useUser();
   const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [emailChanged, setEmailChanged] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPasswordSection, setShowPasswordSection] = useState(false);

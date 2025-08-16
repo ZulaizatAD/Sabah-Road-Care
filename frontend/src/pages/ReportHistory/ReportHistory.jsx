@@ -538,12 +538,6 @@ const ReportHistory = () => {
                   <div className="detail-item">
                     <span className="detail-label">Submitted:</span>
                     <span className="detail-value">
-                      {new Date(report.submissionDate).toLocaleDateString()}
-                    </span>
-                  </div>
-                  <div className="detail-item">
-                    <span className="detail-label">Similar Reports:</span>
-                    <span className="detail-value">
                       {format(new Date(report.submissionDate), "MMM dd, yyyy")}
                       <small className="time-ago">
                         (
@@ -552,6 +546,12 @@ const ReportHistory = () => {
                         })}
                         )
                       </small>
+                    </span>
+                  </div>
+                  <div className="detail-item">
+                    <span className="detail-label">Last Updated:</span>
+                    <span className="detail-value">
+                      {format(new Date(report.lastUpdated), "MMM dd, yyyy")}
                     </span>
                   </div>
                   <div className="detail-item">

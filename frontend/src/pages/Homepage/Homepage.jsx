@@ -7,7 +7,7 @@ import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
 import {
-  checkDuplicateSubmission,
+  safeDuplicateCheck as checkDuplicateSubmission,
   getDuplicateDetectionSummary,
   formatTimeRemaining,
   calculatePriorityFromDuplicates,
@@ -59,7 +59,7 @@ const Homepage = () => {
             userId: user.id,
           };
 
-          const duplicateResult = checkDuplicateSubmission(
+          const duplicateResult = safeDuplicateCheck(
             newReport,
             userReportsResponse.data.reports || [],
             allReportsResponse.data.reports || []
