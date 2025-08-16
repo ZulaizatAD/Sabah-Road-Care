@@ -1,8 +1,7 @@
 .background-image {
-  /* This is the original image-based background */
-  background-image: linear-gradient(rgba(74, 74, 74, 0.7), rgba(0, 0, 0, 0.9)),
-    url("/GreyBackgroundAE_Loop_002");
-  filter: blur(30px); /* Use filter for blur effect */
+  background-image: linear-gradient(rgba(16, 16, 16, 0.7), rgba(0, 0, 0, 0.9)),
+    url("/SRCBackground.png");
+  backdrop-filter: blur(2px);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -68,7 +67,6 @@
   display: none !important;
 }
 
-
 #background-video {
   /* Use the ID selector as in your JSX */
   position: fixed;
@@ -112,4 +110,4 @@
   .main-content {
     padding: 1rem 0.5rem;
   }
-}; 
+}

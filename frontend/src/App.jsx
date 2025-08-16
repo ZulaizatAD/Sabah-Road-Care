@@ -1,6 +1,9 @@
 import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
-import EnvironmentCheck from "./utils/EnvironmentCheck";
+import { UserProvider } from "./context/UserContext";
+import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
+import { UserProvider } from "./context/UserContext";
+import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
 import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
