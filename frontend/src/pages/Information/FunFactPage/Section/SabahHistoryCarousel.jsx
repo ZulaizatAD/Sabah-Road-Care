@@ -1,7 +1,7 @@
 // SabahHistoryCarousel.jsx
 import React from 'react';
 import FunFactCarousel from './FunFactCarousel';
-import './FunFactPage.css';
+import '../FunFactMainPage.css';
 import { Link } from 'react-router-dom'; // Import Link for navigation within the app
 
 // Data for Sabah History with new image URLs

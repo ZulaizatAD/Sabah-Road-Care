@@ -36,11 +36,11 @@
 //     );
 // }
 import React, { useState } from 'react';
-import FunFactCarousel from './FunFactCarousel';
-import SabahHistoryCarousel from './SabahHistoryCarousel';
-import SabahRoadsCarousel from './SabahRoadsCarousel'; // Import the new component
-import FunFactCardPopup from '../Section/FunFactCardPopup'; // Path is correct as per the image
-import './FunFactPage.css';
+import FunFactCarousel from './Section/FunFactCarousel';
+import SabahHistoryCarousel from './Section/SabahHistoryCarousel';
+import SabahRoadsCarousel from './Section/SabahRoadsCarousel'; // Import the new component
+import FunFactCardPopup from './Section/FunFactCardPopup'; // Path is correct as per the image
+import './FunFactMainPage.css';
 
 // Fun Fact data
 const funFactsData = [

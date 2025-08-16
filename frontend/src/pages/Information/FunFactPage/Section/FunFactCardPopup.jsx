@@ -1,7 +1,7 @@
 // FunFactCardPopup.jsx
 import React, { useState, useEffect, useRef } from 'react';
 import { FaPlay, FaPause, FaTimes } from 'react-icons/fa';
-import './FunFactPage.css';
+import '../FunFactMainPage.css';
 
 // This component is the pop-up modal for displaying a single fun fact in detail.
 const FunFactCardPopup = ({ card, onClose }) => {

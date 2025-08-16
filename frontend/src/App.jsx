@@ -13,7 +13,7 @@ import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import FAQs from "./pages/FAQs/FAQs";
-import FunFactPage from "./pages/FunFacts/FunFactPage";
+import FunFactMainPage from "./pages/Information/FunFactPage/FunFactMainPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -35,7 +35,7 @@ const App = () => {
             <Route path="/homepage" element={<Homepage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/information" element={<Information />} />
-            <Route path="/funfacts" element={<FunFactPage />} />
+            <Route path="/funfacts" element={<FunFactMainPage />} />
             <Route path="/history" element={<ReportHistory />} />
             <Route path="/profileupdate" element={<ProfileUpdate />} />
             <Route path="/confirm" element={<Confirm />} />
