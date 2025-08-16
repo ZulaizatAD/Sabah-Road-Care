@@ -3,24 +3,25 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from database.connection import engine as report_engine
-import models.report as report_models
+
+# ---- Your original imports (reports DB + models + dashboard router)
+from backend.database.report import engine as report_engine
+import backend.models.report as report_models
 from routers import dashboard
-from routers import login
 
 # ---- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
 # If your project keeps these under `backend.*` use those; otherwise plain package imports.
 try:
-    from database.connection import Base, engine, get_db  # shared auth DB/session
+    from backend.database import Base, engine, get_db  # shared auth DB/session
     from backend import models, schemas
     from backend.auth import verify_password, create_access_token
-    from routers.login import router as user_router  # e.g., app/routers/user.py
+    from routers.user import router as user_router  # e.g., app/routers/user.py
 except ImportError:
     # Fallback to flat package (if main.py sits inside the same package as these modules)
-    from database.connection import Base, engine, get_db
+    from database import Base, engine, get_db
     import models, schemas
-    from auth.user import verify_password, create_access_token
-    from routers.login import router as user_router
+    from auth import verify_password, create_access_token
+    from routers.user import router as user_router
 
 # ---- Create tables (DEV ONLY). Keep your original report tables + auth tables.
 report_models.Base.metadata.create_all(bind=report_engine)

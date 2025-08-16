@@ -9,7 +9,7 @@ Base = declarative_base()
 load_dotenv()
 
 DB_USERNAME = "postgres"
-DB_PASSWORD = os.getenv("dB_PASSWORD")  # Ensure the environment variable name matches exactly
+DB_PASSWORD = os.getenv("DB_PASSWORD")  # Ensure the environment variable name matches exactly
 DB_HOST = "localhost"
 DB_PORT = "5432"
 DB_NAME = "sabah_road_care"
@@ -24,3 +24,4 @@ def get_db():
         yield db
     finally:
         db.close()
+

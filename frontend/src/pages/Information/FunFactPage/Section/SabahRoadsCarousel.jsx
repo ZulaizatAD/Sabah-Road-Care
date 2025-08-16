@@ -1,7 +1,7 @@
 // SabahRoadsCarousel.jsx
 import React from 'react';
 import FunFactCarousel from './FunFactCarousel'; // Use the main carousel component
-import './FunFactPage.css';
+import '../FunFactPage.css';
 
 // Data for Sabah Roads history
 const sabahRoadsFacts = [

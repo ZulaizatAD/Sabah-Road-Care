@@ -12,8 +12,8 @@ import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
 import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
+import FunFactPage from "./pages/Information/FunFactPage/FunFactPage";
 import FAQs from "./pages/FAQs/FAQs";
-import FunFactPage from "./pages/FunFacts/FunFactPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
