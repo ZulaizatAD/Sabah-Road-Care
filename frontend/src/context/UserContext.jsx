@@ -1,43 +1,68 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState } from "react";
 
 const UserContext = createContext();
 
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUser must be used within a UserProvider');
+    throw new Error("useUser must be used within a UserProvider");
   }
   return context;
 };
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [user, setUser] = useState({
+    id: "demo-user-001",
+    name: "Demo User",
+    email: "demo@sabahroadcare.com",
+    photoURL: null,
+    createdAt: new Date().toISOString(),
+  });
+  const [isLoggedIn, setIsLoggedIn] = useState(true);
 
+  // Simple login function (for demo purposes)
   const login = (userData) => {
-    setUser(userData);
+    setUser(
+      userData || {
+        id: "demo-user-001",
+        name: "Demo User",
+        email: "demo@sabahroadcare.com",
+        photoURL: null,
+        createdAt: new Date().toISOString(),
+      }
+    );
     setIsLoggedIn(true);
-    // Store in localStorage for persistence
-    localStorage.setItem('user', JSON.stringify(userData));
-    localStorage.setItem('isLoggedIn', 'true');
+    localStorage.setItem("user", JSON.stringify(user));
   };
 
+  // Update user profile
+  const updateUser = (updatedData) => {
+    const updatedUser = { ...user, ...updatedData };
+    setUser(updatedUser);
+    localStorage.setItem("user", JSON.stringify(updatedUser));
+  };
+
+  // Simple logout (optional for capstone)
   const logout = () => {
     setUser(null);
     setIsLoggedIn(false);
-    // Clear localStorage
-    localStorage.removeItem('user');
-    localStorage.removeItem('isLoggedIn');
+    localStorage.removeItem("user");
   };
-
-  // Check if user is logged in on app load (optional)
+  // Load user data on app start
   React.useEffect(() => {
-    const savedUser = localStorage.getItem('user');
-    const savedLoginStatus = localStorage.getItem('isLoggedIn');
-    
-    if (savedUser && savedLoginStatus === 'true') {
-      setUser(JSON.parse(savedUser));
-      setIsLoggedIn(true);
+    const savedUser = localStorage.getItem("user");
+    if (savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+        setIsLoggedIn(true);
+      } catch (error) {
+        console.error("Error loading saved user:", error);
+        // Fallback to default user
+        login();
+      }
+    } else {
+      // Auto-login with default user for capstone
+      login();
     }
   }, []);
 
@@ -46,14 +71,11 @@ export const UserProvider = ({ children }) => {
     isLoggedIn,
     login,
     logout,
-    setUser
+    updateUser,
+    setUser,
   };
 
-  return (
-    <UserContext.Provider value={value}>
-      {children}
-    </UserContext.Provider>
-  );
+  return <UserContext.Provider value={value}>{children}</UserContext.Provider>;
 };
 
 export { UserContext };

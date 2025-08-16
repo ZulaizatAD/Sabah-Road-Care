@@ -2,8 +2,6 @@ import { Routes, Route } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import { UserProvider } from "./context/UserContext";
 import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
-import { UserProvider } from "./context/UserContext";
-import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
 import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
@@ -21,6 +19,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const App = () => {
   return (
+    <UserProvider>
     <EnvironmentCheck>
       <div className="app-container">
         <div className="background-overlay"></div>
@@ -57,6 +56,7 @@ const App = () => {
         <DevTools />
       </div>
     </EnvironmentCheck>
+    </UserProvider>
   );
 };
 

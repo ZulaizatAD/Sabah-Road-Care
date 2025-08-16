@@ -34,7 +34,6 @@ export const reportAPI = {
   submitReport: async (formData) => {
     return await api.post('/api/reports', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
-      timeout: 60000,
       onUploadProgress: (progressEvent) => {
         const progress = Math.round(
           (progressEvent.loaded * 100) / progressEvent.total
@@ -67,6 +66,34 @@ export const reportAPI = {
   getReportDetails: async (reportId) => {
     return await api.get(`/api/reports/${reportId}`);
   },
+};
+
+export const userAPI = {
+  // Update user profile
+  updateProfile: async (formData) => {
+    return await api.put('/api/user/profile', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  },
+
+  // Delete user account
+  deleteAccount: async () => {
+    return await api.delete('/api/user/account');
+  },
+
+  // Change password
+  changePassword: async (passwordData) => {
+    return await api.put('/api/user/password', passwordData);
+  },
+
+  // Upload profile image
+  uploadProfileImage: async (imageFile) => {
+    const formData = new FormData();
+    formData.append('profileImage', imageFile);
+    return await api.post('/api/user/profile-image', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    });
+  }
 };
 
 export default api;
