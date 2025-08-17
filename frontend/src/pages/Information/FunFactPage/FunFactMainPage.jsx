@@ -40,6 +40,8 @@ import FunFactCarousel from './Section/FunFactCarousel';
 import SabahHistoryCarousel from './Section/SabahHistoryCarousel';
 import SabahRoadsCarousel from './Section/SabahRoadsCarousel'; // Import the new component
 import FunFactCardPopup from './Section/FunFactCardPopup'; // Path is correct as per the image
+import AnimatedBackground001 from '../../../components/VideoBG/AnimatedBackground001';
+import AvatarMain from './Section/Avatar/AvatarMain'
 import './FunFactMainPage.css';
 
 // Fun Fact data
@@ -83,6 +85,9 @@ export default function FunFactPage() {
                 <p>Learn about the rich and unique history of the state of Sabah.</p>
                 <button>Explore</button>
               </div>
+                <div className="fun-fact-card">
+                  <AvatarMain />
+                </div>
             </div>
           </div>
         );
@@ -99,10 +104,13 @@ export default function FunFactPage() {
 
   return (
     <div className="fun-fact-page">
-      <video autoPlay muted loop className="video-background">
-        <source src="https://assets.mixkit.co/videos/preview/mixkit-starry-night-sky-loop-animation-5926-large.mp4" type="video/mp4" />
-        Your browser does not support the video tag.
-      </video>
+      {/* This is where we add the new AnimatedBackground001 component. 
+        It will automatically handle the video background, positioning, and looping.
+      */}
+      <AnimatedBackground001 />
+      <AvatarMain />
+      
+      {/* The main-content div remains, but it's now a sibling to the background component. */}
       <div className="main-content">
         {renderContent()}
       </div>
