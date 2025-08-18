@@ -14,6 +14,7 @@ import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
 import ContactUs from "./pages/ContactUs/ContactUs";
 import FAQs from "./pages/FAQs/FAQs";
+import FunFactMainPage from "./pages/Information/FunFactPage/FunFactMainPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -23,20 +24,20 @@ const App = () => {
       <EnvironmentCheck>
         <div className="app-container">
           <div className="background-image">
-            <video autoPlay muted loop playsInline className="background-video">
-              <source
-                src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
-                type="video/webm"
-              />
-            </video>
-          </div>
+            <video autoplay muted Loop playsInline className="background-video">
+                <source
+                  src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
+                  type="video/webm"
+                  />
+                </video>
+                </div>
           <Header />
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Login />} />
               <Route path="/homepage" element={<Homepage />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/information" element={<Information />} />
+              <Route path="/information" element={<FunFactMainPage />} />
               <Route path="/history" element={<ReportHistory />} />
               <Route path="/profileupdate" element={<ProfileUpdate />} />
               <Route path="/confirm" element={<Confirm />} />
