@@ -23,17 +23,14 @@ const App = () => {
     <UserProvider>
       <EnvironmentCheck>
         <div className="app-container">
-          {/* Background video - only show on non-funfact pages */}
-          {/* The video here is for the main site, not the fun fact page. The fun fact page has its own video. */}
-          <video autoPlay muted loop id="background-video">
-            <source
-              src="./assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
-              type="video/webm"
-            />
-            Your browser does not support the video tag.
-          </video>
-          <div className="background-overlay"></div>
-
+          <div className="background-image">
+            <video autoplay muted Loop playsInline className="background-video">
+                <source
+                  src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
+                  type="video/webm"
+                  />
+                </video>
+                </div>
           <Header />
           <main className="main-content">
             <Routes>
