@@ -1,11 +1,11 @@
-# schemas.py
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
+from typing import Optional
 
 # ---------- Users ----------
 class UserBase(BaseModel):
     email: EmailStr
-    username: str = Field(min_length=3, max_length=100)
-    full_name: str | None = None
+    full_name: Optional[str] = None
+    profile_picture: Optional[str] = None  # Profile picture remains
 
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=128)
@@ -22,6 +22,5 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 class TokenPayload(BaseModel):
-    sub: str | None = None  # user id as str
-    username: str | None = None
-    exp: int | None = None
+    sub: Optional[str] = None  # user id as str
+    exp: Optional[int] = None
