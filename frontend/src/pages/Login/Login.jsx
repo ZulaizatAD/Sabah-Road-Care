@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
+import assets from "../../assets/assets";
 import "./Login.css";
 
 const Login = () => {
@@ -161,7 +162,11 @@ const Login = () => {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? (
+                  <img src={assets.passwordHide} alt="Hide password" />
+                ) : (
+                  "👁️"
+                )}
               </button>
             </div>
 

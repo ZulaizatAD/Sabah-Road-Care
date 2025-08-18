@@ -1,33 +1,30 @@
 .background-image {
-  background-image: linear-gradient(rgba(16, 16, 16, 0.7), rgba(0, 0, 0, 0.9)),
-    url("/SRCBackground.png");
-  backdrop-filter: blur(2px);
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-  min-height: 100vh;
-}
-
-#background-video {
-  /* Use the ID selector as in your JSX */
   position: fixed;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  object-fit: cover;
+  width: 100%;
+  height: 100%;
   z-index: -2;
+  overflow: hidden;
 }
 
-.background-overlay {
-  position: fixed;
+.background-image::after {
+  content: '';
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: linear-gradient(rgba(203, 166, 166, 0.7), rgba(0, 0, 0, 0.9));
-  z-index: -1;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+.background-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .app-container:has(.funfact-page) #background-video,

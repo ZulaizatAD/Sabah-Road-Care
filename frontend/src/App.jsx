@@ -20,42 +20,48 @@ import "react-toastify/dist/ReactToastify.css";
 const App = () => {
   return (
     <UserProvider>
-    <EnvironmentCheck>
-      <div className="app-container">
-        <div className="background-overlay"></div>
-        
-        <Header />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Login />} />
-            <Route path="/homepage" element={<Homepage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/information" element={<Information />} />
-            <Route path="/history" element={<ReportHistory />} />
-            <Route path="/profileupdate" element={<ProfileUpdate />} />
-            <Route path="/confirm" element={<Confirm />} />
-            <Route path="/contact" element={<ContactUs />} />
-            <Route path="/faqs" element={<FAQs />} />
-            <Route path="*" element={<Homepage />} />
-          </Routes>
-        </main>
-        <Footer />
-        
-        <ToastContainer
-          position="top-right"
-          autoClose={3000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        <DevTools />
-      </div>
-    </EnvironmentCheck>
+      <EnvironmentCheck>
+        <div className="app-container">
+          <div className="background-image">
+            <video autoPlay muted loop playsInline className="background-video">
+              <source
+                src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
+                type="video/webm"
+              />
+            </video>
+          </div>
+          <Header />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Login />} />
+              <Route path="/homepage" element={<Homepage />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/information" element={<Information />} />
+              <Route path="/history" element={<ReportHistory />} />
+              <Route path="/profileupdate" element={<ProfileUpdate />} />
+              <Route path="/confirm" element={<Confirm />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/faqs" element={<FAQs />} />
+              <Route path="*" element={<Homepage />} />
+            </Routes>
+          </main>
+          <Footer />
+
+          <ToastContainer
+            position="top-right"
+            autoClose={3000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <DevTools />
+        </div>
+      </EnvironmentCheck>
     </UserProvider>
   );
 };
