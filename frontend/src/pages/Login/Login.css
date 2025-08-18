@@ -205,6 +205,19 @@
   color: var(--primary-green);
 }
 
+.password-toggle img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  filter: invert(100%) brightness(90%);
+  transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.password-toggle img:hover {
+  transform: scale(1.1);
+  filter: invert(73%) sepia(93%) saturate(348%) hue-rotate(70deg) brightness(95%) contrast(90%);
+}
+
 .form-options {
   display: flex;
   justify-content: space-between;

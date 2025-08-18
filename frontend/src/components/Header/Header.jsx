@@ -1,11 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
 import "./Header.css";
-import { useLocation, useNavigate } from "react-router-dom";
 
 const Header = () => {
   const navigate = useNavigate();
   const location = useLocation();
+  const { user, logout } = useUser();
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -39,6 +42,13 @@ const Header = () => {
     navigate(path);
     setActiveDropdown(null);
     setIsMobileMenuOpen(false);
+  };
+
+  // Simple logout handler
+  const handleLogout = () => {
+    logout();
+    toast.success("Logged out successfully");
+    navigate("/");
   };
 
   // Toggle dropdown
@@ -114,7 +124,7 @@ const Header = () => {
             )}
           </div>
 
-          {/* Profile Dropdown */}
+          {/* Profile Dropdown*/}
           <div className="nav-dropdown" ref={profileRef}>
             <button
               className={`nav-item dropdown-trigger ${
@@ -137,6 +147,12 @@ const Header = () => {
 
             {activeDropdown === "profile" && (
               <div className="dropdown-menu">
+                {/* User Info Display - Always show since user always exists */}
+                <div className="user-info-dropdown">
+                  <div className="user-email">{user?.email || "Demo User"}</div>
+                  <div className="dropdown-divider"></div>
+                </div>
+
                 <button
                   className="dropdown-item"
                   onClick={() => handleNavigation("/history")}
@@ -151,13 +167,12 @@ const Header = () => {
                   <span className="dropdown-icon">⚙️</span>
                   <span className="dropdown-text">Update Account</span>
                 </button>
+
+                {/* Optional logout for capstone demo */}
                 <div className="dropdown-divider"></div>
-                <button
-                  className="dropdown-item logout"
-                  onClick={() => handleNavigation("/")}
-                >
+                <button className="dropdown-item logout" onClick={handleLogout}>
                   <span className="dropdown-icon">🚪</span>
-                  <span className="dropdown-text">Log Out</span>
+                  <span className="dropdown-text">Reset Demo</span>
                 </button>
               </div>
             )}
@@ -181,6 +196,14 @@ const Header = () => {
       {/* Mobile Navigation Menu */}
       <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-menu-content">
+          {/* User Info in Mobile - Always show */}
+          <div className="mobile-user-info">
+            <div className="mobile-user-email">
+              {user?.email || "Demo User"}
+            </div>
+            <div className="mobile-user-divider"></div>
+          </div>
+
           {/* Mobile Dashboard */}
           <button
             className={`mobile-nav-item ${
@@ -215,7 +238,7 @@ const Header = () => {
             </div>
           </div>
 
-          {/* Mobile Profile Section */}
+          {/* Mobile Profile Section - Always visible */}
           <div className="mobile-nav-section">
             <div className="mobile-section-title">
               <span className="mobile-section-icon">👤</span>
@@ -242,10 +265,10 @@ const Header = () => {
               </button>
               <button
                 className="mobile-nav-subitem logout"
-                onClick={() => handleNavigation("/")}
+                onClick={handleLogout}
               >
-                <span className="mobile-nav-icon">🚪</span>
-                <span className="mobile-nav-text">Log Out</span>
+                <span className="mobile-nav-icon">🔄</span>
+                <span className="mobile-nav-text">Reset Demo</span>
               </button>
             </div>
           </div>

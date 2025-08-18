@@ -1,12 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import { useUser } from "../../context/UserContext";
+import { useUser } from "../../context/UserContext";
+import assets from "../../assets/assets";
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  // const { login, register } = useUser();
+  const { login, register } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -49,7 +50,7 @@ const Login = () => {
       // Simulate API call - replace with actual authentication
       await new Promise((resolve) => setTimeout(resolve, 1500));
 
-      // For demo purposes - accept any email/password
+      // Check if email and password are valid
       if (formData.email && formData.password) {
         if (isSignUp) {
           toast.success(
@@ -59,9 +60,13 @@ const Login = () => {
           toast.success("Welcome back to Sabah Road Care! 🚗");
         }
 
-        // Store user session (replace with actual token)
-        localStorage.setItem("userToken", "demo-token");
-        localStorage.setItem("userEmail", formData.email);
+        // Use the login function from context
+        login({
+          id: "demo-user-001",
+          name: formData.email.split("@")[0], // Extract name from email
+          email: formData.email,
+          token: "demo-token",
+        });
 
         // Navigate to homepage
         setTimeout(() => {
@@ -157,7 +162,11 @@ const Login = () => {
                 className="password-toggle"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? "🙈" : "👁️"}
+                {showPassword ? (
+                  <img src={assets.passwordHide} alt="Hide password" />
+                ) : (
+                  "👁️"
+                )}
               </button>
             </div>
 
