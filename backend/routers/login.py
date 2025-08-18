@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-import models
-import schemas
-from database import get_db
-from auth.user import get_password_hash, get_current_user
+
+from .. import models, schemas
+from ..database import get_db
+from ..auth import get_password_hash, get_current_user
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -12,6 +12,8 @@ def register_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
     # ensure email/username unique
     if db.query(models.User).filter(models.User.email == payload.email.lower()).first():
         raise HTTPException(status_code=400, detail="Email already registered.")
+    if db.query(models.User).filter(models.User.username == payload.username).first():
+        raise HTTPException(status_code=400, detail="Username already taken.")
 
     user = models.User(
         email=payload.email.lower(),

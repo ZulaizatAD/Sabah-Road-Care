@@ -1,16 +1,21 @@
 import React, { useState, useRef, useEffect } from "react";
+import { useUser } from "../../context/UserContext";
+import { useNavigate } from "react-router-dom";
+import { userAPI } from "../../services/api";
 import { toast } from "react-toastify";
 import "./ProfileUpdate.css";
 
-const ProfileUpdater = () => {
+const ProfileUpdate = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
+  const { user, updateUser, logout } = useUser();
+  const navigate = useNavigate();
   const [profileImage, setProfileImage] = useState(null);
+  const [profileImageFile, setProfileImageFile] = useState(null);
   const [emailChanged, setEmailChanged] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [showPasswordSection, setShowPasswordSection] = useState(false);
@@ -25,31 +30,18 @@ const ProfileUpdater = () => {
   // Load user data on component mount
   useEffect(() => {
     // TODO: Load actual user data from Firebase/API
-    const loadUserData = async () => {
-      try {
-        // Simulate API call
-        const userData = {
-          name: null,
-          email: null,
-          profileImage: null,
-        };
+    if (user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: user.name || user.displayName || "",
+        email: user.email || "",
+      }));
 
-        setFormData((prev) => ({
-          ...prev,
-          name: userData.name || "",
-          email: userData.email || "",
-        }));
-
-        if (userData.profileImage) {
-          setProfileImage(userData.profileImage);
-        }
-      } catch (error) {
-        toast.error("Failed to load user data");
+      if (user.photoURL) {
+        setProfileImage(user.photoURL);
       }
-    };
-
-    loadUserData();
-  }, []);
+    }
+  }, [user]);
 
   // Handle input changes
   const handleInputChange = (field, value) => {
@@ -81,22 +73,26 @@ const ProfileUpdater = () => {
       newErrors.name = "Name is required";
     } else if (formData.name.trim().length < 2) {
       newErrors.name = "Name must be at least 2 characters";
+    } else if (formData.name.trim().length > 50) {
+      newErrors.name = "Name must be less than 50 characters";
     }
 
     // Email validation - optional
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       newErrors.email = "Please enter a valid email address";
     }
 
     // Password validation (only if password is provided)
     if (formData.password) {
-      if (formData.password.length < 6) {
-        newErrors.password = "Password must be at least 6 characters";
-      } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(formData.password)) {
+      if (formData.password.length < 8) {
+        newErrors.password = "Password must be at least 8 characters";
+      } else if (
+        !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/.test(formData.password)
+      ) {
         newErrors.password =
-          "Password must contain uppercase, lowercase, and number";
+          "Password must contain uppercase, lowercase, number, and special character";
       }
 
       // Confirm password validation
@@ -109,31 +105,6 @@ const ProfileUpdater = () => {
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
-  };
-
-  // Handle image upload
-  const handleImageChange = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
-
-      // Validate file size (max 5MB)
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size must be less than 5MB");
-        return;
-      }
-
-      // Validate file type
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file");
-        return;
-      }
-
-      // Create preview
-      const imageUrl = URL.createObjectURL(file);
-      setProfileImage(imageUrl);
-
-      toast.success("Profile picture updated!");
-    }
   };
 
   const handleUploadClick = () => {
@@ -161,24 +132,27 @@ const ProfileUpdater = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      const updateData = new FormData();
+      updateData.append("name", formData.name);
+      updateData.append("email", formData.email);
 
-      // TODO: Implement actual Firebase/API update
-      /*
-            if (formData.password) {
-                await updatePassword(auth.currentUser, formData.password);
-            }
-            
-            await updateProfile(auth.currentUser, {
-                displayName: formData.name,
-                photoURL: profileImage
-            });
-            */
+      if (formData.password) {
+        updateData.append("password", formData.password);
+      }
+
+      // Add profile image if changed
+      if (profileImage && profileImage instanceof File) {
+        updateData.append("profileImage", profileImage);
+      }
+
+      const response = await userAPI.updateProfile(updateData);
+
+      // Update user context
+      updateUser(response.data.user);
 
       setShowSuccess(true);
 
-      // Clear password fields after successful update
+      // Clear password fields
       setFormData((prev) => ({
         ...prev,
         password: "",
@@ -188,7 +162,14 @@ const ProfileUpdater = () => {
       setTimeout(() => setShowSuccess(false), 3000);
     } catch (error) {
       console.error("Update error:", error);
-      toast.error("Failed to update profile. Please try again.");
+
+      if (error.response?.status === 400) {
+        toast.error("Invalid data. Please check your inputs.");
+      } else if (error.response?.status === 409) {
+        toast.error("Email already exists. Please use a different email.");
+      } else {
+        toast.error("Failed to update profile. Please try again.");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -207,15 +188,27 @@ const ProfileUpdater = () => {
     try {
       setIsLoading(true);
 
-      // TODO: Implement actual account deletion
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Call API to delete account
+      await userAPI.deleteAccount();
+
+      // Clear user data
+      logout();
+
+      // Clear local storage
+      localStorage.clear();
 
       toast.success("Account deleted successfully");
 
-      // Redirect to login or home page
-      // navigate('/');
+      // Redirect to login
+      navigate("/");
     } catch (error) {
-      toast.error("Failed to delete account. Please try again.");
+      console.error("Delete error:", error);
+
+      if (error.response?.status === 403) {
+        toast.error("Cannot delete account. You have pending reports.");
+      } else {
+        toast.error("Failed to delete account. Please try again.");
+      }
     } finally {
       setIsLoading(false);
       setShowDeleteConfirm(false);
@@ -229,6 +222,61 @@ const ProfileUpdater = () => {
 
   const toggleConfirmPasswordVisibility = () => {
     setConfirmPasswordVisible(!confirmPasswordVisible);
+  };
+
+  // Add image compression utility
+  const compressImage = (file, maxWidth = 800, quality = 0.8) => {
+    return new Promise((resolve) => {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      const img = new Image();
+
+      img.onload = () => {
+        const ratio = Math.min(maxWidth / img.width, maxWidth / img.height);
+        canvas.width = img.width * ratio;
+        canvas.height = img.height * ratio;
+
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        canvas.toBlob(resolve, "image/jpeg", quality);
+      };
+
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
+  // Enhanced image handler
+  const handleImageChange = async (e) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast.error("Image size must be less than 5MB");
+        return;
+      }
+
+      // Validate file type
+      if (!file.type.startsWith("image/")) {
+        toast.error("Please select an image file");
+        return;
+      }
+
+      try {
+        // Compress image
+        const compressedFile = await compressImage(file);
+
+        // Create preview
+        const imageUrl = URL.createObjectURL(compressedFile);
+        setProfileImage(imageUrl);
+
+        // Store compressed file for upload
+        setProfileImageFile(compressedFile);
+
+        toast.success("Profile picture updated!");
+      } catch (error) {
+        toast.error("Failed to process image");
+      }
+    }
   };
 
   return (
@@ -555,4 +603,4 @@ const DeleteConfirmModal = ({ onConfirm, onCancel, isLoading }) => (
   </div>
 );
 
-export default ProfileUpdater;
+export default ProfileUpdate;
