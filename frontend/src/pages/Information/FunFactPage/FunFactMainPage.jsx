@@ -16,7 +16,7 @@ import './FunFactMainPage.css';
 //   { id: 5, title: "Nocturnal Animals", text: "Owls cannot move their eyeballs. Instead, they can rotate their necks up to 270 degrees.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", image: "https://placehold.co/400x200/795548/FFFFFF?text=Owls" },
 // ];
 
-export default function FunFactPage() {
+export default function FunFactMainPage() {
   const [currentPage, setCurrentPage] = useState('main');
   const [selectedCard, setSelectedCard] = useState(null);
 

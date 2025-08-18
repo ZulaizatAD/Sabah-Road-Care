@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import './FunFactPage.css';
+import '../FunFactMainPage.css';
 import { FaPlay, FaPause } from 'react-icons/fa';
 
 // FunFactCarousel Component
