@@ -1,6 +1,6 @@
 import React from 'react';
 import './VideoComponent.css'; // Make sure to create this CSS file
-import VideoComponent from './public/assets/VideoFiles/GreybackgroundAE_Loop_002.webm';
+import transparentVideo from './public/assets/VideoFiles/GreybackgroundAE_Loop_002.webm';
 
 const VideoComponent = () => {
   return (

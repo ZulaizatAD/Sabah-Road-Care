@@ -1,12 +1,12 @@
 import react from 'react'
-import AvatarCopilot from '../../../assets/Avatar_FunFacts/Avatar_Copilot_001.webm';
+import Avatar_Copilot_001 from '../../../../../assets/Avatar_FunFacts/Avatar_Copilot_001.webm';
 
 
 const AvatarMain = () => {
   return (
     
       <div className='AvatarMain'>
-       <video src={AvatarCopilot} autoPlay loop muted/>
+       <video src={Avatar_Copilot_001} autoPlay loop muted/>
       </div>
   )
 }
