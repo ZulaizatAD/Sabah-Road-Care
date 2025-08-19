@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { dashboardAPI } from "../../services/api2"; // Import the API service
+import React, { useState } from "react";
+import useDashboardData from "./useDashboardData";
 import Filter from "./Section/Filter";
 import StatsCards from "./Section/StatusCards";
 import Charts from "./Section/Charts";
@@ -14,45 +14,14 @@ const Dashboard = () => {
     end_date: "",
     severity: "",
   });
-  const [dashboardData, setDashboardData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      try {
-        setLoading(true);
-        const params = new URLSearchParams(filters).toString();
-        console.log("Fetching data with params:", params); // Debugging statement
-        const [statsResponse, chartsResponse] = await Promise.all([
-          dashboardAPI.getDashboardStats(filters),
-          dashboardAPI.getChartsData(filters),
-        ]);
-
-        console.log("Received stats data:", statsResponse.data); // Debugging statement
-        console.log("Received charts data:", chartsResponse.data); // Debugging statement
-
-        setDashboardData({
-          stats: statsResponse.data,
-          charts: chartsResponse.data,
-        });
-      } catch (error) {
-        console.error("Dashboard data fetch error:", error);
-        setError("Failed to load dashboard data");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
-  }, [filters]);
+  const { dashboardData, loading, error } = useDashboardData(filters);
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({
       ...prev,
       [filterType]: value,
     }));
-    console.log("Updated filters:", filters); // Debugging statement
   };
 
   const handleShare = async () => {

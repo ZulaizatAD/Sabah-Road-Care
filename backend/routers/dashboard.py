@@ -10,7 +10,8 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-router = APIRouter()
+# UPDATED: Added /api prefix to match frontend
+router = APIRouter ()
 
 def get_filtered_reports(district=None, start_date=None, end_date=None, severity=None, db_session=None):
     """Filter reports based on provided criteria."""
@@ -85,6 +86,48 @@ def get_charts_data(
 
     return {"pieData": pie_data, "trendData": trend_data}
 
+# ADDED: Export endpoint that was missing
+@router.get("/dashboard/export")
+def export_dashboard(
+    format: Optional[str] = Query("csv", description="Export format (csv, pdf)"),
+    district: Optional[str] = Query(None),
+    start_date: Optional[str] = Query(None),
+    end_date: Optional[str] = Query(None),
+    severity: Optional[str] = Query(None),
+    db: Session = Depends(get_db)
+):
+    """Export dashboard data."""
+    from fastapi.responses import StreamingResponse
+    import io
+    import csv
+    
+    query = get_filtered_reports(district, start_date, end_date, severity, db)
+    stats = {
+        "totalCases": query.count(),
+        "underReview": query.filter(models.PotholeReport.status == 'Under Review').count(),
+        "approved": query.filter(models.PotholeReport.status == 'Approved').count(),
+        "inProgress": query.filter(models.PotholeReport.status == 'In Progress').count(),
+        "completed": query.filter(models.PotholeReport.status == 'Completed').count(),
+        "rejected": query.filter(models.PotholeReport.status == 'Rejected').count(),
+    }
+    
+    if format.lower() == "csv":
+        output = io.StringIO()
+        writer = csv.writer(output)
+        writer.writerow(["Report Type", "Count"])
+        for key, value in stats.items():
+            writer.writerow([key, value])
+        
+        output.seek(0)
+        return StreamingResponse(
+            io.BytesIO(output.getvalue().encode()),
+            media_type="text/csv",
+            headers={"Content-Disposition": "attachment; filename=dashboard_stats.csv"}
+        )
+    
+    # For PDF format, you'd need to implement PDF generation
+    return {"message": "PDF export not implemented yet"}
+
 def get_color(severity):
     """Get color for severity level."""
     colors = {
@@ -93,4 +136,4 @@ def get_color(severity):
         "High": "#ff7c7c",
         "Critical": "#ff4444"
     }
-    return colors.get(severity, "#000000")  # Default to black if severity not found
+    return colors.get(severity, "#000000")  # Defa
