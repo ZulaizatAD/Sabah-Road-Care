@@ -1,10 +1,11 @@
 import React from 'react'
 
 const Information = () => {
-  return (
+return (
+  <div>
     <div>Information</div>
-    <fFunFactPage />
-  )
-}
-
+    <FunFactPage />
+  </div>
+ )
+};
 export default Information
