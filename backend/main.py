@@ -1,29 +1,20 @@
+# Import necessary modules from FastAPI and other libraries
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from database.connection import engine as report_engine
+
+# Import database engine and models for reports
+from database.connect import engine as report_engine
 import models.report as report_models
-from routers import dashboard
-from routers import login
-
-# ---------- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
-
-from routers import dashboard, history, contact  # Import the contact router
-
-# ---- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
-
+from routers import dashboard, history, user
 try:
-    from database.connection import Base, engine, get_db  # shared auth DB/session
+    from database.connect import Base, engine, get_db  # Shared auth DB/session
     from backend import models, schemas
     from backend.auth import verify_password, create_access_token
-
-    from routers.user import router as user_router
-    from backend.routers.user import router as user_router  # e.g., app/routers/user.py
-
 except ImportError:
-    # Fallback to flat package (if main.py sits inside the same package as these modules)
-    from database.connection import Base, engine, get_db
+    # Fallback if the imports above fail (e.g., if the structure is flat)
+    from database.connect import Base, engine, get_db
     import models, schemas
     from auth.user import verify_password, create_access_token
     from routers.user import router as user_router
@@ -40,9 +31,8 @@ except ImportError as e:
 report_models.Base.metadata.create_all(bind=report_engine)
 Base.metadata.create_all(bind=engine)
 
+# Initialize FastAPI application
 app = FastAPI(title="Sabah Road Care API", version="0.1.0")
-
-# ---------- CORS (add your frontend origins here)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -56,6 +46,14 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Include routers for different API endpoints
+app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
+app.include_router(user_router, prefix="/api", tags=["users"])
+app.include_router(history.router, prefix="/api", tags=["history"])
+
+# Authentication endpoint to get access token
+@app.post("/auth/token", response_model=schemas.Token)
+=======
 # ---------- Routers
 # Keep your original dashboard router
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
@@ -69,6 +67,7 @@ if photos_router:
 
 # ---------- Auth: token endpoint (top-level)
 @app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
+
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
@@ -76,16 +75,17 @@ def login_for_access_token(
     # Accept email in "username" field
     identifier = form_data.username.strip().lower()
 
+    # Query the user from the database
     user = db.query(models.User).filter(models.User.email == identifier).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Incorrect credentials.")
     if not user.is_active:
         raise HTTPException(status_code=403, detail="User is inactive.")
 
+    # Create and return access token
     token = create_access_token(subject={"sub": str(user.id), "email": user.email})
     return {"access_token": token, "token_type": "bearer"}
 
-# ---------- Health + root
 @app.get("/health", tags=["health"])
 def health():
     return {"status": "ok"}

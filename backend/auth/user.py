@@ -1,16 +1,15 @@
-# auth.py
 import os
 from datetime import datetime, timedelta, timezone
-from typing import Annotated
-
+from typing import Annotated, Union
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-
-from . import models, schemas
-from .database import get_db
+from models.users import User
+import schemas
+import models
+from database.connect import get_db
 
 # --- Security settings ---
 SECRET_KEY = os.getenv("JWT_SECRET", "CHANGE_ME_DEV_ONLY_SUPER_SECRET")
@@ -33,8 +32,8 @@ def create_access_token(subject: dict, expires_delta: timedelta | None = None) -
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 # --- Current user dependency ---
-def get_user_by_id(db: Session, user_id: int) -> models.User | None:
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def get_user_by_id(db: Session, user_id: int) -> Union[models.User, None]:
+    return db.query(models.Userer).filter(models.Userer.id == user_id).first()
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],

@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 from typing import Optional, List
 import models
-from database.connection import get_db
+from database.connect import get_db
 from auth.user import get_current_user  # Assuming you have a function to get the current user
 from schemas.report import CaseBase  # Assuming you have a Pydantic schema for reports
 
