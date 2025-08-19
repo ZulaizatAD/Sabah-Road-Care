@@ -3,12 +3,15 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from decouple import config
+from routers import profilepic
 
 # Import database engine and models for reports
 from database.connect import engine as report_engine
 import models.report as report_models
 from routers import dashboard, history, user
-from routers import photos  # Import the photos router
+# Remove the old photos import
+# from routers import photos  # Import the photos router
 
 try:
     from database.connect import Base, engine, get_db  # Shared auth DB/session
@@ -18,8 +21,11 @@ except ImportError:
     # Fallback if the imports above fail (e.g., if the structure is flat)
     from database.connect import Base, engine, get_db
     import models, schemas
-    from auth.user import verify_password, create_access_token
+    from auth.security import verify_password, create_access_token
     from routers.user import router as user_router
+
+# Import the new photo router
+from routers.photos import router as photo_router
 
 # Create tables (DEV ONLY). Keep your original report tables + auth tables.
 report_models.Base.metadata.create_all(bind=report_engine)
@@ -44,7 +50,9 @@ app.add_middleware(
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
-app.include_router(photos.router, prefix="/api", tags=["photos"])  # Include the photos router
+app.include_router(photo_router, prefix="/api", tags=["Photos"])
+app.include_router(profilepic.router)
+
 
 # Authentication endpoint to get access token
 @app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
@@ -73,3 +81,12 @@ def health():
 @app.get("/")
 def read_root():
     return {"message": "Welcome to the Sabah Road Care API"}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "main:app", 
+        host="0.0.0.0", 
+        port=8000, 
+        reload=config("ENVIRONMENT") == "development"
+    )

@@ -11,6 +11,7 @@ import schemas
 import models
 from database.connect import get_db
 
+
 # --- Security settings ---
 SECRET_KEY = os.getenv("JWT_SECRET", "CHANGE_ME_DEV_ONLY_SUPER_SECRET")
 ALGORITHM = "HS256"
@@ -32,8 +33,8 @@ def create_access_token(subject: dict, expires_delta: timedelta | None = None) -
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 # --- Current user dependency ---
-def get_user_by_id(db: Session, user_id: int) -> Union[models.User, None]:
-    return db.query(models.Userer).filter(models.Userer.id == user_id).first()
+def get_user_by_id(db: Session, user_id: int) -> Union[User, None]:
+    return db.query(User).filter(User.id == user_id).first()
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
@@ -57,3 +58,6 @@ async def get_current_user(
     if user is None or not user.is_active:
         raise credentials_exception
     return user
+
+
+
