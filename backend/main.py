@@ -1,5 +1,5 @@
 # Import necessary modules from FastAPI and other libraries
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
@@ -8,6 +8,8 @@ from sqlalchemy.orm import Session
 from database.connect import engine as report_engine
 import models.report as report_models
 from routers import dashboard, history, user
+from routers import photos  # Import the photos router
+
 try:
     from database.connect import Base, engine, get_db  # Shared auth DB/session
     from backend import models, schemas
@@ -19,15 +21,7 @@ except ImportError:
     from auth.user import verify_password, create_access_token
     from routers.user import router as user_router
 
-# ---------- NEW: photos router (Drive uploads)
-# Make sure you created routers/photos.py with an APIRouter named `router`
-try:
-    from routers.photos import router as photos_router
-except ImportError as e:
-    photos_router = None
-    print("[WARN] Could not import routers.photos:", e)
-
-# ---------- Create tables (DEV ONLY). Keep your original report tables + auth tables.
+# Create tables (DEV ONLY). Keep your original report tables + auth tables.
 report_models.Base.metadata.create_all(bind=report_engine)
 Base.metadata.create_all(bind=engine)
 
@@ -50,24 +44,10 @@ app.add_middleware(
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
+app.include_router(photos.router, prefix="/api", tags=["photos"])  # Include the photos router
 
 # Authentication endpoint to get access token
-@app.post("/auth/token", response_model=schemas.Token)
-=======
-# ---------- Routers
-# Keep your original dashboard router
-app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
-
-# Users router (register/me/etc.) under /api
-app.include_router(user_router, prefix="/api", tags=["users"])
-
-# NEW: Photos upload router under /api/photos
-if photos_router:
-    app.include_router(photos_router, prefix="/api", tags=["photos"])
-
-# ---------- Auth: token endpoint (top-level)
 @app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
-
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),

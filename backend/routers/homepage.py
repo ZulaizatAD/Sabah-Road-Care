@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, Q
 from sqlalchemy.orm import Session
 
 import models
-from database.connection import get_db
+from database.connect import get_db
 
 router = APIRouter()
 
