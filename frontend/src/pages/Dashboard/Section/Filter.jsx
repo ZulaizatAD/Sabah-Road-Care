@@ -23,13 +23,18 @@ const sabahDistricts = [
 
 const Filter = ({ filters, handleFilterChange, handleShare }) => {
   const handleClearFilters = () => {
-    handleFilterChange("location", "");
-    handleFilterChange("date", "");
+    handleFilterChange("district", "");
+    handleFilterChange("start_date", "");
+    handleFilterChange("end_date", "");
     handleFilterChange("severity", "");
     toast.info("Filters cleared");
   };
 
-  const hasActiveFilters = filters.location || filters.date || filters.severity;
+  const hasActiveFilters =
+    filters.district ||
+    filters.start_date ||
+    filters.end_date ||
+    filters.severity;
 
   return (
     <div className="filter-container">
@@ -44,15 +49,15 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
           </button>
         )}
       </div>
-      
+
       <div className="filter-inputs">
         <div className="filter-group">
-          <label htmlFor="location-filter">Location:</label>
+          <label htmlFor="district-filter">District:</label>
           <select
-            id="location-filter"
+            id="district-filter"
             className="filter-select"
-            value={filters.location}
-            onChange={(e) => handleFilterChange("location", e.target.value)}
+            value={filters.district}
+            onChange={(e) => handleFilterChange("district", e.target.value)}
           >
             {sabahDistricts.map((district) => (
               <option key={district.value} value={district.value}>
@@ -63,14 +68,26 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="date-filter">Date:</label>
+          <label htmlFor="start-date-filter">Start Date:</label>
           <input
-            id="date-filter"
+            id="start-date-filter"
             type="date"
             className="filter-date"
-            value={filters.date}
-            onChange={(e) => handleFilterChange("date", e.target.value)}
-            max={new Date().toISOString().split('T')[0]} // Prevent future dates
+            value={filters.start_date}
+            onChange={(e) => handleFilterChange("start_date", e.target.value)}
+            max={new Date().toISOString().split("T")[0]} // Prevent future dates
+          />
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="end-date-filter">End Date:</label>
+          <input
+            id="end-date-filter"
+            type="date"
+            className="filter-date"
+            value={filters.end_date}
+            onChange={(e) => handleFilterChange("end_date", e.target.value)}
+            max={new Date().toISOString().split("T")[0]} // Prevent future dates
           />
         </div>
 

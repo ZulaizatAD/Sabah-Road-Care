@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useUser } from "../../context/UserContext";
-import { reportAPI } from "../../services/api";
+import { dashboardAPI } from "../../services/api2"; // Import the API service
 import Filter from "./Section/Filter";
 import StatsCards from "./Section/StatusCards";
 import Charts from "./Section/Charts";
@@ -9,25 +8,29 @@ import { toast } from "react-toastify";
 import "./Dashboard.css";
 
 const Dashboard = () => {
-  const { user } = useUser();
   const [filters, setFilters] = useState({
-    location: "",
-    date: "",
+    district: "",
+    start_date: "",
+    end_date: "",
     severity: "",
   });
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ✅ ADD: Real data fetching
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
         setLoading(true);
+        const params = new URLSearchParams(filters).toString();
+        console.log("Fetching data with params:", params); // Debugging statement
         const [statsResponse, chartsResponse] = await Promise.all([
-          reportAPI.getDashboardStats(filters),
-          reportAPI.getChartsData(filters),
+          dashboardAPI.getDashboardStats(filters),
+          dashboardAPI.getChartsData(filters),
         ]);
+
+        console.log("Received stats data:", statsResponse.data); // Debugging statement
+        console.log("Received charts data:", chartsResponse.data); // Debugging statement
 
         setDashboardData({
           stats: statsResponse.data,
@@ -36,33 +39,6 @@ const Dashboard = () => {
       } catch (error) {
         console.error("Dashboard data fetch error:", error);
         setError("Failed to load dashboard data");
-
-        // Fallback to sample data
-        setDashboardData({
-          stats: {
-            totalCases: 45,
-            underReview: 20,
-            approved: 20,
-            inProgress: 15,
-            completed: 10,
-            rejected: 10,
-          },
-          charts: {
-            pieData: [
-              { name: "Low", value: 20, color: "#82ca9d" },
-              { name: "Medium", value: 15, color: "#ffc658" },
-              { name: "High", value: 10, color: "#ff7c7c" },
-            ],
-            trendData: [
-              { month: "Jan", cases: 20 },
-              { month: "Feb", cases: 45 },
-              { month: "Mar", cases: 45 },
-              { month: "Apr", cases: 50 },
-              { month: "May", cases: 60 },
-              { month: "Jun", cases: 70 },
-            ],
-          },
-        });
       } finally {
         setLoading(false);
       }
@@ -71,15 +47,14 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [filters]);
 
-  // Filter Handler
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({
       ...prev,
       [filterType]: value,
     }));
+    console.log("Updated filters:", filters); // Debugging statement
   };
 
-  // Share functionality
   const handleShare = async () => {
     try {
       if (navigator.share) {
@@ -91,7 +66,6 @@ const Dashboard = () => {
           url: window.location.href,
         });
       } else {
-        // Fallback: Copy to clipboard
         await navigator.clipboard.writeText(window.location.href);
         toast.success("Dashboard link copied to clipboard!");
       }
@@ -101,7 +75,6 @@ const Dashboard = () => {
     }
   };
 
-  // Loading and error states
   if (loading) {
     return (
       <div className="dashboard-content">
