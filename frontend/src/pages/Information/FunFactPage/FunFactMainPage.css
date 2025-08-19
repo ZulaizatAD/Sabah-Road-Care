@@ -312,7 +312,7 @@
   object-fit: cover;
 }
 
-.main-content {
+.fun-fact-main-content {
   position: relative;
   z-index: 1;
   width: 100%;
@@ -322,7 +322,7 @@
   justify-content: center;
 }
 
-.body-container {
+.fun-fact-body-container {
   display: flex;
   flex-direction: column;
   justify-content: center;

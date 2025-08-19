@@ -32,7 +32,7 @@ export default function FunFactMainPage() {
     switch (currentPage) {
       case 'main':
         return (
-          <div className="body-container">
+          <div className="fun-fact-body-container">
             <div className="text-section">
               <h1>Explore Our Facts</h1>
               <p>Discover interesting facts about various topics or dive into the history of Sabah.</p>
@@ -74,7 +74,7 @@ export default function FunFactMainPage() {
       <AvatarMain />
       
       {/* The main-content div remains, but it's now a sibling to the background component. */}
-      <div className="main-content">
+      <div className="fun-fact-main-content">
         {renderContent()}
       </div>
       {selectedCard && <FunFactCardPopup card={selectedCard} onClose={handleClosePopup} />}
