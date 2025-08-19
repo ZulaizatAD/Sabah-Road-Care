@@ -4,14 +4,23 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from database.connection import engine as report_engine
 import models.report as report_models
+from routers import dashboard
+from routers import login
+
+# ---------- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
+
 from routers import dashboard, history, contact  # Import the contact router
 
 # ---- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
+
 try:
     from database.connection import Base, engine, get_db  # shared auth DB/session
     from backend import models, schemas
     from backend.auth import verify_password, create_access_token
+
+    from routers.user import router as user_router
     from backend.routers.user import router as user_router  # e.g., app/routers/user.py
+
 except ImportError:
     # Fallback to flat package (if main.py sits inside the same package as these modules)
     from database.connection import Base, engine, get_db
@@ -19,40 +28,47 @@ except ImportError:
     from auth.user import verify_password, create_access_token
     from routers.user import router as user_router
 
-# ---- Create tables (DEV ONLY). Keep your original report tables + auth tables.
+# ---------- NEW: photos router (Drive uploads)
+# Make sure you created routers/photos.py with an APIRouter named `router`
+try:
+    from routers.photos import router as photos_router
+except ImportError as e:
+    photos_router = None
+    print("[WARN] Could not import routers.photos:", e)
+
+# ---------- Create tables (DEV ONLY). Keep your original report tables + auth tables.
 report_models.Base.metadata.create_all(bind=report_engine)
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Sabah Road Care API", version="0.1.0")
 
-# ---- CORS (add your frontend origins here)
+# ---------- CORS (add your frontend origins here)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
+        "http://127.0.0.1:3000",
     ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ---- Routers
-# Include the dashboard router
+# ---------- Routers
+# Keep your original dashboard router
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 
-# Include the users router (register, me, etc.) under the same /api prefix
+# Users router (register/me/etc.) under /api
 app.include_router(user_router, prefix="/api", tags=["users"])
 
-# Include the history router
-app.include_router(history.router, prefix="/api", tags=["history"])
+# NEW: Photos upload router under /api/photos
+if photos_router:
+    app.include_router(photos_router, prefix="/api", tags=["photos"])
 
-# Include the contact router
-app.include_router(contact.router, prefix="/api", tags=["contact"])
-
-# ---- Auth: token endpoint (kept at top-level, not in /api for clarity)
-@app.post("/auth/token", response_model=schemas.Token)
+# ---------- Auth: token endpoint (top-level)
+@app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
@@ -69,7 +85,7 @@ def login_for_access_token(
     token = create_access_token(subject={"sub": str(user.id), "email": user.email})
     return {"access_token": token, "token_type": "bearer"}
 
-# ---- Health + your original root
+# ---------- Health + root
 @app.get("/health", tags=["health"])
 def health():
     return {"status": "ok"}
