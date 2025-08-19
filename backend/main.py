@@ -1,40 +1,32 @@
-# main.py
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-<<<<<<< Updated upstream
 from database.connection import engine as report_engine
 import models.report as report_models
-=======
-from dotenv import load_dotenv
-
-# ---------- Load env FIRST (so GOOGLE_* vars are available to drive.py / routers)
-load_dotenv()
-
-# ---------- Your original imports (reports DB + models + dashboard router)
-from backend.database.report import engine as report_engine
-import backend.models.report as report_models
->>>>>>> Stashed changes
 from routers import dashboard
 from routers import login
 
 # ---------- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
+
+from routers import dashboard, history, contact  # Import the contact router
+
+# ---- Try to load shared/auth DB + models/schemas/auth (adjust paths if needed)
+
 try:
     from database.connection import Base, engine, get_db  # shared auth DB/session
     from backend import models, schemas
     from backend.auth import verify_password, create_access_token
-<<<<<<< Updated upstream
-    from routers.login import router as user_router  # e.g., app/routers/user.py
-=======
+
     from routers.user import router as user_router
->>>>>>> Stashed changes
+    from backend.routers.user import router as user_router  # e.g., app/routers/user.py
+
 except ImportError:
     # Fallback to flat package (if main.py sits inside the same package as these modules)
     from database.connection import Base, engine, get_db
     import models, schemas
     from auth.user import verify_password, create_access_token
-    from routers.login import router as user_router
+    from routers.user import router as user_router
 
 # ---------- NEW: photos router (Drive uploads)
 # Make sure you created routers/photos.py with an APIRouter named `router`
@@ -81,20 +73,16 @@ def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    # Accept either email or username in "username"
+    # Accept email in "username" field
     identifier = form_data.username.strip().lower()
 
-    user = (
-        db.query(models.User)
-        .filter((models.User.email == identifier) | (models.User.username == identifier))
-        .first()
-    )
+    user = db.query(models.User).filter(models.User.email == identifier).first()
     if not user or not verify_password(form_data.password, user.password_hash):
         raise HTTPException(status_code=400, detail="Incorrect credentials.")
     if not user.is_active:
         raise HTTPException(status_code=403, detail="User is inactive.")
 
-    token = create_access_token(subject={"sub": str(user.id), "username": user.username})
+    token = create_access_token(subject={"sub": str(user.id), "email": user.email})
     return {"access_token": token, "token_type": "bearer"}
 
 # ---------- Health + root

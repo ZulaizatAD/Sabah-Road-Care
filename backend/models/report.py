@@ -1,7 +1,7 @@
 from sqlalchemy import Column, String, DateTime
 from sqlalchemy.dialects.postgresql import JSONB
 from datetime import datetime
-from database.connection import Base
+from database import Base
 
 class PotholeReport(Base):
     __tablename__ = "pothole_reports"

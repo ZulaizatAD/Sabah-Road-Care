@@ -1,22 +1,31 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-// import { useUser } from "../../context/UserContext";
+import { useUser } from "../../context/UserContext";
 import FormSection from "./Section/FormSection";
 import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
-// import { generateLocationHash, checkDuplicateSubmission } from "../../utils/duplicateDetection";
+import {
+  safeDuplicateCheck as checkDuplicateSubmission,
+  getDuplicateDetectionSummary,
+  formatTimeRemaining,
+  calculatePriorityFromDuplicates,
+  generateLocationHash,
+} from "../../utils/duplicateDetection";
+import { reportAPI } from "../../services/api";
 import "./Homepage.css";
 import config from "../../config/environment";
 
-// Handles form data, validation, location services and submission
 const Homepage = () => {
-  // Hook for navigation
   const navigate = useNavigate();
-  // const { user } = useUser();
+  const { user } = useUser();
 
-  // Main form state - stores all form data
+  // Add duplicate detection state
+  const [duplicateDetection, setDuplicateDetection] = useState(null);
+  const [showDuplicateInfo, setShowDuplicateInfo] = useState(false);
+
+  // Main form state
   const [formData, setFormData] = useState({
     photos: [null, null, null],
     location: {
@@ -29,13 +38,72 @@ const Homepage = () => {
     description: "",
   });
 
-  // Form validation errors & track if form is being submitted (prevents double submission)
+  // Check for duplicates when location changes
+  useEffect(() => {
+    if (formData.location.latitude && formData.location.longitude && user?.id) {
+      const checkDuplicates = async () => {
+        try {
+          // Fetch user's reports and all reports for comparison
+          const [userReportsResponse, allReportsResponse] = await Promise.all([
+            reportAPI.getUserReports({ userId: user.id }),
+            reportAPI.getNearbyReports({
+              latitude: formData.location.latitude,
+              longitude: formData.location.longitude,
+              radius: 100, // 100 meter radius
+            }),
+          ]);
+
+          const newReport = {
+            location: formData.location,
+            submissionTime: new Date().toISOString(),
+            userId: user.id,
+          };
+
+          const duplicateResult = safeDuplicateCheck(
+            newReport,
+            userReportsResponse.data.reports || [],
+            allReportsResponse.data.reports || []
+          );
+
+          setDuplicateDetection(duplicateResult);
+
+          if (
+            !duplicateResult.canSubmit ||
+            duplicateResult.similarReportsCount > 0
+          ) {
+            setShowDuplicateInfo(true);
+          }
+        } catch (error) {
+          console.error("Duplicate detection error:", error);
+          // Fallback to local check with recent submissions
+          const newReport = {
+            location: formData.location,
+            submissionTime: new Date().toISOString(),
+            userId: user.id,
+          };
+
+          const duplicateResult = checkDuplicateSubmission(
+            newReport,
+            recentSubmissions.filter((r) => r.userId === user.id),
+            recentSubmissions
+          );
+
+          setDuplicateDetection(duplicateResult);
+        }
+      };
+
+      // Debounce the duplicate check
+      const timeoutId = setTimeout(checkDuplicates, 1000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [formData.location.latitude, formData.location.longitude, user?.id]);
+
+  // Form validation errors & submission state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showMapPicker, setShowMapPicker] = useState(false);
-  // const [duplicateCheck, setDuplicateCheck] = useState(null);
 
-  // List all districts in Sabah for the dropdown
+  // Sabah districts list
   const sabahDistricts = [
     { value: "", label: "Select District" },
     { value: "kota-kinabalu", label: "Kota Kinabalu" },
@@ -99,7 +167,7 @@ const Homepage = () => {
     },
   ]);
 
-  // Handle input changes - textfields and dropdowns
+  // Handle input changes
   const handleInputChange = (field, value) => {
     setFormData((prev) => ({
       ...prev,
@@ -122,7 +190,7 @@ const Homepage = () => {
     step.classList.toggle("expanded");
   };
 
-  // Handles photo upload for 3 angles - create copy of photos array, update specific index with the new file, update form data
+  // Handle photo upload
   const handlePhotoUpload = (index, file) => {
     if (!formData.photos || !Array.isArray(formData.photos)) {
       console.error("Photos array not properly initialized");
@@ -154,7 +222,7 @@ const Homepage = () => {
     }
   };
 
-  // Get user's current GPS location using browser's Geolocation API
+  // Get user's current GPS location
   const getCurrentLocation = () => {
     if (navigator.geolocation) {
       const locationToast = toast.loading("Getting your location...", {
@@ -174,12 +242,12 @@ const Homepage = () => {
           }));
 
           toast.dismiss(locationToast);
-          toast.success("Location tagged successfully!", {
+          toast.success("📍 Location tagged successfully!", {
             position: "top-right",
             autoClose: 2000,
           });
 
-          // convert coordinates to human-radable address
+          // Convert coordinates to human-readable address
           reverseGeocode(latitude, longitude);
         },
         (error) => {
@@ -312,22 +380,22 @@ const Homepage = () => {
       }));
     }
   };
-  // Validate all form fields before submission
+
+  // Validate form before submission
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate photos array exists and has files
+    // Validate photos
     if (!formData.photos || !Array.isArray(formData.photos)) {
       newErrors.photos = "Photos array not initialized";
       return false;
     }
 
-    // Validate photo uploads (must have all 3 photos)
     const uploadedPhotos = formData.photos.filter(
       (photo) => photo !== null && photo !== undefined
     );
     if (uploadedPhotos.length < 3) {
-      newErrors.photos = "Please upload all 3 photo";
+      newErrors.photos = "Please upload all 3 photos";
     }
 
     // Validate location
@@ -335,25 +403,22 @@ const Homepage = () => {
       newErrors.location = "Please tag your location";
     }
 
-    // Validate district selection
+    // Validate district
     if (!formData.district) {
       newErrors.district = "Please select a district";
     }
 
-    // Update errors state and return validation result
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
-  // Save Draft Function
+  // Save draft function
   const handleSaveDraft = () => {
     try {
-      // Save to localStorage or send to API
       const draftData = {
         description: formData.description,
         district: formData.district,
         location: formData.location,
-        // Don't save photos (File objects can't be serialized)
         savedAt: new Date().toISOString(),
         id: Date.now(),
       };
@@ -376,61 +441,32 @@ const Homepage = () => {
     }
   };
 
-  // Form Submission Function
+  // Form submission without login checks
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      toast.error("Please fill in all required fields correctly.", {
-        position: "top-right",
-        autoClose: 4000,
-      });
+      toast.error("Please fill in all required fields correctly.");
       return;
     }
 
-    // Generate location hash for duplicate detection
+    // Generate location hash for duplicate detection (optional)
     const locationHash = generateLocationHash(
       formData.location.latitude,
       formData.location.longitude
     );
 
-    // Check for duplicate submission by same user
-    try {
-      const duplicateResult = await checkDuplicateSubmission(
-        user?.id || localStorage.getItem("userId"),
-        locationHash
-      );
-
-      if (duplicateResult.isDuplicate) {
-        toast.error(
-          "You've already reported this location in the last 24 hours!"
-        );
-        return;
-      }
-
-      // Check for existing reports at same location
-      const existingReports = await fetch(
-        `/api/reports/location/${locationHash}`
-      );
-      if (existingReports.ok) {
-        const reports = await existingReports.json();
-        if (reports.length > 0) {
-          toast.info(
-            `${reports.length} similar report(s) found at this location. Your report will help increase priority!`
-          );
-        }
-      }
-    } catch (error) {
-      console.error("Duplicate check failed:", error);
-      // Continue with submission even if duplicate check fails
+    // BLOCKING CHECK: User duplicate within 72 hours
+    if (duplicateDetection && !duplicateDetection.canSubmit) {
+      const summary = getDuplicateDetectionSummary(duplicateDetection);
+      toast.error(summary.message);
+      return;
     }
 
     setIsSubmitting(true);
 
     // Show loading toast
-    const loadingToast = toast.loading("Submitting your report...", {
-      position: "top-right",
-    });
+    const loadingToast = toast.loading("Submitting your report...");
 
     try {
       const submitData = new FormData();
@@ -441,6 +477,27 @@ const Homepage = () => {
       submitData.append("longitude", formData.location.longitude);
       submitData.append("address", formData.location.address);
       submitData.append("locationHash", locationHash);
+      submitData.append("submissionTime", new Date().toISOString());
+      submitData.append("userId", user.id);
+
+      if (duplicateDetection) {
+        const priority = calculatePriorityFromDuplicates(
+          duplicateDetection.similarReportsCount,
+          duplicateDetection.uniqueUsers,
+          "Low" // Base priority
+        );
+
+        submitData.append(
+          "duplicateMetadata",
+          JSON.stringify({
+            locationHash: duplicateDetection.locationHash,
+            similarReportsCount: duplicateDetection.similarReportsCount,
+            uniqueUsers: duplicateDetection.uniqueUsers,
+            severityMultiplier: duplicateDetection.severityMultiplier,
+            calculatedPriority: priority,
+          })
+        );
+      }
 
       if (formData.photos && Array.isArray(formData.photos)) {
         formData.photos.forEach((photo, index) => {
@@ -450,52 +507,49 @@ const Homepage = () => {
         });
       }
 
-      //API call to submit report
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        body: submitData,
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      // Replace simulation with real API call
+      const response = await reportAPI.submitReport(submitData);
+
+      toast.dismiss(loadingToast);
+
+      // Show success message with priority info
+      let successMessage = `Report submitted successfully! Report ID: ${response.data.reportId}`;
+      if (duplicateDetection?.similarReportsCount > 0) {
+        successMessage += `\n\nPriority boosted due to ${duplicateDetection.similarReportsCount} similar reports!`;
+      }
+      toast.success(successMessage, { autoClose: 5000 });
+
+      // Clear draft and reset form
+      localStorage.removeItem("potholeReportDraft");
+      setFormData({
+        photos: [null, null, null],
+        location: {
+          latitude: null,
+          longitude: null,
+          address: "",
+          roadName: "",
         },
+        district: "",
+        description: "",
       });
 
-      if (response.ok) {
-        // Dismiss loading toast and show success
-        toast.dismiss(loadingToast);
-        toast.success(
-          "Report submitted successfully! Thank you for helping improve our roads.",
-          {
-            position: "top-right",
-            autoClose: 5000,
-          }
-        );
-
-        // Clear draft from localStorage
-        localStorage.removeItem("potholeReportDraft");
-        setFormData({
-          photos: [null, null, null],
-          location: { latitude: null, longitude: null, address: "" },
-          district: "",
-          description: "",
-        });
-
-        // Reset form or navigate
-        setTimeout(() => {
-          navigate("/history");
-        }, 2000);
-      } else {
-        throw new Error("Failed to submit report");
-      }
+      // Navigate to history page
+      setTimeout(() => navigate("/history"), 2000);
     } catch (error) {
-      // Dismiss loading toast and show error
       toast.dismiss(loadingToast);
-      toast.error(
-        "❌ Failed to submit report. Please check your connection and try again.",
-        {
-          position: "top-right",
-          autoClose: 5000,
-        }
-      );
+
+      // Handle errors
+      if (error.response?.status === 413) {
+        toast.error("Files too large. Please compress images and try again.");
+      } else if (error.response?.status === 422) {
+        toast.error("Invalid data. Please check your inputs.");
+      } else if (error.response?.status === 401) {
+        toast.error("Authentication required. Please log in again.");
+        navigate("/");
+      } else {
+        toast.error("Failed to submit report. Please try again.");
+      }
+
       console.error("Submission error:", error);
     } finally {
       setIsSubmitting(false);
@@ -516,6 +570,7 @@ const Homepage = () => {
             latitude: null,
             longitude: null,
             address: "",
+            roadName: "",
           },
           photos: [null, null, null],
           savedAt: draftData.savedAt,
@@ -540,6 +595,151 @@ const Homepage = () => {
     }
   }, []);
 
+  // Render duplicate information
+  const renderDuplicateInfo = () => {
+    if (!showDuplicateInfo || !duplicateDetection) return null;
+
+    const summary = getDuplicateDetectionSummary(duplicateDetection);
+
+    return (
+      <div className={`duplicate-info ${summary.status}`}>
+        <div className="info-header">
+          <span className="info-icon">
+            {summary.status === "blocked"
+              ? "🚫"
+              : summary.status === "similar_found"
+              ? "📊"
+              : "ℹ️"}
+          </span>
+          <h4>{summary.title}</h4>
+          <button
+            className="close-info"
+            onClick={() => setShowDuplicateInfo(false)}
+          >
+            ✕
+          </button>
+        </div>
+
+        <p>{summary.message}</p>
+
+        {/* BLOCKING: User duplicate */}
+        {summary.status === "blocked" &&
+          duplicateDetection.userDuplicates.length > 0 && (
+            <div className="user-duplicate-details">
+              <h5>Your Previous Report:</h5>
+              {duplicateDetection.userDuplicates.map((duplicate, index) => (
+                <div key={index} className="duplicate-item blocked">
+                  <div className="duplicate-info">
+                    <span className="duplicate-location">
+                      📍 {duplicate.report.location || "Same location"}
+                    </span>
+                    <div className="duplicate-meta">
+                      <span className="distance">
+                        {duplicate.distance}m away
+                      </span>
+                      <span className="time">
+                        {duplicate.timeDiffHours}h ago
+                      </span>
+                      <span className="remaining">
+                        Wait: {formatTimeRemaining(duplicate.remainingHours)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+        {/* NON-BLOCKING: Similar reports (good for priority) */}
+        {summary.status === "similar_found" &&
+          duplicateDetection.similarReports.length > 0 && (
+            <div className="similar-reports-details">
+              <h5>Similar Reports (Priority Boost):</h5>
+              <div className="priority-boost-info">
+                <span className="boost-badge">
+                  🚀 Priority:{" "}
+                  {calculatePriorityFromDuplicates(
+                    duplicateDetection.similarReportsCount, // ✅ First: report count
+                    duplicateDetection.uniqueUsers, // ✅ Second: unique users
+                    "Low" // ✅ Third: base priority
+                  )}
+                </span>
+                <span className="severity-info">
+                  📈 Severity x{duplicateDetection.severityMultiplier}
+                </span>
+              </div>
+
+              {duplicateDetection.similarReports
+                .slice(0, 3)
+                .map((similar, index) => (
+                  <div key={index} className="duplicate-item similar">
+                    <div className="duplicate-info">
+                      <span className="duplicate-location">
+                        📍 {similar.report.location || "Similar location"}
+                      </span>
+                      <div className="duplicate-meta">
+                        <span className="distance">
+                          {similar.distance}m away
+                        </span>
+                        <span className="time">
+                          {similar.timeDiffHours}h ago
+                        </span>
+                        <span className="user">
+                          {similar.isFromSameUser
+                            ? "Your report"
+                            : "Other user"}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+
+              {duplicateDetection.similarReports.length > 3 && (
+                <p className="more-reports">
+                  +{duplicateDetection.similarReports.length - 3} more similar
+                  reports
+                </p>
+              )}
+            </div>
+          )}
+
+        <div className="info-actions">
+          {summary.status === "blocked" ? (
+            <>
+              <button
+                className="btn-secondary"
+                onClick={() => navigate("/history")}
+              >
+                View Your Reports
+              </button>
+              <button
+                className="btn-info"
+                onClick={() => setShowDuplicateInfo(false)}
+              >
+                Understood
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                className="btn-secondary"
+                onClick={() => navigate("/history")}
+              >
+                View Similar Reports
+              </button>
+              <button
+                className="btn-primary"
+                onClick={() => setShowDuplicateInfo(false)}
+              >
+                Continue Submission
+              </button>
+            </>
+          )}
+        </div>
+      </div>
+    );
+  };
+
   return (
     <div className="user-report">
       {/* Left Side - Main Form */}
@@ -550,6 +750,7 @@ const Homepage = () => {
             Report road damage to help improve our community
           </p>
         </header>
+
         {/* Main Form */}
         <form className="report-form" onSubmit={handleSubmit}>
           {/* Step 1 Instruction */}
@@ -562,12 +763,13 @@ const Homepage = () => {
               </div>
               <div className="step-content">
                 <p>
-                  Please upload 3 clear image from different angles (front view,
-                  side view, and close-up)
+                  Please upload 3 clear images from different angles (front
+                  view, side view, and close-up)
                 </p>
               </div>
             </div>
           </div>
+
           {/* Photos Section */}
           <FormSection
             title="📸 PHOTOS (Required: 3 angles)"
@@ -662,6 +864,8 @@ const Homepage = () => {
             )}
           </FormSection>
 
+          {renderDuplicateInfo()}
+
           {/* Step 3 Instruction */}
           <div className="step-instruction">
             <div className="step" onClick={(e) => toggleStep(e, 2)}>
@@ -678,6 +882,7 @@ const Homepage = () => {
               </div>
             </div>
           </div>
+
           {/* District Section */}
           <FormSection title="🏙 DISTRICT" error={errors.district}>
             <select
@@ -709,6 +914,7 @@ const Homepage = () => {
               </div>
             </div>
           </div>
+
           {/* Description Section */}
           <FormSection
             title="📝 REMARKS / DESCRIPTION"
@@ -730,8 +936,8 @@ const Homepage = () => {
               quality of our service
             </p>
           </div>
-          
-          {/* Form Submit Action */}
+
+          {/* Form Submit Actions */}
           <div className="form-actions">
             <button
               type="button"
@@ -743,9 +949,16 @@ const Homepage = () => {
             <button
               type="submit"
               className="submit-btn"
-              disabled={isSubmitting}
+              disabled={
+                isSubmitting ||
+                (duplicateDetection && !duplicateDetection.canSubmit)
+              }
             >
-              {isSubmitting ? "Submitting..." : "Submit Report"}
+              {isSubmitting
+                ? "Submitting..."
+                : duplicateDetection && !duplicateDetection.canSubmit
+                ? "Cannot Submit (Duplicate)"
+                : "Submit Report"}
             </button>
           </div>
         </form>
@@ -790,6 +1003,7 @@ const Homepage = () => {
 
         <QuickAction />
       </div>
+
       <MapPicker
         isVisible={showMapPicker}
         onClose={() => setShowMapPicker(false)}

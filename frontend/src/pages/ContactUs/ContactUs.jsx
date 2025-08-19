@@ -1,19 +1,42 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
+import emailjs from "@emailjs/browser";
 import "./ContactUs.css";
 
 export default function ContactUs() {
   const [contactFormData, setContactFormData] = useState({
-    firstName: "",
-    lastName: "",
+    name: "",
     email: "",
     subject: "",
     category: "",
     message: "",
   });
+  const validateEmailJSConfig = () => {
+    const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
+    const templateId = import.meta.env.VITE_EMAILJS_TEMPLATE_ID;
+    const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
+
+    if (!serviceId || !templateId || !publicKey) {
+      console.error("EmailJS configuration missing:", {
+        serviceId: !!serviceId,
+        templateId: !!templateId,
+        publicKey: !!publicKey,
+      });
+      return false;
+    }
+    return true;
+  };
 
   const [contactFormErrors, setContactFormErrors] = useState({});
   const [isContactSubmitting, setIsContactSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!validateEmailJSConfig()) {
+      toast.warning(
+        "Email service not configured. Contact form may not work properly."
+      );
+    }
+  }, []);
 
   // Support categories
   const supportCategories = [
@@ -42,18 +65,11 @@ export default function ContactUs() {
   const validateContactForm = () => {
     const newErrors = {};
 
-    // First name validation
-    if (!contactFormData.firstName.trim()) {
-      newErrors.firstName = "First name is required";
-    } else if (contactFormData.firstName.trim().length < 2) {
-      newErrors.firstName = "First name must be at least 2 characters";
-    }
-
-    // Last name validation
-    if (!contactFormData.lastName.trim()) {
-      newErrors.lastName = "Last name is required";
-    } else if (contactFormData.lastName.trim().length < 2) {
-      newErrors.lastName = "Last name must be at least 2 characters";
+    // Name validation
+    if (!contactFormData.name.trim()) {
+      newErrors.name = "Name is required";
+    } else if (contactFormData.name.trim().length < 2) {
+      newErrors.name = "Name must be at least 2 characters";
     }
 
     // Email validation
@@ -97,84 +113,83 @@ export default function ContactUs() {
     setIsContactSubmitting(true);
 
     try {
-      // Prepare email data
-      const emailData = {
-        to: "krewlzewl@gmail.com",
-        subject: `[Sabah Road Care] ${contactFormData.subject}`,
-        html: `
-          <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-            <div style="background: linear-gradient(135deg, #33e611, #2bc20f); padding: 20px; text-align: center;">
-              <h1 style="color: white; margin: 0;">Sabah Road Care - Contact Form</h1>
-            </div>
-            
-            <div style="padding: 30px; background: #f9f9f9;">
-              <h2 style="color: #333; border-bottom: 2px solid #33e611; padding-bottom: 10px;">
-                New Contact Form Submission
-              </h2>
-              
-              <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                <p><strong>From:</strong> ${contactFormData.firstName} ${contactFormData.lastName}</p>
-                <p><strong>Email:</strong> ${contactFormData.email}</p>
-                <p><strong>Category:</strong> ${supportCategories.find(cat => cat.value === contactFormData.category)?.label}</p>
-                <p><strong>Subject:</strong> ${contactFormData.subject}</p>
-              </div>
-              
-              <div style="background: white; padding: 20px; border-radius: 8px;">
-                <h3 style="color: #333; margin-top: 0;">Message:</h3>
-                <p style="line-height: 1.6; color: #555;">${contactFormData.message}</p>
-              </div>
-              
-              <div style="margin-top: 20px; padding: 15px; background: #e8f5e8; border-radius: 8px;">
-                <p style="margin: 0; font-size: 12px; color: #666;">
-                  This message was sent from the Sabah Road Care contact form on ${new Date().toLocaleString()}.
-                </p>
-              </div>
-            </div>
-          </div>
-        `,
+      // Prepare template parameters for EmailJS
+      const templateParams = {
+        from_name: contactFormData.name,
+        from_email: contactFormData.email,
+        to_email: "krewlzewl@gmail.com",
+        subject: contactFormData.subject,
+        category:
+          supportCategories.find(
+            (cat) => cat.value === contactFormData.category
+          )?.label || "General",
+        message: contactFormData.message,
+        reply_to: contactFormData.email,
+        submission_date: new Date().toLocaleString(),
+        user_agent: navigator.userAgent,
       };
 
-      // TODO: Replace with actual email service (EmailJS, Formspree, etc.)
-      // For now, simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Example using EmailJS (you'll need to set this up):
-      /*
+      // Send email using EmailJS
       const response = await emailjs.send(
-        'YOUR_SERVICE_ID',
-        'YOUR_TEMPLATE_ID',
-        {
-          from_name: `${contactFormData.firstName} ${contactFormData.lastName}`,
-          from_email: contactFormData.email,
-          subject: contactFormData.subject,
-          category: supportCategories.find(cat => cat.value === contactFormData.category)?.label,
-          message: contactFormData.message,
-          to_email: 'krewlzewl@gmail.com'
-        },
-        'YOUR_PUBLIC_KEY'
+        import.meta.env.VITE_EMAILJS_SERVICE_ID,
+        import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+        templateParams,
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
-      */
 
-      toast.success("Message sent successfully! We'll get back to you soon.", {
-        position: "top-right",
-        autoClose: 5000,
-      });
+      console.log("EmailJS response:", response);
 
-      // Reset form
-      setContactFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        subject: "",
-        category: "",
-        message: "",
-      });
+      if (response.status === 200) {
+        toast.success(
+          "Message sent successfully! We'll get back to you soon.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+          }
+        );
 
+        // Reset form
+        setContactFormData({
+          name: "",
+          email: "",
+          subject: "",
+          category: "",
+          message: "",
+        });
+      } else {
+        throw new Error("EmailJS response not successful");
+      }
     } catch (error) {
       console.error("Contact form error:", error);
-      toast.error("Failed to send message. Please try again or email us directly at krewlzewl@gmail.com");
+
+      const errorMessage = getEmailJSErrorMessage(error);
+      toast.error(errorMessage);
+
+      // Fallback message with direct email (only for non-rate-limiting errors)
+      if (error.status !== 429) {
+        setTimeout(() => {
+          toast.info("You can also email us directly at krewlzewl@gmail.com", {
+            autoClose: 8000,
+          });
+        }, 2000);
+      }
     } finally {
       setIsContactSubmitting(false);
+    }
+  };
+
+  const getEmailJSErrorMessage = (error) => {
+    switch (error.status) {
+      case 400:
+        return "Invalid email configuration. Please contact support.";
+      case 402:
+        return "Email service temporarily unavailable. Please try again later.";
+      case 422:
+        return "Invalid form data. Please check your inputs and try again.";
+      case 429:
+        return "Too many requests. Please wait a moment and try again.";
+      default:
+        return "Failed to send message. Please try again or contact us directly.";
     }
   };
 
@@ -217,40 +232,34 @@ export default function ContactUs() {
           <div className="contact-us-form-wrapper">
             <form className="contact-us-form" onSubmit={handleContactSubmit}>
               <div className="contact-us-name-fields">
-                <div className={`contact-us-input-group ${contactFormErrors.firstName ? 'contact-us-error' : ''}`}>
-                  <label className="contact-us-label">First Name *</label>
+                <div
+                  className={`contact-us-input-group ${
+                    contactFormErrors.name ? "contact-us-error" : ""
+                  }`}
+                >
+                  <label className="contact-us-label">Your Name *</label>
                   <input
                     className="contact-us-input"
                     type="text"
-                    name="firstName"
-                    value={contactFormData.firstName}
+                    name="name"
+                    value={contactFormData.name}
                     onChange={handleContactChange}
-                    placeholder="Enter your first name"
+                    placeholder="Enter your name"
                     disabled={isContactSubmitting}
                   />
-                  {contactFormErrors.firstName && (
-                    <span className="contact-us-error-message">{contactFormErrors.firstName}</span>
-                  )}
-                </div>
-
-                <div className={`contact-us-input-group ${contactFormErrors.lastName ? 'contact-us-error' : ''}`}>
-                  <label className="contact-us-label">Last Name *</label>
-                  <input
-                    className="contact-us-input"
-                    type="text"
-                    name="lastName"
-                    value={contactFormData.lastName}
-                    onChange={handleContactChange}
-                    placeholder="Enter your last name"
-                    disabled={isContactSubmitting}
-                  />
-                  {contactFormErrors.lastName && (
-                    <span className="contact-us-error-message">{contactFormErrors.lastName}</span>
+                  {contactFormErrors.name && (
+                    <span className="contact-us-error-message">
+                      {contactFormErrors.name}
+                    </span>
                   )}
                 </div>
               </div>
 
-              <div className={`contact-us-input-group ${contactFormErrors.email ? 'contact-us-error' : ''}`}>
+              <div
+                className={`contact-us-input-group ${
+                  contactFormErrors.email ? "contact-us-error" : ""
+                }`}
+              >
                 <label className="contact-us-label">Email Address *</label>
                 <input
                   className="contact-us-input"
@@ -262,11 +271,17 @@ export default function ContactUs() {
                   disabled={isContactSubmitting}
                 />
                 {contactFormErrors.email && (
-                  <span className="contact-us-error-message">{contactFormErrors.email}</span>
+                  <span className="contact-us-error-message">
+                    {contactFormErrors.email}
+                  </span>
                 )}
               </div>
 
-              <div className={`contact-us-input-group ${contactFormErrors.category ? 'contact-us-error' : ''}`}>
+              <div
+                className={`contact-us-input-group ${
+                  contactFormErrors.category ? "contact-us-error" : ""
+                }`}
+              >
                 <label className="contact-us-label">Category *</label>
                 <select
                   className="contact-us-select"
@@ -282,11 +297,17 @@ export default function ContactUs() {
                   ))}
                 </select>
                 {contactFormErrors.category && (
-                  <span className="contact-us-error-message">{contactFormErrors.category}</span>
+                  <span className="contact-us-error-message">
+                    {contactFormErrors.category}
+                  </span>
                 )}
               </div>
 
-              <div className={`contact-us-input-group ${contactFormErrors.subject ? 'contact-us-error' : ''}`}>
+              <div
+                className={`contact-us-input-group ${
+                  contactFormErrors.subject ? "contact-us-error" : ""
+                }`}
+              >
                 <label className="contact-us-label">Subject *</label>
                 <input
                   className="contact-us-input"
@@ -298,11 +319,17 @@ export default function ContactUs() {
                   disabled={isContactSubmitting}
                 />
                 {contactFormErrors.subject && (
-                  <span className="contact-us-error-message">{contactFormErrors.subject}</span>
+                  <span className="contact-us-error-message">
+                    {contactFormErrors.subject}
+                  </span>
                 )}
               </div>
 
-              <div className={`contact-us-input-group ${contactFormErrors.message ? 'contact-us-error' : ''}`}>
+              <div
+                className={`contact-us-input-group ${
+                  contactFormErrors.message ? "contact-us-error" : ""
+                }`}
+              >
                 <label className="contact-us-label">Message *</label>
                 <textarea
                   className="contact-us-textarea"
@@ -317,13 +344,17 @@ export default function ContactUs() {
                   {contactFormData.message.length}/1000
                 </div>
                 {contactFormErrors.message && (
-                  <span className="contact-us-error-message">{contactFormErrors.message}</span>
+                  <span className="contact-us-error-message">
+                    {contactFormErrors.message}
+                  </span>
                 )}
               </div>
 
-              <button 
-                type="submit" 
-                className={`contact-us-submit-btn ${isContactSubmitting ? 'contact-us-loading' : ''}`}
+              <button
+                type="submit"
+                className={`contact-us-submit-btn ${
+                  isContactSubmitting ? "contact-us-loading" : ""
+                }`}
                 disabled={isContactSubmitting}
               >
                 {isContactSubmitting ? (
@@ -332,21 +363,10 @@ export default function ContactUs() {
                     Sending Message...
                   </>
                 ) : (
-                  'SEND MESSAGE'
+                  "SEND MESSAGE"
                 )}
               </button>
             </form>
-          </div>
-        </div>
-
-        {/* Additional Information */}
-        <div className="contact-us-additional-info">
-          <div className="contact-us-faq-link">
-            <h3>Looking for quick answers?</h3>
-            <p>Check our FAQ section for common questions and solutions.</p>
-            <button className="contact-us-faq-btn" onClick={() => window.location.href = '/faqs'}>
-              Visit FAQ
-            </button>
           </div>
         </div>
       </div>

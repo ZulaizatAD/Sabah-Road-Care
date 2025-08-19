@@ -125,12 +125,6 @@
   gap: 1.5rem;
 }
 
-.contact-us-name-fields {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-}
-
 .contact-us-input-group {
   display: flex;
   flex-direction: column;
@@ -263,52 +257,6 @@
   }
 }
 
-/* Additional Information */
-.contact-us-additional-info {
-  background: linear-gradient(
-    120deg,
-    rgba(255, 255, 255, 0.2),
-    rgba(255, 255, 255, 0.1)
-  );
-  backdrop-filter: blur(15px);
-  border-radius: 16px;
-  padding: 2rem;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  text-align: center;
-}
-
-.contact-us-faq-link h3 {
-  color: var(--primary-green);
-  font-size: 1.4rem;
-  font-weight: 700;
-  margin: 0 0 0.5rem 0;
-}
-
-.contact-us-faq-link p {
-  color: var(--white);
-  font-size: 1rem;
-  margin: 0 0 1.5rem 0;
-}
-
-.contact-us-faq-btn {
-  background: rgba(255, 255, 255, 0.2);
-  color: var(--white);
-  border: 2px solid rgba(255, 255, 255, 0.3);
-  border-radius: 10px;
-  padding: 0.75rem 1.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.contact-us-faq-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
-  border-color: var(--primary-green);
-  color: var(--primary-green);
-  transform: translateY(-1px);
-}
-
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .contact-us-page {
@@ -326,11 +274,6 @@
   .contact-us-content {
     grid-template-columns: 1fr;
     gap: 2rem;
-  }
-
-  .contact-us-name-fields {
-    grid-template-columns: 1fr;
-    gap: 1rem;
   }
 
   .contact-us-form-wrapper {
