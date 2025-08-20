@@ -7,10 +7,7 @@ from database.connect import get_db
 from auth.security import get_current_user
 from schemas.report import CaseBase
 
-router = APIRouter(
-    prefix="/history",
-    tags=["Report History"]
-)
+router = APIRouter()
 
 @router.get("/reports", response_model=List[CaseBase])
 def get_user_reports(

@@ -7,11 +7,11 @@ class CaseBase(BaseModel):
     district: str
     status: str
     severity: str
-    location_address: str
+    location: str
     latitude: float
     longitude: float
     date_created: datetime
-    last_status_update: datetime
+    last_date_status_update: datetime
     photo_top: str
     photo_far: str
     photo_close: str
