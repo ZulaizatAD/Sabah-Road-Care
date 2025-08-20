@@ -1,13 +1,14 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
+import { signIn, signUp } from "../../services/api3"; // 👈 import here
 import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, register } = useUser();
+  const { login } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -47,39 +48,48 @@ const Login = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call - replace with actual authentication
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      let userData;
 
-      // Check if email and password are valid
-      if (formData.email && formData.password) {
-        if (isSignUp) {
-          toast.success(
-            "Account created successfully! Welcome to Sabah Road Care! 🚗"
-          );
-        } else {
-          toast.success("Welcome back to Sabah Road Care! 🚗");
-        }
+      if (isSignUp) {
+        // Call API sign up
+        await signUp(
+          formData.email,
+          formData.email.split("@")[0], // 👈 use part of email as full_name
+          formData.password,
+          formData.confirmPassword
+        );
 
-        // Use the login function from context
-        login({
-          id: "demo-user-001",
-          name: formData.email.split("@")[0], // Extract name from email
-          email: formData.email,
-          token: "demo-token",
-        });
+        toast.success("Account created successfully! 🚗 Please log in.");
+        setIsSignUp(false); // switch to login after signup
+        setIsLoading(false);
+        return;
+      } else {
+        // Call API sign in
+        const data = await signIn(formData.email, formData.password);
 
-        // Navigate to homepage
+        userData = {
+          id: data.user?.id || "unknown",
+          name: data.user?.full_name || formData.email.split("@")[0],
+          email: data.user?.email || formData.email,
+          token: data.access_token,
+        };
+
+        // Save to context
+        login(userData);
+
+        toast.success("Welcome back to Sabah Road Care! 🚗");
+
+        // Redirect after successful login
         setTimeout(() => {
           navigate("/homepage");
         }, 1000);
-      } else {
-        throw new Error("Invalid credentials");
       }
     } catch (error) {
+      console.error(error);
       toast.error(
         isSignUp
-          ? "Sign up failed. Please try again."
-          : "Login failed. Please try again."
+          ? error.response?.data?.detail || "Sign up failed. Please try again."
+          : error.response?.data?.detail || "Login failed. Please try again."
       );
     } finally {
       setIsLoading(false);
@@ -89,7 +99,6 @@ const Login = () => {
   // Handle Google Sign In
   const handleGoogleSignIn = () => {
     toast.info("Google Sign-In will be implemented with Firebase Auth");
-    // TODO: Implement Firebase Google Auth
   };
 
   // Demo login function
