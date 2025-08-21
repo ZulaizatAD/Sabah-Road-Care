@@ -65,3 +65,45 @@ export const getCurrentUser = async () => {
 export const logout = () => {
   localStorage.removeItem("token");
 };
+
+// --- Get My Profile ---
+export const getMyProfile = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found. Please sign in.");
+
+  const response = await api.get("/profile/me", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data;
+};
+
+// --- Upload Profile Picture ---
+export const uploadProfilePicture = async (file) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found. Please sign in.");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await api.post("/profile/picture", formData, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return response.data; // { profile_picture: "url" }
+};
+
+// --- Delete Profile Picture ---
+export const deleteProfilePicture = async () => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found. Please sign in.");
+
+  const response = await api.delete("/profile/picture", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data; // { message: "...deleted successfully" }
+};
