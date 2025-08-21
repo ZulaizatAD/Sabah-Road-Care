@@ -3,13 +3,14 @@ from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from decouple import config
 from routers import profilepic
+from decouple import config
+
 
 # Import database engine and models for reports
 from database.connect import engine as report_engine
 import models.report as report_models
-from routers import dashboard, history, user
+from routers import dashboard, history
 # Remove the old photos import
 # from routers import photos  # Import the photos router
 
@@ -20,7 +21,8 @@ try:
 except ImportError:
     # Fallback if the imports above fail (e.g., if the structure is flat)
     from database.connect import Base, engine, get_db
-    import models, schemas
+    import models
+    import schemas
     from auth.security import verify_password, create_access_token
     from routers.user import router as user_router
 
