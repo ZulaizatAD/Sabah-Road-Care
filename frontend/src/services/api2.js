@@ -20,8 +20,7 @@ api2.interceptors.request.use((config) => {
   return config;
 });
 
-// Response interceptor for error handling
-api2.interceptors.response.use(
+Aapi2.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
@@ -72,7 +71,6 @@ export const dashboardAPI = {
           { name: "Low", value: 25, color: "#82ca9d" },
           { name: "Medium", value: 35, color: "#ffc658" },
           { name: "High", value: 25, color: "#ff7c7c" },
-          { name: "Critical", value: 15, color: "#ff4444" },
         ],
         trendData: [
           { month: "Jan", cases: 20 },

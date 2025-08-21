@@ -100,10 +100,9 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
             onChange={(e) => handleFilterChange("severity", e.target.value)}
           >
             <option value="">All Severities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="critical">Critical</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
           </select>
         </div>
       </div>
