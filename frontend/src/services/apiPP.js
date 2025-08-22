@@ -8,7 +8,8 @@ const api = axios.create({
 // Add a request interceptor to attach tokens dynamically if needed
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("authToken"); // Adjust based on where you store the token
+    // Adjust this key based on where you store your token: "authToken", "userToken", etc.
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -26,7 +27,10 @@ export const getProfile = async () => {
     const response = await api.get("/profile/me");
     return response.data;
   } catch (error) {
-    console.error("Error fetching profile:", error);
+    console.error(
+      "Error fetching profile:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
@@ -44,12 +48,16 @@ export const uploadProfilePicture = async (file) => {
     const response = await api.post("/profile/picture", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
+        // Authorization header is already auto-attached by interceptor
       },
     });
 
     return response.data;
   } catch (error) {
-    console.error("Error uploading profile picture:", error);
+    console.error(
+      "Error uploading profile picture:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
@@ -63,7 +71,12 @@ export const deleteProfilePicture = async () => {
     const response = await api.delete("/profile/picture");
     return response.data;
   } catch (error) {
-    console.error("Error deleting profile picture:", error);
+    console.error(
+      "Error deleting profile picture:",
+      error.response?.data || error.message
+    );
     throw error;
   }
 };
+
+export default api;

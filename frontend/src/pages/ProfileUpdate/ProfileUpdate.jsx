@@ -8,6 +8,7 @@ import {
   uploadProfilePicture,
   deleteProfilePicture,
 } from "../../services/apiPP"; // Adjust the import path as needed
+import { updateProfile } from "../../services/api3";
 
 const ProfileUpdate = () => {
   const [formData, setFormData] = useState({
@@ -148,24 +149,20 @@ const ProfileUpdate = () => {
     setIsLoading(true);
 
     try {
-      const updateData = new FormData();
-      updateData.append("name", formData.name);
-      updateData.append("email", formData.email);
+      // Call API to update profile
+      const response = await updateProfile({
+        full_name: formData.name,
+        email: formData.email,
+        ...(formData.password && { password: formData.password }),
+      });
 
-      if (formData.password) {
-        updateData.append("password", formData.password);
-      }
-
-      // Add profile image if changed
+      // Upload profile image if changed
       if (profileImageFile) {
         await uploadProfilePicture(profileImageFile);
       }
 
-      // Assuming you have a function to update the user profile
-      // const response = await userAPI.updateProfile(updateData);
-
       // Update user context
-      // updateUser(response.data.user);
+      updateUser(response);
 
       setShowSuccess(true);
 
@@ -287,7 +284,10 @@ const ProfileUpdate = () => {
         setProfileImage(imageUrl);
 
         // Store compressed file for upload
-        setProfileImageFile(compressedFile);
+        const fileWithMeta = new File([compressedFile], file.name, {
+          type: file.type,
+        });
+        setProfileImageFile(fileWithMeta);
 
         toast.success("Profile picture updated!");
       } catch (error) {

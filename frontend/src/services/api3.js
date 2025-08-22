@@ -107,3 +107,15 @@ export const deleteProfilePicture = async () => {
 
   return response.data; // { message: "...deleted successfully" }
 };
+
+// --- Update Profile ---
+export const updateProfile = async (data) => {
+  const token = localStorage.getItem("token");
+  if (!token) throw new Error("No token found. Please sign in.");
+
+  const response = await api.put("api/users/me", data, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+
+  return response.data; // updated user object
+};

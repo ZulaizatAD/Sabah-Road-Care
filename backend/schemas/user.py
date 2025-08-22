@@ -1,5 +1,5 @@
-from pydantic import BaseModel, EmailStr, Field, ConfigDict
-from typing import Optional
+from pydantic import BaseModel, EmailStr, Field, ConfigDict, constr
+from typing import Optional, Annotated
 
 # ---------- Users ----------
 class UserBase(BaseModel):
@@ -24,3 +24,8 @@ class Token(BaseModel):
 class TokenPayload(BaseModel):
     sub: Optional[str] = None  # user id as str
     exp: Optional[int] = None
+
+class UserUpdate(BaseModel):
+    full_name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    password: Optional[Annotated[str, constr(min_length=6)]] = None
