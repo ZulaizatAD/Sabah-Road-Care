@@ -10,7 +10,7 @@ from decouple import config
 # Import database engine and models for reports
 from database.connect import engine as report_engine
 import models.report as report_models
-from routers import dashboard, history
+from routers import dashboard, history, homepage
 # Remove the old photos import
 # from routers import photos  # Import the photos router
 
@@ -49,6 +49,7 @@ app.add_middleware(
 )
 
 # Include routers for different API endpoints
+app.include_router(homepage.router, prefix="/api", tags=["Homepage"])
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
