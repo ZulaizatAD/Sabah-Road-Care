@@ -20,7 +20,7 @@ api2.interceptors.request.use((config) => {
   return config;
 });
 
-Aapi2.interceptors.response.use(
+api2.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {

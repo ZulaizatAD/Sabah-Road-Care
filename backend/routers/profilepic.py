@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
 from database.connect import get_db
 from models import users as models
-from auth.security import get_current_user
+from auth.security import get_current_user  # Import the get_current_user dependency
 from services.cloudinary.service import CloudinaryService
 
 router = APIRouter(
@@ -13,7 +13,6 @@ router = APIRouter(
 # Config
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5 MB
 ALLOWED_EXTENSIONS = {"jpg", "jpeg", "png", "gif", "webp"}
-
 
 @router.get("/me")
 async def get_my_profile(current_user: models.User = Depends(get_current_user)):
@@ -28,7 +27,6 @@ async def get_my_profile(current_user: models.User = Depends(get_current_user)):
         "updated_at": current_user.updated_at
     }
 
-
 @router.post("/picture")
 async def upload_profile_picture(
     file: UploadFile = File(...),
@@ -37,7 +35,7 @@ async def upload_profile_picture(
 ):
     """ Upload or replace the current user's profile picture """
     # Validate extension
-    file_extension = "." + file.filename.split(".")[-1].lower()
+    file_extension = file.filename.split(".")[-1].lower()
     if file_extension not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             status_code=400,
@@ -77,7 +75,6 @@ async def upload_profile_picture(
     db.refresh(current_user)
 
     return {"profile_picture": current_user.profile_picture}
-
 
 @router.delete("/picture")
 async def delete_profile_picture(

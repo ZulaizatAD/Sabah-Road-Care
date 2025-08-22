@@ -79,3 +79,42 @@ def delete_user_account(
     db.delete(user)
     db.commit()
     return {"detail": "User account deleted successfully"}
+
+# --------------UPDATE PROFILE----------------------------------
+from fastapi import Body
+
+@router.put("/me", response_model=schemas.UserOut)
+def update_user_profile(
+    payload: schemas.UserUpdate,   # we'll define this schema
+    db: Session = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Update full name (optional)
+    if payload.full_name is not None:
+        user.full_name = payload.full_name
+
+    # Update email (check uniqueness)
+    if payload.email is not None:
+        existing_user = db.query(models.User).filter(
+            models.User.email == payload.email.lower(),
+            models.User.id != current_user.id
+        ).first()
+        if existing_user:
+            raise HTTPException(
+                status_code=400,
+                detail="Email is already in use by another account"
+            )
+        user.email = payload.email.lower()
+
+    # Update password (hash new password)
+    if payload.password is not None:
+        user.password_hash = get_password_hash(payload.password)
+
+    db.commit()
+    db.refresh(user)
+
+    return user

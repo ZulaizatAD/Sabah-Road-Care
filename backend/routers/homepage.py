@@ -11,39 +11,16 @@ from sqlalchemy.orm import Session
 
 import models
 from database.connect import get_db
+from services.cloudinary.service import CloudinaryService
+from auth.security import get_current_user
 
-router = APIRouter()
-
-# Where uploaded images are stored (relative to repo root)
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(parents=True, exist_ok=True)
-
+router = APIRouter(prefix="/homepage", tags=["Homepage"])
 
 # --------- Helpers ---------
 def _gen_case_id() -> str:
     ts = datetime.utcnow().strftime("%Y%m%d%H%M%S")
     rand = os.urandom(3).hex().upper()
     return f"SRC-{ts}-{rand}"
-
-def _save_photo(file: UploadFile, case_id: str, slot: str) -> str:
-    """
-    Save an UploadFile to uploads/<case_id>/<slot>_<orig_name>.
-    Returns the relative path as string.
-    """
-    if not file:
-        raise HTTPException(status_code=400, detail=f"Missing required photo: {slot}")
-
-    case_dir = UPLOAD_DIR / case_id
-    case_dir.mkdir(parents=True, exist_ok=True)
-
-    safe_name = f"{slot}_{file.filename}".replace(" ", "_")
-    dest = case_dir / safe_name
-
-    # stream to disk
-    with dest.open("wb") as f:
-        f.write(file.file.read())
-
-    return str(dest.as_posix())
 
 def _nearby_reports_count(db: Session, lat: float, lon: float, radius_m: float = 30.0) -> int:
     """
@@ -84,10 +61,8 @@ def _compute_severity(db: Session, lat: float, lon: float,
         return "Medium"
     return "Low"
 
-
 # --------- Routes ---------
-
-@router.post("/homepage/report")
+@router.post("/report")
 async def submit_report(
     # required form fields
     email: str = Form(..., description="Reporter email (should match logged-in user)"),
@@ -95,13 +70,9 @@ async def submit_report(
     latitude: float = Form(...),
     longitude: float = Form(...),
     address: str = Form(...),
-    road_name: str = Form(...),
-
+    
     # optional
     remarks: Optional[str] = Form(None),
-    length_cm: Optional[float] = Form(None),
-    width_cm: Optional[float] = Form(None),
-    depth_cm: Optional[float] = Form(None),
 
     # 3 required photos
     photo_top: UploadFile = File(...),
@@ -109,41 +80,70 @@ async def submit_report(
     photo_close: UploadFile = File(...),
 
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
 ):
     """
-    Create a pothole report. Stores photos, builds JSONB payloads, computes severity,
+    Create a pothole report.
+    Uploads photos to Cloudinary, computes severity,
     and inserts into `pothole_reports`.
     """
-    # Generate ID and persist photos
+    # Generate case ID
     case_id = _gen_case_id()
-    top_path = _save_photo(photo_top, case_id, "top")
-    far_path = _save_photo(photo_far, case_id, "far")
-    close_path = _save_photo(photo_close, case_id, "close")
 
-    # Compute severity (swap with real AI later)
+    # Prepare photos
+    files_to_upload = [
+        (photo_top, "top"),
+        (photo_far, "far"),
+        (photo_close, "close"),
+    ]
+
+    uploaded_photos = {}
+    try:
+        for file, image_type in files_to_upload:
+            file_content = await file.read()
+
+            upload_result = await CloudinaryService.upload_pothole_image(
+                file_content=file_content,
+                filename=file.filename,
+                report_id=case_id,
+                image_type=image_type
+            )
+
+            if not upload_result["success"]:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to upload {image_type} image: {upload_result.get('error')}"
+                )
+
+            uploaded_photos[image_type] = upload_result["secure_url"]
+
+    except Exception as e:
+        # cleanup in case of partial failure
+        for image_type, url in uploaded_photos.items():
+            public_id = url.split("/")[-1].split(".")[0]  # crude, depends on Cloudinary URL format
+            await CloudinaryService.delete_image(public_id)
+        raise e
+
+    # Compute severity
     severity = _compute_severity(db, latitude, longitude, length_cm, width_cm, depth_cm)
 
     # Initial status
-    status = "Submitted"  # or "Pending Review"
+    status = "Submitted"
 
     # Build JSONB fields
-    photos_json = {
-        "top": top_path,
-        "far": far_path,
-        "close": close_path,
-    }
+    photos_json = uploaded_photos
     location_json = {
         "latitude": latitude,
         "longitude": longitude,
         "address": address,
         "road_name": road_name,
-        # keep optional UI metadata inside location JSONB
         "length_cm": length_cm,
         "width_cm": width_cm,
         "depth_cm": depth_cm,
         "remarks": remarks,
     }
 
+    # Save report
     record = models.PotholeReport(
         case_id=case_id,
         email=email,
@@ -174,11 +174,11 @@ async def submit_report(
         "district": district,
     }
 
-
-@router.get("/homepage/my-reports")
+@router.get("/my-reports")
 def list_user_reports(
     email: str = Query(..., description="User email to fetch report history"),
     db: Session = Depends(get_db),
+    current_user=Depends(get_current_user)
 ):
     """
     Return minimal history for the logged-in user.
