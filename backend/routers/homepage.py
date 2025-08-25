@@ -34,7 +34,22 @@ def _nearby_reports_count(db: Session, lat: float, lon: float, radius_m: float =
     return db.query(models.PotholeReport).filter(
         models.PotholeReport.location["latitude"].astext.cast(float).between(lat - dlat, lat + dlat),
         models.PotholeReport.location["longitude"].astext.cast(float).between(lon - dlon, lon + dlon),
-    ).count()
+      ).count()
+
+
+def _find_similar_reports(db: Session, lat: float, lon: float, radius_m: float = 30.0) -> List[str]:
+    """Return case IDs of existing reports near the given coordinates."""
+    DEG_TO_M_LAT = 111_320.0
+    DEG_TO_M_LON = 111_320.0 * math.cos(math.radians(lat))
+    dlat = radius_m / DEG_TO_M_LAT
+    dlon = radius_m / DEG_TO_M_LON
+
+    rows = db.query(models.PotholeReport.case_id).filter(
+        models.PotholeReport.location["latitude"].astext.cast(float).between(lat - dlat, lat + dlat),
+        models.PotholeReport.location["longitude"].astext.cast(float).between(lon - dlon, lon + dlon),
+    ).all()
+
+    return [r.case_id for r in rows]
 
 def _compute_severity(db: Session, lat: float, lon: float,
                       length_cm: Optional[float], width_cm: Optional[float], depth_cm: Optional[float]) -> str:
@@ -127,6 +142,10 @@ async def submit_report(
     # Compute severity
     severity = _compute_severity(db, latitude, longitude, length_cm, width_cm, depth_cm)
 
+    # Determine similar reports and priority
+    similar_case_ids = _find_similar_reports(db, latitude, longitude)
+    priority = len(similar_case_ids)
+
     # Initial status
     status = "Submitted"
 
@@ -152,6 +171,8 @@ async def submit_report(
         district=district,
         severity=severity,
         status=status,
+        priority=priority,
+        similar_reports=similar_case_ids,
         date_created=datetime.utcnow(),
         last_date_status_update=datetime.utcnow(),
     )
@@ -164,6 +185,8 @@ async def submit_report(
         "case_id": case_id,
         "severity": severity,
         "status": status,
+        "priority": priority,
+        "similar_reports": similar_case_ids,
         "photos": photos_json,
         "location": {
             "latitude": latitude,
@@ -196,6 +219,8 @@ def list_user_reports(
             "district": r.district,
             "severity": r.severity,
             "status": r.status,
+            "priority": r.priority,
+            "similar_reports": r.similar_reports,
             "date_created": r.date_created,
             "last_date_status_update": r.last_date_status_update,
             "location": {
