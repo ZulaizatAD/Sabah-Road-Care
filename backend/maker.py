@@ -63,6 +63,18 @@ sabah_addresses = [
     "Jalan Semporna, Semporna",
     "Jalan Lahad Datu, Lahad Datu",
 ]
+descriptions = [
+    "Large pothole causing traffic delays.",
+    "Small crack starting to expand after heavy rain.",
+    "Dangerous pothole near pedestrian crossing.",
+    "Deep pothole affecting both lanes.",
+    "Surface damage spreading along the road.",
+    "Minor road damage but increasing in size.",
+    "Hazardous pothole close to school area.",
+    "Pothole filled with water, hard to spot.",
+    "Severe road damage after recent flooding.",
+    "Ongoing road erosion leading to potholes.",
+]
 
 # --- Helpers ---
 def generate_case_id(district, created_date, sequence_counters):
@@ -134,6 +146,7 @@ def create_fake_reports(db, users, num_reports=5000):
             photo_top="https://via.placeholder.com/600x400.png?text=Top",
             photo_far="https://via.placeholder.com/600x400.png?text=Far",
             photo_close="https://via.placeholder.com/600x400.png?text=Close",
+            description=random.choice(descriptions),  
         )
         reports.append(report)
 
