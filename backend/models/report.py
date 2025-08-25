@@ -20,6 +20,7 @@ class PotholeReport(Base):
     photo_top = Column(String, nullable=True)
     photo_far = Column(String, nullable=True)
     photo_close = Column(String, nullable=True)
+    description = Column(String, nullable=True)
 
 
     # NEW: link to user
