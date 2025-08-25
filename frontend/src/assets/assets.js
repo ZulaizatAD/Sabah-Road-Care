@@ -5,6 +5,7 @@ import GoogleLogo from "./GoogleLogo.png";
 import TransparentLogo from "./SRCTransparent.png";
 import SRCBackground from "./SRCBackground.png";
 import passwordHide from "./password-hide.png";
+import defaultUser from "./user.png";
 
 const assets = {
   SRC_white,
@@ -14,6 +15,7 @@ const assets = {
   TransparentLogo,
   SRCBackground,
   passwordHide,
+  defaultUser,
 };
 
 export default assets;

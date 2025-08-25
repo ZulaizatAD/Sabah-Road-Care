@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import assets from "../../assets/assets";
 import "./ProfileUpdate.css";
 import {
   getProfile,
@@ -156,13 +157,26 @@ const ProfileUpdate = () => {
         ...(formData.password && { password: formData.password }),
       });
 
+      let profileImageUrl = profileImage;
+
       // Upload profile image if changed
       if (profileImageFile) {
-        await uploadProfilePicture(profileImageFile);
+        const uploadResponse = await uploadProfilePicture(profileImageFile);
+        profileImageUrl =
+          uploadResponse.profile_picture ||
+          uploadResponse.url ||
+          profileImageUrl;
       }
 
       // Update user context
-      updateUser(response);
+      updateUser({
+        ...response,
+        name: formData.name,
+        full_name: formData.name,
+        email: formData.email,
+        profileImage: profileImageUrl,
+        profile_picture: profileImageUrl,
+      });
 
       setShowSuccess(true);
 
@@ -289,6 +303,13 @@ const ProfileUpdate = () => {
         });
         setProfileImageFile(fileWithMeta);
 
+        // Immediately update user context for preview
+        updateUser({
+          ...user,
+          profileImage: imageUrl,
+          profile_picture: imageUrl,
+        });
+
         toast.success("Profile picture updated!");
       } catch (error) {
         toast.error("Failed to process image");
@@ -325,7 +346,11 @@ const ProfileUpdate = () => {
                 />
               ) : (
                 <div className="upload-placeholder">
-                  <span className="upload-icon">📷</span>
+                  <img
+                    src={assets.defaultUser}
+                    alt="Default user"
+                    className="upload-icon"
+                  />
                   <span className="upload-text">Upload Photo</span>
                 </div>
               )}
