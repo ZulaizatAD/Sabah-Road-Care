@@ -49,8 +49,8 @@ const ReportHistory = () => {
       try {
         setLoading(true);
         const response = await reportAPI.getUserReports();
-        setReports(response.data.reports || []);
-        setFilteredReports(response.data.reports || []);
+        setReports(response.data || []);
+        setFilteredReports(response.data || []);
       } catch (error) {
         toast.error("Failed to load reports");
         console.error("Error fetching reports:", error);
