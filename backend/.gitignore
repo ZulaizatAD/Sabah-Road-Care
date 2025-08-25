@@ -14,7 +14,7 @@ config/keys.js
 
 # Dependencies
 node_modules/
-
+venv/
 
 # Environment variables
 .env
