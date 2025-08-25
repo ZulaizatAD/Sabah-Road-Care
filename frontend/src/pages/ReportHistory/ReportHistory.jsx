@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { formatDistanceToNow, format } from "date-fns";
-import { reportAPI } from "../../services/api";
+import { getUserReports } from "../../services/historyApi";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import "./ReportHistory.css";
@@ -48,207 +48,38 @@ const ReportHistory = () => {
     const fetchReports = async () => {
       try {
         setLoading(true);
-        const response = await reportAPI.getUserReports();
-        setReports(response.data || []);
-        setFilteredReports(response.data || []);
+        const response = await getUserReports();
+        const priorityMap = ["Low", "Medium", "High", "Critical"];
+        const mapped = (response || []).map((report) => ({
+          id: report.case_id,
+          documentNumber: report.case_id,
+          title: report.description || "Pothole Report",
+          location:
+            typeof report.location === "string"
+              ? report.location
+              : report.location?.address || "",
+          district: report.district,
+          submissionDate: report.date_created,
+          lastUpdated: report.last_date_status_update,
+          status: report.status,
+          priority: priorityMap[report.priority] || "Low",
+          severity: report.severity,
+          description: report.description || "",
+          similarReports: Array.isArray(report.similar_reports)
+            ? report.similar_reports.length
+            : report.similar_reports || 0,
+          completionDate:
+            report.status === "Completed"
+              ? report.last_date_status_update
+              : null,
+        }));
+        setReports(mapped);
+        setFilteredReports(mapped);
       } catch (error) {
         toast.error("Failed to load reports");
         console.error("Error fetching reports:", error);
-
-        // Dummy data
-        const dummyReports = [
-          {
-            id: 1,
-            documentNumber: "RPT-2024-001",
-            title: "Large Pothole on Main Road",
-            location: "Jalan Tuaran, Kota Kinabalu",
-            district: "Kota Kinabalu",
-            submissionDate: "2024-01-15",
-            lastUpdated: "2024-01-20",
-            status: "Completed",
-            priority: "High",
-            severity: "Severe",
-            description:
-              "Large pothole causing traffic disruption on main road",
-            similarReports: 5,
-            completionDate: "2024-01-20",
-          },
-          {
-            id: 2,
-            documentNumber: "RPT-2024-002",
-            title: "Medium Pothole Near School",
-            location: "Jalan Coastal Highway, Sandakan",
-            district: "Sandakan",
-            submissionDate: "2024-01-14",
-            lastUpdated: "2024-01-18",
-            status: "In Progress",
-            priority: "Medium",
-            severity: "Moderate",
-            description: "Pothole near school area affecting student safety",
-            similarReports: 3,
-            completionDate: null,
-          },
-          {
-            id: 3,
-            documentNumber: "RPT-2024-003",
-            title: "Small Pothole on Residential Street",
-            location: "Jalan Penampang, Penampang",
-            district: "Penampang",
-            submissionDate: "2024-01-13",
-            lastUpdated: "2024-01-16",
-            status: "Approved",
-            priority: "Low",
-            severity: "Minor",
-            description: "Small pothole on quiet residential street",
-            similarReports: 1,
-            completionDate: null,
-          },
-          {
-            id: 4,
-            documentNumber: "RPT-2024-004",
-            title: "Critical Road Damage",
-            location: "Jalan Beaufort, Beaufort",
-            district: "Beaufort",
-            submissionDate: "2024-01-12",
-            lastUpdated: "2024-01-15",
-            status: "Under Review",
-            priority: "Critical",
-            severity: "Severe",
-            description: "Major road damage requiring immediate attention",
-            similarReports: 8,
-            completionDate: null,
-          },
-          {
-            id: 5,
-            documentNumber: "RPT-2024-005",
-            title: "Multiple Small Potholes",
-            location: "Jalan Ranau, Ranau",
-            district: "Ranau",
-            submissionDate: "2024-01-11",
-            lastUpdated: "2024-01-14",
-            status: "Rejected",
-            priority: "Low",
-            severity: "Minor",
-            description: "Multiple small potholes reported in the area",
-            similarReports: 2,
-            completionDate: null,
-          },
-          {
-            id: 6,
-            documentNumber: "RPT-2024-006",
-            title: "Highway Pothole Emergency",
-            location: "Jalan Kota Kinabalu-Sandakan Highway",
-            district: "Kota Kinabalu",
-            submissionDate: "2024-01-10",
-            lastUpdated: "2024-01-12",
-            status: "Completed",
-            priority: "Critical",
-            severity: "Severe",
-            description: "Emergency pothole repair on major highway",
-            similarReports: 12,
-            completionDate: "2024-01-12",
-          },
-          {
-            id: 7,
-            documentNumber: "RPT-2024-007",
-            title: "Deep Pothole at Traffic Light",
-            location: "Jalan Lintas, Kota Kinabalu",
-            district: "Kota Kinabalu",
-            submissionDate: "2024-01-09",
-            lastUpdated: "2024-01-11",
-            status: "In Progress",
-            priority: "High",
-            severity: "Severe",
-            description:
-              "Deep pothole at busy traffic intersection causing vehicle damage",
-            similarReports: 7,
-            completionDate: null,
-          },
-          {
-            id: 8,
-            documentNumber: "RPT-2024-008",
-            title: "Road Surface Deterioration",
-            location: "Jalan Semporna, Semporna",
-            district: "Semporna",
-            submissionDate: "2024-01-08",
-            lastUpdated: "2024-01-10",
-            status: "Approved",
-            priority: "Medium",
-            severity: "Moderate",
-            description:
-              "Multiple cracks and small potholes forming on main road",
-            similarReports: 4,
-            completionDate: null,
-          },
-          {
-            id: 9,
-            documentNumber: "RPT-2024-009",
-            title: "Pothole Near Hospital",
-            location: "Jalan Hospital, Tawau",
-            district: "Tawau",
-            submissionDate: "2024-01-07",
-            lastUpdated: "2024-01-09",
-            status: "Under Review",
-            priority: "High",
-            severity: "Moderate",
-            description:
-              "Pothole affecting ambulance access to hospital emergency entrance",
-            similarReports: 6,
-            completionDate: null,
-          },
-          {
-            id: 10,
-            documentNumber: "RPT-2024-010",
-            title: "Minor Road Crack",
-            location: "Jalan Kudat, Kudat",
-            district: "Kudat",
-            submissionDate: "2024-01-06",
-            lastUpdated: "2024-01-08",
-            status: "Completed",
-            priority: "Low",
-            severity: "Minor",
-            description:
-              "Small crack in road surface, preventive maintenance completed",
-            similarReports: 1,
-            completionDate: "2024-01-08",
-          },
-          {
-            id: 11,
-            documentNumber: "RPT-2024-011",
-            title: "Large Pothole at Bus Stop",
-            location: "Jalan Lahad Datu, Lahad Datu",
-            district: "Lahad Datu",
-            submissionDate: "2024-01-05",
-            lastUpdated: "2024-01-07",
-            status: "In Progress",
-            priority: "Medium",
-            severity: "Moderate",
-            description:
-              "Pothole at bus stop area affecting public transportation",
-            similarReports: 3,
-            completionDate: null,
-          },
-          {
-            id: 12,
-            documentNumber: "RPT-2024-012",
-            title: "Critical Bridge Approach Damage",
-            location: "Jalan Keningau Bridge, Keningau",
-            district: "Keningau",
-            submissionDate: "2024-01-04",
-            lastUpdated: "2024-01-06",
-            status: "Under Review",
-            priority: "Critical",
-            severity: "Severe",
-            description:
-              "Severe road damage at bridge approach requiring urgent attention",
-            similarReports: 9,
-            completionDate: null,
-          },
-        ];
-
-        setReports(dummyReports);
-        setFilteredReports(dummyReports);
-        toast.warning("Using demo data - API connection failed");
+        setReports([]);
+        setFilteredReports([]);
       } finally {
         setLoading(false);
       }
@@ -284,9 +115,10 @@ const ReportHistory = () => {
           return new Date(b.submissionDate) - new Date(a.submissionDate);
         case "date-asc":
           return new Date(a.submissionDate) - new Date(b.submissionDate);
-        case "priority":
+        case "priority": {
           const priorityOrder = { Critical: 4, High: 3, Medium: 2, Low: 1 };
           return priorityOrder[b.priority] - priorityOrder[a.priority];
+        }
         case "status":
           return a.status.localeCompare(b.status);
         default:
@@ -380,6 +212,7 @@ const ReportHistory = () => {
         autoClose: 2000,
       });
     } catch (error) {
+      console.error("Export to CSV failed:", error);
       toast.error("Failed to export report. Please try again.", {
         position: "top-right",
         autoClose: 3000,

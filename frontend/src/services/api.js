@@ -301,7 +301,7 @@ export const reportAPI = {
         },
       ];
 
-      return { data: { reports: demoUserReports } };
+      return { data: demoUserReports };
     }
 
     return await api.get('/api/reports', { params: filters });

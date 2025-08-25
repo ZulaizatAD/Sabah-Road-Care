@@ -18,6 +18,11 @@ def get_user_reports(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
+    """Return the authenticated user's pothole reports.
+
+    Optional query parameters allow filtering by district, date range, and severity.
+    The results are sorted with most recent submissions first.
+    """
     query = db.query(models.PotholeReport).filter(models.PotholeReport.user_id == current_user.id)
 
     # Apply filters
