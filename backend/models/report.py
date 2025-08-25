@@ -22,6 +22,10 @@ class PotholeReport(Base):
     photo_close = Column(String, nullable=True)
     description = Column(String, nullable=True)
 
+    # Fields for prioritisation and deduplication
+    priority = Column(Integer, nullable=False, default=0)
+    similar_reports = Column(JSONB, nullable=False, default=list)
+
 
     # NEW: link to user
     user_id = Column(Integer, ForeignKey("users.id"), nullable=False)

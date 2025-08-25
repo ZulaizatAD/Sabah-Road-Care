@@ -39,4 +39,4 @@ def get_user_reports(
         query = query.filter(models.PotholeReport.severity == severity)
 
     reports = query.order_by(models.PotholeReport.date_created.desc()).all()
-    return reports
+    return [CaseBase.model_validate(r) for r in reports]

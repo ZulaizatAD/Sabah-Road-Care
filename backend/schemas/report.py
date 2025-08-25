@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import List
 
 class CaseBase(BaseModel):
     case_id: str
@@ -15,6 +15,8 @@ class CaseBase(BaseModel):
     photo_top: str
     photo_far: str
     photo_close: str
+    priority: int
+    similar_reports: List[str]
 
     class Config:
         from_attributes = True  # Enables compatibility with SQLAlchemy models
