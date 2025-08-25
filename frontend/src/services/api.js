@@ -304,8 +304,7 @@ export const reportAPI = {
       return { data: { reports: demoUserReports } };
     }
 
-    const params = new URLSearchParams(filters);
-    return await api.get(`/api/reports/user?${params}`);
+    return await api.get('/api/reports', { params: filters });
   },
 
   // Get report details
