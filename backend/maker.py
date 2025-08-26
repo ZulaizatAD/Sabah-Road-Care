@@ -140,13 +140,13 @@ def create_fake_reports(db, users, num_reports=5000):
             last_date_status_update=status_update_date,
             severity=random.choice(severity_levels),
             status=random.choice(statuses),
-            user_id=user.id,
             latitude=random.uniform(4.0, 7.5),
             longitude=random.uniform(115.0, 119.0),
             photo_top="https://via.placeholder.com/600x400.png?text=Top",
             photo_far="https://via.placeholder.com/600x400.png?text=Far",
             photo_close="https://via.placeholder.com/600x400.png?text=Close",
-            description=random.choice(descriptions),  
+            description=random.choice(descriptions),
+            user_id=user.id  
         )
         reports.append(report)
 
@@ -176,4 +176,4 @@ def populate_database(num_reports=5000):
 
 
 if __name__ == "__main__":
-    populate_database(num_reports=5000)
+    populate_database(num_reports=500)

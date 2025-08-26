@@ -5,16 +5,14 @@ import os
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List
-
 from fastapi import APIRouter, Depends, File, Form, HTTPException, UploadFile, Query
 from sqlalchemy.orm import Session
-
 import models
 from database.connect import get_db
 from services.cloudinary.service import CloudinaryService
 from auth.security import get_current_user
 
-router = APIRouter(prefix="/homepage", tags=["Homepage"])
+router = APIRouter(prefix="/homepage")
 
 # --------- Helpers ---------
 def _gen_case_id() -> str:
@@ -125,7 +123,7 @@ async def submit_report(
         raise e
 
     # Compute severity
-    severity = _compute_severity(db, latitude, longitude, length_cm, width_cm, depth_cm)
+    severity = _compute_severity(db, latitude, longitude,)
 
     # Initial status
     status = "Submitted"
@@ -136,10 +134,6 @@ async def submit_report(
         "latitude": latitude,
         "longitude": longitude,
         "address": address,
-        "road_name": road_name,
-        "length_cm": length_cm,
-        "width_cm": width_cm,
-        "depth_cm": depth_cm,
         "remarks": remarks,
     }
 
@@ -169,7 +163,6 @@ async def submit_report(
             "latitude": latitude,
             "longitude": longitude,
             "address": address,
-            "road_name": road_name,
         },
         "district": district,
     }

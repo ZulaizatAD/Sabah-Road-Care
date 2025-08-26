@@ -7,8 +7,8 @@ import {
   getProfile,
   uploadProfilePicture,
   deleteProfilePicture,
-} from "../../services/apiPP"; // Adjust the import path as needed
-import { updateProfile } from "../../services/api3";
+} from "../../services/profilepicApi"; // Adjust the import path as needed
+import { updateProfile } from "../../services/userApi";
 
 const ProfileUpdate = () => {
   const [formData, setFormData] = useState({

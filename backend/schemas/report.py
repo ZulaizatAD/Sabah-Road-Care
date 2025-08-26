@@ -1,20 +1,24 @@
 from pydantic import BaseModel
 from datetime import datetime
-from typing import Optional
+from typing import Optional, Dict, Any
+from typing import Union, Dict
 
 class CaseBase(BaseModel):
     case_id: str
+    email: str
+    location: Union[str, Dict]
     district: str
-    status: str
-    severity: str
-    location: str
-    latitude: float
-    longitude: float
     date_created: datetime
     last_date_status_update: datetime
-    photo_top: str
-    photo_far: str
-    photo_close: str
+    severity: str
+    status: str
+    latitude: float
+    longitude: float
+    photo_top: Optional[str] = None
+    photo_far: Optional[str] = None
+    photo_close: Optional[str] = None
+    description: Optional[str] = None
+    user_id: int
 
     class Config:
-        from_attributes = True  # Enables compatibility with SQLAlchemy models
+        from_attributes = True  # enables compatibility with SQLAlchemy models
