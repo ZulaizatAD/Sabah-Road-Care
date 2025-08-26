@@ -1,7 +1,7 @@
 .AvatarMain {
   position: relative;
-  width: 100px;
-  height: auto;
+  width: 10%;
+  height: 25%;
   overflow: hidden;
   border-radius: 15px;
   cursor: pointer;
@@ -43,4 +43,17 @@
 
 .AvatarMain:hover .overlay {
   background-color: rgba(0, 0, 0, 0.15); /* Semi-transparent color overlay on hover */
+}
+
+.avatar-container {
+    position: fixed; /* Positions it relative to the viewport */
+    top: 20px;       /* Adjust top and left/right as needed for placement */
+    right: 20px;
+    z-index: 1000;   /* A high value to ensure it's on top of everything else */
+}
+
+/* Ensure other content has a lower z-index if needed, though with the new structure it should be fine. */
+.ff-main-content {
+    position: relative;
+    z-index: 10; /* Lower than the avatar container's z-index */
 }
