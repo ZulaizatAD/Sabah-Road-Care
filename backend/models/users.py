@@ -21,3 +21,5 @@ class User(Base):
         if not value or "@" not in value:
             raise ValueError("Invalid email")
         return value.lower()
+    
+    reports = relationship("PotholeReport", back_populates="user")

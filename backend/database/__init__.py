@@ -1,7 +1,7 @@
 from database.connect import engine, Base
 
 # Import all your models here so they're registered with Base
-from models.photos import PotholePhoto
+from models.report import PotholeReport
 # Import your other existing models
 # from models.user_models import User
 # from models.report_models import Report

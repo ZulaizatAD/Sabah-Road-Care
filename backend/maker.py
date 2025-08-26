@@ -47,7 +47,7 @@ districts = [
     "Lahad Datu", "Others"
 ]
 
-statuses = ["Under Review", "Approved", "In Progress", "Completed", "Rejected"]
+statuses = ["Submitted", "Under Review", "In Progress", "Completed", "Rejected"]
 severity_levels = ["Low", "Medium", "High"]
 
 sabah_addresses = [
@@ -63,6 +63,7 @@ sabah_addresses = [
     "Jalan Semporna, Semporna",
     "Jalan Lahad Datu, Lahad Datu",
 ]
+
 descriptions = [
     "Large pothole causing traffic delays.",
     "Small crack starting to expand after heavy rain.",
@@ -78,6 +79,7 @@ descriptions = [
 
 # --- Helpers ---
 def generate_case_id(district, created_date, sequence_counters):
+    """Generate case_id: SRC_DISTRICTCODE_YYYY_MM_####"""
     district_code = district.split()[0][:3].upper()
     year_part = str(created_date.year)
     month_part = f"{created_date.month:02d}"
@@ -87,19 +89,16 @@ def generate_case_id(district, created_date, sequence_counters):
     sequence_counters[counter_key] += 1
     return f"SRC_{district_code}_{year_part}_{month_part}_{seq_num:04d}"
 
-
-# --- Fake data generation ---
+# --- Create fixed users ---
 def create_fixed_users(db):
     """Create fixed users with given emails, shared password: password123"""
     users = []
     for email in ALL_EMAILS:
-        # check if the user already exists
         existing = db.query(User).filter_by(email=email).first()
         if existing:
             users.append(existing)
             continue
 
-        # create new if not exists
         user = User(
             email=email,
             full_name=email.split("@")[0].replace("_", " ").title(),
@@ -113,8 +112,7 @@ def create_fixed_users(db):
     db.commit()
     return users
 
-
-
+# --- Create fake reports ---
 def create_fake_reports(db, users, num_reports=5000):
     sequence_counters = defaultdict(int)
     reports = []
@@ -134,30 +132,30 @@ def create_fake_reports(db, users, num_reports=5000):
         report = PotholeReport(
             case_id=case_id,
             email=user.email,
-            location=random.choice(sabah_addresses),
+            location= random.choice(sabah_addresses),
             district=district,
             date_created=created_date,
             last_date_status_update=status_update_date,
-            severity=random.choice(severity_levels),
+            severity=random.choice(severity_levels),  # ✅ Random severity for now
             status=random.choice(statuses),
             latitude=random.uniform(4.0, 7.5),
             longitude=random.uniform(115.0, 119.0),
-            photo_top="https://via.placeholder.com/600x400.png?text=Top",
-            photo_far="https://via.placeholder.com/600x400.png?text=Far",
-            photo_close="https://via.placeholder.com/600x400.png?text=Close",
+            photo_top="https://res.cloudinary.com/demo/image/upload/v1234567890/top.jpg",
+            photo_far="https://res.cloudinary.com/demo/image/upload/v1234567890/far.jpg",
+            photo_close="https://res.cloudinary.com/demo/image/upload/v1234567890/close.jpg",
             description=random.choice(descriptions),
-            user_id=user.id  
+            user_id=user.id
         )
         reports.append(report)
 
     db.add_all(reports)
     db.commit()
 
-
 # --- Populate DB ---
 def populate_database(num_reports=5000):
     db = SessionLocal()
     try:
+        Base.metadata.drop_all(bind=engine)  # ✅ cleanup old tables
         Base.metadata.create_all(bind=engine)
 
         print("Creating fixed users...")
@@ -173,7 +171,6 @@ def populate_database(num_reports=5000):
         print("Error:", e)
     finally:
         db.close()
-
 
 if __name__ == "__main__":
     populate_database(num_reports=500)
