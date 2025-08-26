@@ -1,9 +1,15 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useUser } from "../../context/UserContext";
 import { useNavigate } from "react-router-dom";
-import { userAPI } from "../../services/api";
 import { toast } from "react-toastify";
+import assets from "../../assets/assets";
 import "./ProfileUpdate.css";
+import {
+  getProfile,
+  uploadProfilePicture,
+  deleteProfilePicture,
+} from "../../services/profilepicApi"; // Adjust the import path as needed
+import { updateProfile } from "../../services/userApi";
 
 const ProfileUpdate = () => {
   const [formData, setFormData] = useState({
@@ -29,18 +35,24 @@ const ProfileUpdate = () => {
 
   // Load user data on component mount
   useEffect(() => {
-    // TODO: Load actual user data from Firebase/API
-    if (user) {
-      setFormData((prev) => ({
-        ...prev,
-        name: user.name || user.displayName || "",
-        email: user.email || "",
-      }));
-
-      if (user.photoURL) {
-        setProfileImage(user.photoURL);
+    const fetchProfile = async () => {
+      try {
+        const profileData = await getProfile();
+        setFormData((prev) => ({
+          ...prev,
+          name: profileData.full_name || "",
+          email: profileData.email || "",
+        }));
+        if (profileData.profile_picture) {
+          setProfileImage(profileData.profile_picture);
+        }
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+        toast.error("Failed to load profile data.");
       }
-    }
+    };
+
+    fetchProfile();
   }, [user]);
 
   // Handle input changes
@@ -77,7 +89,7 @@ const ProfileUpdate = () => {
       newErrors.name = "Name must be less than 50 characters";
     }
 
-    // Email validation - optional
+    // Email validation - required
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
@@ -112,12 +124,18 @@ const ProfileUpdate = () => {
   };
 
   // Remove profile image
-  const handleRemoveImage = () => {
-    setProfileImage(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  const handleRemoveImage = async () => {
+    try {
+      await deleteProfilePicture();
+      setProfileImage(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      toast.info("Profile picture removed");
+    } catch (error) {
+      console.error("Failed to delete profile picture:", error);
+      toast.error("Failed to remove profile picture.");
     }
-    toast.info("Profile picture removed");
   };
 
   // Handle Submission Form
@@ -132,23 +150,33 @@ const ProfileUpdate = () => {
     setIsLoading(true);
 
     try {
-      const updateData = new FormData();
-      updateData.append("name", formData.name);
-      updateData.append("email", formData.email);
+      // Call API to update profile
+      const response = await updateProfile({
+        full_name: formData.name,
+        email: formData.email,
+        ...(formData.password && { password: formData.password }),
+      });
 
-      if (formData.password) {
-        updateData.append("password", formData.password);
+      let profileImageUrl = profileImage;
+
+      // Upload profile image if changed
+      if (profileImageFile) {
+        const uploadResponse = await uploadProfilePicture(profileImageFile);
+        profileImageUrl =
+          uploadResponse.profile_picture ||
+          uploadResponse.url ||
+          profileImageUrl;
       }
-
-      // Add profile image if changed
-      if (profileImage && profileImage instanceof File) {
-        updateData.append("profileImage", profileImage);
-      }
-
-      const response = await userAPI.updateProfile(updateData);
 
       // Update user context
-      updateUser(response.data.user);
+      updateUser({
+        ...response,
+        name: formData.name,
+        full_name: formData.name,
+        email: formData.email,
+        profileImage: profileImageUrl,
+        profile_picture: profileImageUrl,
+      });
 
       setShowSuccess(true);
 
@@ -189,7 +217,7 @@ const ProfileUpdate = () => {
       setIsLoading(true);
 
       // Call API to delete account
-      await userAPI.deleteAccount();
+      // await userAPI.deleteAccount();
 
       // Clear user data
       logout();
@@ -270,7 +298,17 @@ const ProfileUpdate = () => {
         setProfileImage(imageUrl);
 
         // Store compressed file for upload
-        setProfileImageFile(compressedFile);
+        const fileWithMeta = new File([compressedFile], file.name, {
+          type: file.type,
+        });
+        setProfileImageFile(fileWithMeta);
+
+        // Immediately update user context for preview
+        updateUser({
+          ...user,
+          profileImage: imageUrl,
+          profile_picture: imageUrl,
+        });
 
         toast.success("Profile picture updated!");
       } catch (error) {
@@ -308,7 +346,11 @@ const ProfileUpdate = () => {
                 />
               ) : (
                 <div className="upload-placeholder">
-                  <span className="upload-icon">📷</span>
+                  <img
+                    src={assets.defaultUser}
+                    alt="Default user"
+                    className="upload-icon"
+                  />
                   <span className="upload-text">Upload Photo</span>
                 </div>
               )}
@@ -361,7 +403,7 @@ const ProfileUpdate = () => {
                 onChange={(e) => handleInputChange("email", e.target.value)}
                 aria-required="true"
                 disabled={isLoading}
-                placeholder="Enter your email address (optional)"
+                placeholder="Enter your email address"
               />
               {errors.email && (
                 <span className="error-message">{errors.email}</span>

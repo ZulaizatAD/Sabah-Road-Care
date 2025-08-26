@@ -24,13 +24,13 @@ const App = () => {
       <EnvironmentCheck>
         <div className="app-container">
           <div className="background-image">
-            <video autoplay muted Loop playsInline className="background-video">
-                <source
-                  src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
-                  type="video/webm"
-                  />
-                </video>
-                </div>
+            <video autoPlay muted Loop playsInline className="background-video">
+              <source
+                src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
+                type="video/webm"
+              />
+            </video>
+          </div>
           <Header />
           <main className="main-content">
             <Routes>

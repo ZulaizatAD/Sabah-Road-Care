@@ -1,3 +1,4 @@
+// MapPicker.jsx
 import React, { useEffect, useRef, useState } from "react";
 import { Loader } from "@googlemaps/js-api-loader";
 import { toast } from "react-toastify";
@@ -7,8 +8,10 @@ import "./MapPicker.css";
 const MapPicker = ({
   onLocationSelect,
   initialLocation,
-  isVisible,
+  isVisible = true,
   onClose,
+  embedded = false,
+  interactiveMode = false,
 }) => {
   const mapRef = useRef(null);
   const [map, setMap] = useState(null);
@@ -37,7 +40,7 @@ const MapPicker = ({
         const loader = new Loader({
           apiKey: config.googleMaps.apiKey,
           version: config.googleMaps.version,
-          libraries: config.googleMaps.libraries
+          libraries: config.googleMaps.libraries,
         });
 
         const google = await loader.load();
@@ -60,9 +63,8 @@ const MapPicker = ({
         };
 
         const newMap = new google.maps.Map(mapRef.current, mapOptions);
-        setMap(newMap);
+        setMap(newMap); // Update map state
 
-        // Create marker
         const newMarker = new google.maps.Marker({
           position: selectedLocation || config.defaultLocation,
           map: newMap,
@@ -82,24 +84,23 @@ const MapPicker = ({
             anchor: new google.maps.Point(15, 40),
           },
         });
-        setMarker(newMarker);
+        setMarker(newMarker); // Update marker state
 
-        // Event listeners
+        // Event listeners: Pass newMap and newMarker directly to updateLocation
         newMap.addListener("click", (event) => {
           const clickedLocation = {
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
           };
-          updateLocation(clickedLocation, newMarker, google);
+          updateLocation(clickedLocation, newMarker, google, newMap);
         });
 
-        // Drag listener to marker
         newMarker.addListener("dragend", (event) => {
           const draggedLocation = {
             lat: event.latLng.lat(),
             lng: event.latLng.lng(),
           };
-          updateLocation(draggedLocation, newMarker, google);
+          updateLocation(draggedLocation, newMarker, google, newMap);
         });
 
         // Initial geocoding if location exists
@@ -120,11 +121,33 @@ const MapPicker = ({
     initializeMap();
   }, [isVisible]);
 
-  const updateLocation = (location, markerInstance, google) => {
+  // Modified updateLocation function to accept mapInstance
+  const updateLocation = (location, markerInstance, google, mapInstance) => {
+    console.log("🗺️ Map clicked/dragged:", location);
+
     setSelectedLocation(location);
     markerInstance.setPosition(location);
-    map.panTo(location);
-    reverseGeocode(location, google);
+    mapInstance.panTo(location);
+
+    // For interactive mode, call onLocationSelect immediately with coordinates
+    if (interactiveMode && onLocationSelect) {
+      console.log("📍 Calling onLocationSelect immediately");
+
+      // Call immediately with basic coordinates
+      onLocationSelect({
+        latitude: location.lat,
+        longitude: location.lng,
+        address: `Lat: ${location.lat.toFixed(6)}, Lng: ${location.lng.toFixed(
+          6
+        )}`,
+        roadName: "Getting address...",
+      });
+
+      reverseGeocode(location, google);
+    } else {
+      // For non-interactive mode, just do geocoding
+      reverseGeocode(location, google);
+    }
   };
 
   const reverseGeocode = async (location, google) => {
@@ -142,7 +165,6 @@ const MapPicker = ({
       });
 
       if (response && response.length > 0) {
-        // Extract road name and area
         const result = response[0];
         const addressComponents = result.address_components;
 
@@ -150,7 +172,6 @@ const MapPicker = ({
         let area = "";
         let city = "";
 
-        // Parse address components
         addressComponents.forEach((component) => {
           const types = component.types;
 
@@ -169,7 +190,6 @@ const MapPicker = ({
           }
         });
 
-        // Format address
         let formattedAddress = "";
         if (roadName) {
           formattedAddress = roadName;
@@ -180,17 +200,38 @@ const MapPicker = ({
             formattedAddress += `, ${city}`;
           }
         } else {
-          // Fallback to formatted address
           formattedAddress = result.formatted_address;
         }
 
         setAddress(formattedAddress);
+
+        // Update parent with full address info
+        if (onLocationSelect) {
+          console.log("🏠 Updating with full address:", formattedAddress); 
+
+          onLocationSelect({
+            latitude: location.lat,
+            longitude: location.lng,
+            address: formattedAddress,
+            roadName: roadName || formattedAddress.split(",")[0].trim(),
+          });
+        }
       }
     } catch (error) {
       console.error("Geocoding error:", error);
-      setAddress(
-        `Lat: ${location.lat.toFixed(6)}, Lng: ${location.lng.toFixed(6)}`
-      );
+      const fallbackAddress = `Lat: ${location.lat.toFixed(
+        6
+      )}, Lng: ${location.lng.toFixed(6)}`;
+      setAddress(fallbackAddress);
+
+      if (onLocationSelect) {
+        onLocationSelect({
+          latitude: location.lat,
+          longitude: location.lng,
+          address: fallbackAddress,
+          roadName: "Coordinates only",
+        });
+      }
     }
   };
 
@@ -210,9 +251,10 @@ const MapPicker = ({
           lng: position.coords.longitude,
         };
 
+        // Ensure map and marker are available from state before calling updateLocation
         if (map && marker) {
-          updateLocation(currentLocation, marker, window.google);
-          map.setZoom(17); // Zoom in for current location
+          updateLocation(currentLocation, marker, window.google, map);
+          map.setZoom(17);
         }
 
         toast.dismiss(locationToast);
@@ -241,9 +283,9 @@ const MapPicker = ({
         latitude: selectedLocation.lat,
         longitude: selectedLocation.lng,
         address: address,
-        roadName: address.split(",")[0].trim(), // Extract road name
+        roadName: address.split(",")[0].trim(),
       });
-      onClose();
+      if (onClose) onClose();
       toast.success("📍 Location selected successfully!");
     } else {
       toast.error("Please select a location on the map.");
@@ -252,6 +294,61 @@ const MapPicker = ({
 
   if (!isVisible) return null;
 
+  // Embedded mode - simplified layout
+  if (embedded) {
+    return (
+      <div className="embedded-map-picker">
+        <div className="embedded-map-controls">
+          <button
+            className="current-location-btn embedded"
+            onClick={getCurrentLocation}
+            disabled={isLoading}
+          >
+            🎯 Use Current Location
+          </button>
+          {selectedLocation && (
+            <div className="embedded-location-info">
+              <span className="embedded-coordinates">
+                📍 {selectedLocation.lat.toFixed(6)},{" "}
+                {selectedLocation.lng.toFixed(6)}
+              </span>
+              {address && (
+                <span className="embedded-address">🛣️ {address}</span>
+              )}
+            </div>
+          )}
+        </div>
+
+        <div className="embedded-map-container">
+          {isLoading && (
+            <div className="map-loading">
+              <div className="loading-spinner"></div>
+              <p>Loading map...</p>
+            </div>
+          )}
+          <div
+            ref={mapRef}
+            className="google-map embedded"
+            style={{
+              width: "100%",
+              height: "300px",
+              display: isLoading ? "none" : "block",
+              borderRadius: "8px",
+            }}
+          />
+        </div>
+
+        <div className="embedded-map-instructions">
+          <p>
+            💡 Click anywhere on the map to place a marker or drag the existing
+            marker to adjust location
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Modal mode - original layout
   return (
     <div className="map-picker-overlay">
       <div className="map-picker-modal">

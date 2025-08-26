@@ -62,6 +62,77 @@
   letter-spacing: -0.5px;
 }
 
+.user-profile-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 8px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+  border: 2px solid var(--gray-200);
+  position: relative;
+  background: var(--gray-100);
+}
+
+.profile-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.default-avatar {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, var(--gray-100) 0%, var(--gray-200) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--gray-500);
+}
+
+.default-user-icon {
+  width: 24px;
+  height: 24px;
+  opacity: 0.7;
+  filter: grayscale(100%);
+}
+
+.avatar-icon {
+  font-size: 20px;
+}
+
+.user-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.user-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--asphalt-dark);
+  margin-bottom: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
+.user-email-small {
+  font-size: 12px;
+  color: var(--gray-500);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.2;
+}
+
 .header-brand:hover .brand-name {
   color: var(--asphalt-dark);
 }
@@ -82,7 +153,6 @@
   border: none;
   border-radius: 8px;
   color: var(--white);
-  font-family: "Inter", sans-serif;
   font-size: 15px;
   font-weight: 500;
   cursor: pointer;
@@ -96,7 +166,11 @@
 }
 
 .nav-item.login-btn {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-green) 0%,
+    var(--primary-green-dark) 100%
+  );
   color: var(--asphalt-dark);
   font-weight: 600;
   border-radius: 8px;
@@ -321,7 +395,11 @@
 }
 
 .mobile-nav-item.login-btn {
-  background: linear-gradient(135deg, var(--primary-green) 0%, var(--primary-green-dark) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary-green) 0%,
+    var(--primary-green-dark) 100%
+  );
   color: var(--asphalt-dark);
   font-weight: 600;
   border-radius: 8px;
@@ -478,6 +556,33 @@
   .mobile-menu-overlay {
     top: 60px;
     height: calc(100vh - 60px);
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .default-user-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  .avatar-icon {
+    font-size: 18px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+
+  .user-email-small {
+    font-size: 10px;
+  }
+
+  .user-profile-section {
+    padding: 10px 6px;
+    gap: 10px;
   }
 }
 

@@ -25,6 +25,10 @@ const Homepage = () => {
   const [duplicateDetection, setDuplicateDetection] = useState(null);
   const [showDuplicateInfo, setShowDuplicateInfo] = useState(false);
 
+  // Map interaction states
+  const [tempLocation, setTempLocation] = useState(null); // Temporary location from map interaction
+  const [hasLocationChanged, setHasLocationChanged] = useState(false); // Track if user has interacted with map
+
   // Main form state
   const [formData, setFormData] = useState({
     photos: [null, null, null],
@@ -59,7 +63,7 @@ const Homepage = () => {
             userId: user.id,
           };
 
-          const duplicateResult = safeDuplicateCheck(
+          const duplicateResult = checkDuplicateSubmission(
             newReport,
             userReportsResponse.data.reports || [],
             allReportsResponse.data.reports || []
@@ -101,7 +105,6 @@ const Homepage = () => {
   // Form validation errors & submission state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [showMapPicker, setShowMapPicker] = useState(false);
 
   // Sabah districts list
   const sabahDistricts = [
@@ -222,163 +225,55 @@ const Homepage = () => {
     }
   };
 
-  // Get user's current GPS location
-  const getCurrentLocation = () => {
-    if (navigator.geolocation) {
-      const locationToast = toast.loading("Getting your location...", {
+  // Handle map interaction (drag/click) - stores temporary location
+  const handleMapInteraction = (locationData) => {
+    setTempLocation({
+      latitude: locationData.latitude,
+      longitude: locationData.longitude,
+      address: locationData.address,
+      roadName: locationData.roadName,
+    });
+    setHasLocationChanged(true);
+  };
+
+  // Handle confirming the location selection
+  const handleConfirmLocation = () => {
+    if (tempLocation) {
+      setFormData((prev) => ({
+        ...prev,
+        location: tempLocation,
+      }));
+
+      // Clear any existing error
+      if (errors.location) {
+        setErrors((prev) => ({
+          ...prev,
+          location: "",
+        }));
+      }
+
+      setHasLocationChanged(false);
+      toast.success("📍 Location confirmed successfully!", {
         position: "top-right",
-      });
-
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setFormData((prev) => ({
-            ...prev,
-            location: {
-              ...prev.location,
-              latitude,
-              longitude,
-            },
-          }));
-
-          toast.dismiss(locationToast);
-          toast.success("📍 Location tagged successfully!", {
-            position: "top-right",
-            autoClose: 2000,
-          });
-
-          // Convert coordinates to human-readable address
-          reverseGeocode(latitude, longitude);
-        },
-        (error) => {
-          toast.dismiss(locationToast);
-          toast.error(
-            "Unable to get your location. Please enable location services.",
-            {
-              position: "top-right",
-              autoClose: 4000,
-            }
-          );
-          console.error("Error getting location:", error);
-        }
-      );
-    } else {
-      toast.error("Geolocation is not supported by this browser.", {
-        position: "top-right",
-        autoClose: 4000,
+        autoClose: 2000,
       });
     }
   };
 
-  // Handle location selection from map
-  const handleMapLocationSelect = (locationData) => {
+  // Handle clearing location
+  const handleClearLocation = () => {
     setFormData((prev) => ({
       ...prev,
       location: {
-        latitude: locationData.latitude,
-        longitude: locationData.longitude,
-        address: locationData.address,
-        roadName: locationData.roadName,
+        latitude: null,
+        longitude: null,
+        address: "",
+        roadName: "",
       },
     }));
-
-    // Clear any existing error
-    if (errors.location) {
-      setErrors((prev) => ({
-        ...prev,
-        location: "",
-      }));
-    }
-
-    toast.success("📍 Location tagged successfully!", {
-      position: "top-right",
-      autoClose: 2000,
-    });
-  };
-
-  // Convert GPS coordinates to human-readable address
-  const reverseGeocode = async (lat, lng) => {
-    try {
-      if (!config.googleMaps.apiKey) {
-        console.warn("Google Maps API key not configured");
-        setFormData((prev) => ({
-          ...prev,
-          location: {
-            ...prev.location,
-            address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-            roadName: "Coordinates only",
-          },
-        }));
-        return;
-      }
-
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/geocode/json?latlng=${lat},${lng}&key=${config.googleMaps.apiKey}`
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-
-        if (data.results && data.results.length > 0) {
-          const result = data.results[0];
-          const addressComponents = result.address_components;
-
-          let roadName = "";
-          let area = "";
-          let city = "";
-
-          addressComponents.forEach((component) => {
-            const types = component.types;
-
-            if (types.includes("route")) {
-              roadName = component.long_name;
-            } else if (
-              types.includes("sublocality") ||
-              types.includes("neighborhood")
-            ) {
-              area = component.long_name;
-            } else if (
-              types.includes("locality") ||
-              types.includes("administrative_area_level_2")
-            ) {
-              city = component.long_name;
-            }
-          });
-
-          let formattedAddress = "";
-          if (roadName) {
-            formattedAddress = roadName;
-            if (area && area !== roadName) {
-              formattedAddress += `, ${area}`;
-            }
-            if (city && city !== area) {
-              formattedAddress += `, ${city}`;
-            }
-          } else {
-            formattedAddress = result.formatted_address;
-          }
-
-          setFormData((prev) => ({
-            ...prev,
-            location: {
-              ...prev.location,
-              address: formattedAddress,
-              roadName: roadName || "Road name not available",
-            },
-          }));
-        }
-      }
-    } catch (error) {
-      console.error("Geocoding error:", error);
-      setFormData((prev) => ({
-        ...prev,
-        location: {
-          ...prev.location,
-          address: `Lat: ${lat.toFixed(6)}, Lng: ${lng.toFixed(6)}`,
-          roadName: "Coordinates only",
-        },
-      }));
-    }
+    setTempLocation(null);
+    setHasLocationChanged(false);
+    toast.info("Location cleared. Please select a new location on the map.");
   };
 
   // Validate form before submission
@@ -400,7 +295,7 @@ const Homepage = () => {
 
     // Validate location
     if (!formData.location.latitude || !formData.location.longitude) {
-      newErrors.location = "Please tag your location";
+      newErrors.location = "Please select and confirm your location on the map";
     }
 
     // Validate district
@@ -441,7 +336,7 @@ const Homepage = () => {
     }
   };
 
-  // Form submission without login checks
+  // Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -450,7 +345,15 @@ const Homepage = () => {
       return;
     }
 
-    // Generate location hash for duplicate detection (optional)
+    // Check if user has pending location changes
+    if (hasLocationChanged) {
+      toast.warning(
+        "Please confirm your location selection before submitting."
+      );
+      return;
+    }
+
+    // Generate location hash for duplicate detection
     const locationHash = generateLocationHash(
       formData.location.latitude,
       formData.location.longitude
@@ -484,7 +387,7 @@ const Homepage = () => {
         const priority = calculatePriorityFromDuplicates(
           duplicateDetection.similarReportsCount,
           duplicateDetection.uniqueUsers,
-          "Low" // Base priority
+          "Low"
         );
 
         submitData.append(
@@ -532,6 +435,8 @@ const Homepage = () => {
         district: "",
         description: "",
       });
+      setTempLocation(null);
+      setHasLocationChanged(false);
 
       // Navigate to history page
       setTimeout(() => navigate("/history"), 2000);
@@ -659,9 +564,9 @@ const Homepage = () => {
                 <span className="boost-badge">
                   🚀 Priority:{" "}
                   {calculatePriorityFromDuplicates(
-                    duplicateDetection.similarReportsCount, // ✅ First: report count
-                    duplicateDetection.uniqueUsers, // ✅ Second: unique users
-                    "Low" // ✅ Third: base priority
+                    duplicateDetection.similarReportsCount,
+                    duplicateDetection.uniqueUsers,
+                    "Low"
                   )}
                 </span>
                 <span className="severity-info">
@@ -806,39 +711,86 @@ const Homepage = () => {
                 <span className="step-toggle">▼</span>
               </div>
               <div className="step-content">
-                <p>Use GPS to mark the actual location of your report</p>
+                <p>
+                  Click on the map or drag the marker to select the exact
+                  location, then click "Confirm Location"
+                </p>
               </div>
             </div>
           </div>
 
-          {/* Location Section */}
+          {/* Location Section - ALWAYS SHOW MAP */}
           <FormSection title="🗺️ LOCATION" error={errors.location}>
-            <div className="location-controls">
-              <button
-                type="button"
-                className="location-btn primary"
-                onClick={getCurrentLocation}
-              >
-                📍 Tag Current Location
-              </button>
-              <button
-                type="button"
-                className="location-btn secondary"
-                onClick={() => setShowMapPicker(true)}
-              >
-                🗺️ Pick on Map
-              </button>
+            {/* Always display the embedded map */}
+            <div className="embedded-map-container">
+              <MapPicker
+                onLocationSelect={handleMapInteraction}
+                initialLocation={
+                  formData.location.latitude && formData.location.longitude
+                    ? {
+                        lat: formData.location.latitude,
+                        lng: formData.location.longitude,
+                      }
+                    : null
+                }
+                isVisible={true}
+                embedded={true}
+                interactiveMode={true} // New prop for interactive mode
+              />
             </div>
 
-            {/* Display location info */}
-            {formData.location.latitude && (
-              <div className="location-info">
+            {/* Show pending location info when user has interacted with map */}
+            {tempLocation && hasLocationChanged && (
+              <div className="pending-location-info">
+                <div className="pending-header">
+                  <span className="pending-icon">📍</span>
+                  <h4>Location Selected - Please Confirm</h4>
+                </div>
+                <div className="pending-details">
+                  <div className="pending-address">
+                    🛣️ {tempLocation.roadName || "Road name not available"}
+                  </div>
+                  <div className="pending-full-address">
+                    {tempLocation.address}
+                  </div>
+                  <div className="pending-coordinates">
+                    📍 {tempLocation.latitude.toFixed(6)},{" "}
+                    {tempLocation.longitude.toFixed(6)}
+                  </div>
+                </div>
+                <div className="pending-actions">
+                  <button
+                    type="button"
+                    className="confirm-location-btn"
+                    onClick={handleConfirmLocation}
+                  >
+                    ✅ Confirm Location
+                  </button>
+                  <button
+                    type="button"
+                    className="cancel-selection-btn"
+                    onClick={() => {
+                      setTempLocation(null);
+                      setHasLocationChanged(false);
+                      toast.info("Location selection cancelled.");
+                    }}
+                  >
+                    ❌ Cancel
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Show confirmed location info */}
+            {formData.location.latitude && !hasLocationChanged && (
+              <div className="location-info confirmed">
                 <div className="location-details">
                   <div className="location-primary">
                     <span className="location-icon">🛣️</span>
                     <span className="road-name">
                       {formData.location.roadName || "Road name not available"}
                     </span>
+                    <span className="confirmed-badge">✅ Confirmed</span>
                   </div>
                   <div className="location-secondary">
                     <span className="full-address">
@@ -853,15 +805,26 @@ const Homepage = () => {
                     </span>
                   </div>
                 </div>
-                <button
-                  type="button"
-                  className="change-location-btn"
-                  onClick={() => setShowMapPicker(true)}
-                >
-                  📝 Change Location
-                </button>
+                <div className="location-actions">
+                  <button
+                    type="button"
+                    className="clear-location-btn"
+                    onClick={handleClearLocation}
+                  >
+                    🗑️ Clear & Reselect
+                  </button>
+                </div>
               </div>
             )}
+
+            {/* Instructions */}
+            <div className="map-instructions">
+              <p>
+                💡 <strong>Instructions:</strong> Click anywhere on the map or
+                drag the marker to select a location, then click "Confirm
+                Location" to proceed.
+              </p>
+            </div>
           </FormSection>
 
           {renderDuplicateInfo()}
@@ -951,11 +914,14 @@ const Homepage = () => {
               className="submit-btn"
               disabled={
                 isSubmitting ||
+                hasLocationChanged ||
                 (duplicateDetection && !duplicateDetection.canSubmit)
               }
             >
               {isSubmitting
                 ? "Submitting..."
+                : hasLocationChanged
+                ? "Please Confirm Location First"
                 : duplicateDetection && !duplicateDetection.canSubmit
                 ? "Cannot Submit (Duplicate)"
                 : "Submit Report"}
@@ -1003,20 +969,6 @@ const Homepage = () => {
 
         <QuickAction />
       </div>
-
-      <MapPicker
-        isVisible={showMapPicker}
-        onClose={() => setShowMapPicker(false)}
-        onLocationSelect={handleMapLocationSelect}
-        initialLocation={
-          formData.location.latitude && formData.location.longitude
-            ? {
-                lat: formData.location.latitude,
-                lng: formData.location.longitude,
-              }
-            : null
-        }
-      />
     </div>
   );
 };
