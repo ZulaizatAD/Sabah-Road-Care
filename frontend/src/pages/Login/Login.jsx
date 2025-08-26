@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
-import { signIn, signUp } from "../../services/api3"; // 👈 import here
+import { signIn, signUp } from "../../services/userApi"; // 👈 import here
 import "./Login.css";
 
 const Login = () => {

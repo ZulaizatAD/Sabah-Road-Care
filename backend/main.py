@@ -16,7 +16,7 @@ from routers import dashboard, history, homepage
 
 try:
     from database.connect import Base, engine, get_db  # Shared auth DB/session
-    from backend import models, schemas
+    import models, schemas
     from backend.auth import verify_password, create_access_token
 except ImportError:
     # Fallback if the imports above fail (e.g., if the structure is flat)
@@ -25,9 +25,6 @@ except ImportError:
     import schemas
     from auth.security import verify_password, create_access_token
     from routers.user import router as user_router
-
-# Import the new photo router
-from routers.photos import router as photo_router
 
 # Create tables (DEV ONLY). Keep your original report tables + auth tables.
 report_models.Base.metadata.create_all(bind=report_engine)
@@ -53,7 +50,6 @@ app.include_router(homepage.router, prefix="/api", tags=["Homepage"])
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
-app.include_router(photo_router, prefix="/api", tags=["Photos"])
 app.include_router(profilepic.router)
 
 

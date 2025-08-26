@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { dashboardAPI } from "../../services/api2";
+import { dashboardAPI } from "../../services/dashboardApi";
 
 const useDashboardData = (filters) => {
   const [dashboardData, setDashboardData] = useState(null);
