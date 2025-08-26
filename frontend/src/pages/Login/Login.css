@@ -97,8 +97,7 @@
   background: linear-gradient(
     120deg,
     rgba(255, 255, 255, 0.3),
-    /* Light gray with 30% opacity */ rgba(255, 255, 255, 0.2)
-      /* Darker gray with 20% opacity */
+    rgba(255, 255, 255, 0.2)
   );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -140,7 +139,7 @@
 .card-header p {
   display: flex;
   justify-content: center;
-  color: #ffffff;
+  color: var(--gray-600);
   font-size: 0.9rem;
   margin: 0;
   transition: all 0.3s ease;
@@ -159,9 +158,8 @@
 .login-input-group input {
   background: linear-gradient(
     120deg,
-    rgba(255, 255, 255, 0.3),
-    /* Light gray with 25% opacity */ rgba(255, 255, 255, 0.2)
-      /* Darker gray with 20% opacity */
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.2)
   );
   width: 100%;
   padding: 1rem 1rem 1rem 3rem;
@@ -171,7 +169,7 @@
   font-size: 1rem;
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  color: white;
+  color: var(--gray-600);
   border: 2px solid rgba(255, 255, 255, 0.3);
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -184,7 +182,7 @@
 }
 
 .login-input-group input::placeholder {
-  color: #ffffff;
+  color: var(--gray-400);
   font-weight: 500;
 }
 
@@ -215,7 +213,8 @@
 
 .password-toggle img:hover {
   transform: scale(1.1);
-  filter: invert(73%) sepia(93%) saturate(348%) hue-rotate(70deg) brightness(95%) contrast(90%);
+  filter: invert(73%) sepia(93%) saturate(348%) hue-rotate(70deg)
+    brightness(95%) contrast(90%);
 }
 
 .form-options {

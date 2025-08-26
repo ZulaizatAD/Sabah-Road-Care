@@ -8,3 +8,4 @@ python-multipart
 python-decouple
 cloudinary
 Pillow
+pydantic[email]
