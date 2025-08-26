@@ -3,7 +3,6 @@ import cloudinary.uploader
 import cloudinary.api
 from decouple import config
 from typing import Dict, Any
-import os
 
 # Configure Cloudinary
 cloudinary.config(
@@ -17,8 +16,8 @@ class CloudinaryService:
     async def upload_pothole_image(
         file_content: bytes, 
         filename: str, 
-        report_id: str, 
-        image_type: str  # 'top-view', 'far', 'close-up'
+        case_id: str,   # 🔄 renamed from report_id
+        image_type: str  # 'top_view', 'far', 'close_up'
     ) -> Dict[str, Any]:
         """
         Upload pothole image to Cloudinary
@@ -26,15 +25,15 @@ class CloudinaryService:
         Args:
             file_content: Image file content in bytes
             filename: Original filename
-            report_id: Report ID to organize images
-            image_type: Type of image (top-view, far, close-up)
+            case_id: Case ID to organize images
+            image_type: Type of image (top_view, far, close_up)
             
         Returns:
             Dict containing upload result with public_id and secure_url
         """
         try:
-            # Create folder structure: pothole_reports/report_id/
-            folder_path = f"pothole_reports/{report_id}"
+            # Create folder structure: pothole_reports/case_id/
+            folder_path = f"pothole_reports/{case_id}"
             
             # Generate public_id with image type
             public_id = f"{folder_path}/{image_type}_{filename.split('.')[0]}"
@@ -68,15 +67,6 @@ class CloudinaryService:
     
     @staticmethod
     async def delete_image(public_id: str) -> Dict[str, Any]:
-        """
-        Delete image from Cloudinary
-        
-        Args:
-            public_id: Cloudinary public ID of the image
-            
-        Returns:
-            Dict containing deletion result
-        """
         try:
             result = cloudinary.uploader.destroy(public_id)
             return {
@@ -90,19 +80,12 @@ class CloudinaryService:
             }
     
     @staticmethod
-    async def get_image_urls_for_report(report_id: str) -> Dict[str, str]:
+    async def get_image_urls_for_case(case_id: str) -> Dict[str, str]:
         """
-        Get all image URLs for a specific report
-        
-        Args:
-            report_id: Report ID
-            
-        Returns:
-            Dict with image types as keys and URLs as values
+        Get all image URLs for a specific case
         """
         try:
-            # Search for images in the report folder
-            folder_path = f"pothole_reports/{report_id}"
+            folder_path = f"pothole_reports/{case_id}"
             result = cloudinary.api.resources(
                 type="upload",
                 prefix=folder_path,
@@ -112,12 +95,11 @@ class CloudinaryService:
             image_urls = {}
             for resource in result.get("resources", []):
                 public_id = resource["public_id"]
-                # Extract image type from public_id
-                if "top-view" in public_id:
+                if "top_view" in public_id:
                     image_urls["top_view"] = resource["secure_url"]
                 elif "far" in public_id:
                     image_urls["far"] = resource["secure_url"]
-                elif "close-up" in public_id:
+                elif "close_up" in public_id:
                     image_urls["close_up"] = resource["secure_url"]
             
             return image_urls
@@ -127,26 +109,12 @@ class CloudinaryService:
     
     @staticmethod
     def get_optimized_url(public_id: str, width: int = None, height: int = None) -> str:
-        """
-        Generate optimized image URL
-        
-        Args:
-            public_id: Cloudinary public ID
-            width: Target width
-            height: Target height
-            
-        Returns:
-            Optimized image URL
-        """
         transformation = []
-        
         if width:
             transformation.append(f"w_{width}")
         if height:
             transformation.append(f"h_{height}")
-        
         transformation.extend(["c_fill", "f_auto", "q_auto"])
-        
         return cloudinary.CloudinaryImage(public_id).build_url(
             transformation=transformation
         )

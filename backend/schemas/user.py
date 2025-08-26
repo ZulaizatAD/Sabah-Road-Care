@@ -29,3 +29,7 @@ class UserUpdate(BaseModel):
     full_name: Optional[str] = None
     email: Optional[EmailStr] = None
     password: Optional[Annotated[str, constr(min_length=6)]] = None
+
+class TokenPayload(BaseModel):
+    sub: Optional[str] = None   # subject = user_id (from JWT)
+    exp: Optional[int] = None   # expiry timestamp

@@ -1,20 +1,31 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from typing import Optional, Dict
 from datetime import datetime
-from typing import Optional
 
+# ---- Shared base schema ----
 class CaseBase(BaseModel):
-    case_id: str
+    email: EmailStr
     district: str
-    status: str
-    severity: str
-    location: str
     latitude: float
     longitude: float
-    date_created: datetime
-    last_date_status_update: datetime
+    location: Dict  # JSON object {latitude, longitude, address, remarks}
+    severity: str
+    status: str
     photo_top: str
     photo_far: str
     photo_close: str
+    description: Optional[str] = None
+    user_id: int
+
+# ---- Create schema ----
+class CaseCreate(CaseBase):
+    pass
+
+# ---- Response schema ----
+class CaseResponse(CaseBase):
+    case_id: str
+    date_created: datetime
+    last_date_status_update: datetime
 
     class Config:
-        from_attributes = True  # Enables compatibility with SQLAlchemy models
+        orm_mode = True
