@@ -32,7 +32,7 @@ export default function FunFactMainPage() {
     switch (currentPage) {
       case 'main':
         return (
-          <div className="fun-fact-body-container">
+          <div className="ff-body-container">
             <div className="text-section">
               <h1>Explore Our Facts</h1>
               <p>Discover interesting facts about various topics or dive into the history of Sabah.</p>
@@ -66,15 +66,16 @@ export default function FunFactMainPage() {
   };
 
   return (
-    <div className="fun-fact-page">
-      {/* This is where we add the new AnimatedBackground001 component. 
-        It will automatically handle the video background, positioning, and looping.
-      */}
-      <AnimatedBackground001 />
-      <AvatarMain />
+        <div className="fun-fact-page">
+            <AnimatedBackground001 />
+
+            {/* A new, top-level container for the avatar with high z-index */}
+            <div className="avatar-container">
+                <AvatarMain />
+            </div>
       
       {/* The main-content div remains, but it's now a sibling to the background component. */}
-      <div className="fun-fact-main-content">
+      <div className="ff-main-content">
         {renderContent()}
       </div>
       {selectedCard && <FunFactCardPopup card={selectedCard} onClose={handleClosePopup} />}

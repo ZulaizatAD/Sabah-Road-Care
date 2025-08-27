@@ -4,6 +4,7 @@ import Filter from "./Section/Filter";
 import StatsCards from "./Section/StatusCards";
 import Charts from "./Section/Charts";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import AnimatedBackground001 from "../../components/VideoBG/AnimatedBackground001";
 import { toast } from "react-toastify";
 import "./Dashboard.css";
 
@@ -47,9 +48,12 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-content">
+        <AnimatedBackground001 />
         <main className="main">
           <div className="container">
-            <LoadingSpinner size="large" message="Loading dashboard..." />
+            <div className="loading-container">
+              <LoadingSpinner size="large" message="Loading dashboard..." />
+            </div>
           </div>
         </main>
       </div>
@@ -59,6 +63,7 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="dashboard-content">
+        <AnimatedBackground001 />
         <main className="main">
           <div className="container">
             <div className="error-state">
@@ -73,23 +78,37 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <div className="dashboard-content">
-        <main className="main">
-          <div className="container">
+    <div className="dashboard-content">
+      <AnimatedBackground001 />
+      <main className="main">
+        <div className="container">
+          {/* Modern Dashboard Header */}
+          <div className="dashboard-header">
+            <h1 className="dashboard-title"> Analytics Dashboard</h1>
+            <p className="dashboard-subtitle">
+              Real-time insights into road care reports and maintenance progress
+            </p>
+          </div>
+
+          {/* Filter and Share Section */}
+          <div className="filter-share-container">
             <Filter
               filters={filters}
               handleFilterChange={handleFilterChange}
               handleShare={handleShare}
             />
-            <StatsCards data={dashboardData?.stats} />
-            <Charts
-              pieData={dashboardData?.charts?.pieData}
-              trendData={dashboardData?.charts?.trendData}
-            />
           </div>
-        </main>
-      </div>
+
+          {/* Stats Cards */}
+          <StatsCards data={dashboardData?.stats} />
+
+          {/* Charts Section */}
+          <Charts
+            pieData={dashboardData?.charts?.pieData}
+            trendData={dashboardData?.charts?.trendData}
+          />
+        </div>
+      </main>
     </div>
   );
 };
