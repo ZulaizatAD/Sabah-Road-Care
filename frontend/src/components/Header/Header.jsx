@@ -109,14 +109,14 @@ const Header = () => {
                   className="dropdown-item"
                   onClick={() => handleNavigation("/information")}
                 >
-                  <span className="dropdown-icon">🎯</span>
+                  <span className="dropdown-icon"></span>
                   <span className="dropdown-text">Fun Facts</span>
                 </button>
                 <button
                   className="dropdown-item"
                   onClick={() => handleNavigation("/information")}
                 >
-                  <span className="dropdown-icon">📅</span>
+                  <span className="dropdown-icon"></span>
                   <span className="dropdown-text">Timeline</span>
                 </button>
               </div>
@@ -208,21 +208,21 @@ const Header = () => {
                   className="dropdown-item"
                   onClick={() => handleNavigation("/history")}
                 >
-                  <span className="dropdown-icon">📋</span>
+                  <span className="dropdown-icon"></span>
                   <span className="dropdown-text">User History</span>
                 </button>
                 <button
                   className="dropdown-item"
                   onClick={() => handleNavigation("/profileupdate")}
                 >
-                  <span className="dropdown-icon">⚙️</span>
+                  <span className="dropdown-icon"></span>
                   <span className="dropdown-text">Update Account</span>
                 </button>
 
                 {/* Optional logout for capstone demo */}
                 <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
-                  <span className="dropdown-icon">🚪</span>
+                  <span className="dropdown-icon"></span>
                   <span className="dropdown-text">Logout</span>
                 </button>
               </div>

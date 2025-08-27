@@ -226,7 +226,7 @@ const Login = () => {
 
           <button className="google-btn" onClick={handleGoogleSignIn}>
             <img
-              src="https://developers.google.com/identity/images/g-logo.png"
+              src={assets.GoogleLogo}
               alt="Google"
             />
             {isSignUp ? "Sign up with Google" : "Sign in with Google"}

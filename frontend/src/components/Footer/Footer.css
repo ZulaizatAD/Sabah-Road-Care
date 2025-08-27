@@ -1,9 +1,38 @@
 .footer {
   background: var(--gray-100);
-  border-top: 2px solid var(--primary-green);
+  /* Animated separator line handled by ::before */
   margin-top: auto;
   position: relative;
   z-index: 100;
+}
+
+/* Animated top border line (same style as FunFactMainPage) */
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    transparent,
+    rgba(0, 123, 255, 0.8),
+    rgba(0, 255, 255, 0.8),
+    rgba(0, 123, 255, 0.8),
+    transparent
+  );
+  animation: glowMove 3s ease-in-out infinite;
+}
+
+@keyframes glowMove {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scaleX(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1);
+  }
 }
 
 .footer-container {

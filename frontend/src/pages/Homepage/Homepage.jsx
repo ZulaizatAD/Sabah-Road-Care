@@ -695,7 +695,7 @@ const Homepage = () => {
 
           {/* Photos Section */}
           <FormSection
-            title="📸 PHOTOS (Required: 3 angles)"
+            title=" PHOTOS (Required: 3 angles)"
             error={errors.photos}
           >
             <div className="photo-grid">
@@ -738,7 +738,7 @@ const Homepage = () => {
           </div>
 
           {/* Location Section - ALWAYS SHOW MAP */}
-          <FormSection title="🗺️ LOCATION" error={errors.location}>
+          <FormSection title=" LOCATION" error={errors.location}>
             {/* Always display the embedded map */}
             <div className="embedded-map-container">
               <MapPicker
@@ -838,7 +838,7 @@ const Homepage = () => {
             {/* Instructions */}
             <div className="map-instructions">
               <p>
-                💡 <strong>Instructions:</strong> Click anywhere on the map or
+                 <strong>Instructions:</strong> Click anywhere on the map or
                 drag the marker to select a location, then click "Confirm
                 Location" to proceed.
               </p>
@@ -865,7 +865,7 @@ const Homepage = () => {
           </div>
 
           {/* District Section */}
-          <FormSection title="🏙 DISTRICT" error={errors.district}>
+          <FormSection title=" DISTRICT" error={errors.district}>
             <select
               value={formData.district}
               onChange={(e) => handleInputChange("district", e.target.value)}
@@ -898,7 +898,7 @@ const Homepage = () => {
 
           {/* Description Section */}
           <FormSection
-            title="📝 REMARKS / DESCRIPTION"
+            title=" REMARKS / DESCRIPTION"
             error={errors.description}
           >
             <textarea
