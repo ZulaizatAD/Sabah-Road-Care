@@ -37,7 +37,18 @@ export const UserProvider = ({ children }) => {
 
   // Update user profile
   const updateUser = (updatedData) => {
-    const updatedUser = { ...user, ...updatedData };
+    const updatedUser = {
+      ...user,
+      ...updatedData,
+      profileImage:
+        updatedData.profileImage ||
+        updatedData.profile_picture ||
+        user.profileImage,
+      profile_picture:
+        updatedData.profile_picture ||
+        updatedData.profileImage ||
+        user.profile_picture,
+    };
     setUser(updatedUser);
     localStorage.setItem("user", JSON.stringify(updatedUser));
   };

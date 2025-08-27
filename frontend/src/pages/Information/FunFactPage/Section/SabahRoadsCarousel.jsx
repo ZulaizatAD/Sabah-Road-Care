@@ -1,101 +1,84 @@
 // SabahRoadsCarousel.jsx
 import React from 'react';
-import FunFactCarousel from './FunFactCarousel';
+import FunFactCarousel from './FunFactCarousel'; // Use the main carousel component
 import '../FunFactMainPage.css';
 
-// Modern data structure for Sabah Fun & Interesting Facts
+// Data for Sabah Roads history
 const sabahRoadsFacts = [
   {
     id: 1,
     title: "Gravity-Defying Road",
-    text: "Experience the fascinating optical illusion on the Kimanis–Keningau Highway where roads appear to roll uphill, creating a mind-bending driving experience that defies gravity.",
-    image: "https://placehold.co/600x300/2C3E50/FFFFFF?text=Gravity-Defying+Road",
-    audio: "/Audio/FunFactAudio/Gravity Roads_V2.wav",
-    category: "Natural Phenomena"
+    text: "There's a local optical illusion in Sabah where a road appears to roll uphill, specifically on the Kimanis–Keningau Highway.",
+    // image: "https://placehold.co/400x300/F5F5DC/000000?text=Gravity-Defying+Road",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-18.mp3",
   },
   {
     id: 2,
-    title: "No Freeways Policy",
-    text: "Unlike other states, Sabah maintains a unique road network without interstate freeways, relying on federal two-lane highways and urban routes like Kota Kinabalu's impressive eight-lane coastal highway.",
-    image: "https://placehold.co/600x300/34495E/FFFFFF?text=No+Freeways+Policy",
-    audio: "/Audio/FunFactAudio/No Freeways_2.wav",
-    category: "Infrastructure"
+    title: "No Freeways",
+    text: "Sabah lacks interstate freeways; major roads are federal two-lane highways or expanded urban routes like Kota Kinabalu’s eight-lane coastal highway.",
+    // image: "https://placehold.co/400x300/B22222/FFFFFF?text=No+Freeways",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-19.mp3",
   },
   {
     id: 3,
-    title: "1950s–60s Transport Revolution",
-    text: "Before modern road expansion, Sabah's transportation relied heavily on river networks, with early British-era roads serving as supplementary routes through the challenging terrain.",
-    image: "https://placehold.co/600x300/7F8C8D/FFFFFF?text=1950s+Transport+Revolution",
-    audio: "/Audio/FunFactAudio/1950s–60s Transport.wav",
-    category: "Historical"
+    title: "1950s–60s Transport",
+    text: "Before road expansion, rivers were the main transport network, supplemented by early British-era roads.",
+    // image: "https://placehold.co/400x300/A9A9A9/000000?text=1950s+Transport",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-20.mp3",
   },
   {
     id: 4,
-    title: "Adventure Road Trip Paradise",
-    text: "Sabah's rugged logging roads and plantation tracks offer the ultimate 4x4 adventure challenge, attracting thrill-seekers who tackle these demanding routes in organized convoys.",
-    image: "https://placehold.co/600x300/27AE60/FFFFFF?text=Adventure+Road+Trip+Paradise",
-    audio: "/Audio/FunFactAudio/Adventure Road Trip.wav",
-    category: "Adventure"
+    title: "Adventure Road Trip",
+    text: "Sabah’s logging roads and plantation tracks offer a rugged road-trip challenge, often tackled with 4x4 convoys.",
+    // image: "https://placehold.co/400x300/4169E1/FFFFFF?text=Adventure+Road+Trip",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-21.mp3",
   },
   {
     id: 5,
-    title: "Road Paving Progress",
-    text: "As of 2016, Sabah achieved a significant milestone with 51.8% of its 21,934 km road network being sealed, totaling 11,355 km of paved roads connecting communities across the state.",
-    image: "https://placehold.co/600x300/2980B9/FFFFFF?text=Road+Paving+Progress",
-    audio: "/Audio/FunFactAudio/Road Paving.wav",
-    category: "Development"
+    title: "Road Paving",
+    text: "As of 2016, around 51.8% of Sabah's 21,934 km road network was sealed (11,355 km).",
+    // image: "https://placehold.co/400x300/228B22/FFFFFF?text=Road+Paving",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-22.mp3",
   },
   {
     id: 6,
-    title: "Dual Management System",
-    text: "Sabah's road network operates under a sophisticated dual management system: federal trunk roads managed by Malaysia's JKR, while Sabah JKR handles state and rural road infrastructure.",
-    image: "https://placehold.co/600x300/8E44AD/FFFFFF?text=Dual+Management+System",
-    audio: "/Audio/FunFactAudio/Road Maintenance.wav",
-    category: "Governance"
+    title: "Road Maintenance",
+    text: "Federal trunk roads are managed by Malaysia’s JKR (Public Works Department), while Sabah JKR handles state and rural roads.",
+    // image: "https://placehold.co/400x300/8B008B/FFFFFF?text=Road+Maintenance",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-23.mp3",
   },
   {
     id: 7,
-    title: "Pan-Borneo Highway Mega Project",
-    text: "The ambitious 2,083 km Pan-Borneo Highway represents a transformative project linking Sabah with Sarawak and Brunei, modernizing two-lane roads into multi-lane highways for regional connectivity.",
-    image: "https://placehold.co/600x300/E67E22/FFFFFF?text=Pan-Borneo+Highway+Mega+Project",
-    audio: "/Audio/FunFactAudio/Pan-Borneo Highway.wav",
-    category: "Mega Project"
+    title: "Pan-Borneo Highway",
+    text: "A major project ~2,083 km long, linking Sabah with Sarawak & Brunei, modernizing two-lane roads into multi-lane highways.",
+    // image: "https://placehold.co/400x300/808080/FFFFFF?text=Pan-Borneo+Highway",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-16.mp3",
   },
   {
     id: 8,
-    title: "Road Damage Factors",
-    text: "Sabah's roads face multiple challenges including aging infrastructure, heavy commercial usage, intense tropical rainfall, and maintenance gaps, all contributing to road deterioration patterns.",
-    image: "https://placehold.co/600x300/E74C3C/FFFFFF?text=Road+Damage+Factors",
-    audio: "/Audio/FunFactAudio/Road Damage Causes.wav",
-    category: "Challenges"
+    title: "Road Damage Causes",
+    text: "Aging infrastructure, heavy usage, tropical rains, and under-maintenance contribute to road deterioration.",
+    // image: "https://placehold.co/400x300/FF5722/FFFFFF?text=Road+Damage+Causes",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-24.mp3",
   },
   {
     id: 9,
-    title: "Tunnel Vision for the Future",
-    text: "Since 2014, innovative tunnel projects have been proposed to bypass landslide-prone highland stretches, representing a forward-thinking approach to Sabah's challenging terrain.",
-    image: "https://placehold.co/600x300/F39C12/FFFFFF?text=Tunnel+Vision+for+the+Future",
-    audio: "/Audio/FunFactAudio/Tunnels in Saabah.wav",
-    category: "Innovation"
+    title: "Tunnels in Sabah",
+    text: "Proposed tunnel projects have been considered since 2014 to bypass landslide-prone highland stretches.",
+    // image: "https://placehold.co/400x300/FFC107/FFFFFF?text=Tunnels+in+Sabah",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-25.mp3",
   },
   {
     id: 10,
-    title: "Future Highway Network Vision",
-    text: "Through strategic initiatives like the Sabah Development Corridor and Pan-Borneo Highway, Sabah is on track to achieve a fully modern highway network by 2029, revolutionizing regional connectivity.",
-    image: "https://placehold.co/600x300/16A085/FFFFFF?text=Future+Highway+Network+Vision",
-    audio: "/Audio/FunFactAudio/Future Outlook.wav",
-    category: "Future Vision"
+    title: "Future Outlook",
+    text: "With initiatives like the Sabah Development Corridor and Pan-Borneo Highway, Sabah aims for a fully modern highway network by 2029.",
+    // image: "https://placehold.co/400x300/4CAF50/FFFFFF?text=Future+Outlook",
+    audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-26.mp3",
   },
 ];
 
 const SabahRoadsCarousel = ({ onCardClick, goBack }) => {
-  return (
-    <FunFactCarousel 
-      cards={sabahRoadsFacts} 
-      goBack={goBack} 
-      title="Fun & Interesting Facts About Sabah Roads" 
-      onCardClick={onCardClick} 
-    />
-  );
+  return <FunFactCarousel cards={sabahRoadsFacts} goBack={goBack} title="Timeline of Roads in Sabah" onCardClick={onCardClick} />;
 };
 
 export default SabahRoadsCarousel;

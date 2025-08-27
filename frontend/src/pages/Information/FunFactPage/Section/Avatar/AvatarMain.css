@@ -1,18 +1,59 @@
 .AvatarMain {
   position: relative;
-  width: 500px;
-  margin-left: -280px;
-  margin-bottom: -12px;
-  height: auto;
+  width: 10%;
+  height: 25%;
+  overflow: hidden;
+  border-radius: 15px;
   cursor: pointer;
+
+  /* Glassmorphism additions */
+  background-color: rgba(255, 255, 255, 0.15); /* Semi-transparent white */
+  backdrop-filter: blur(10px); /* The key to the blurred effect */
+  border: 1px solid rgba(255, 255, 255, 0.2); /* Subtle light border */
+
+  /* Shadows for depth */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1),
+              0 1px 3px rgba(0, 0, 0, 0.08);
+
+  /* Smooth transitions */
+  transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out, background-color 0.3s ease-in-out;
 }
 
 .AvatarMain .avatar-video {
   width: 100%;
-  height: auto;
+  height: 100%;
   display: block;
-  border: none;
-  outline: none;
 }
 
-.AvatarMain .overlay { display: none; }
+.AvatarMain .overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0); /* Still useful for a distinct hover effect */
+  transition: background-color 0.3s ease-in-out;
+}
+
+/* Hover effects */
+.AvatarMain:hover {
+  transform: scale(1.03); /* Subtle scale up for elegance */
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Deeper shadow on hover */
+}
+
+.AvatarMain:hover .overlay {
+  background-color: rgba(0, 0, 0, 0.15); /* Semi-transparent color overlay on hover */
+}
+
+.avatar-container {
+    position: fixed; /* Positions it relative to the viewport */
+    top: 20px;       /* Adjust top and left/right as needed for placement */
+    right: 20px;
+    z-index: 1000;   /* A high value to ensure it's on top of everything else */
+}
+
+/* Ensure other content has a lower z-index if needed, though with the new structure it should be fine. */
+.ff-main-content {
+    position: relative;
+    z-index: 10; /* Lower than the avatar container's z-index */
+}

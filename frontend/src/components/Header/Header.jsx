@@ -93,7 +93,6 @@ const Header = () => {
               } ${activeDropdown === "information" ? "open" : ""}`}
               onClick={() => toggleDropdown("information")}
             >
-              <span className="nav-icon">ℹ️</span>
               <span className="nav-text">Information</span>
               <span
                 className={`dropdown-arrow ${
@@ -134,7 +133,6 @@ const Header = () => {
               } ${activeDropdown === "profile" ? "open" : ""}`}
               onClick={() => toggleDropdown("profile")}
             >
-              <span className="nav-icon">👤</span>
               <span className="nav-text">Profile</span>
               <span
                 className={`dropdown-arrow ${
@@ -147,9 +145,62 @@ const Header = () => {
 
             {activeDropdown === "profile" && (
               <div className="dropdown-menu">
-                {/* User Info Display - Always show since user always exists */}
+                {/* User Info Display with Photo and Name */}
                 <div className="user-info-dropdown">
-                  <div className="user-email">{user?.email || "Demo User"}</div>
+                  <div className="user-profile-section">
+                    <div className="user-avatar">
+                      {user?.profileImage ||
+                      user?.profile_picture ||
+                      user?.photoURL ? (
+                        <img
+                          src={
+                            user.profileImage ||
+                            user.profile_picture ||
+                            user.photoURL
+                          }
+                          alt="Profile"
+                          className="profile-image"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.style.display = "none";
+                            e.target.nextSibling.style.display = "flex";
+                          }}
+                        />
+                      ) : null}
+                      {/* Default avatar frame */}
+                      <div
+                        className="default-avatar"
+                        style={{
+                          display:
+                            user?.profileImage ||
+                            user?.profile_picture ||
+                            user?.photoURL
+                              ? "none"
+                              : "flex",
+                        }}
+                      >
+                        <img
+                          src={assets.defaultUser}
+                          alt="Default user"
+                          className="default-user-icon"
+                        />
+                      </div>
+                    </div>
+                    <div className="user-details">
+                      <div className="user-name">
+                        {user?.name ||
+                          user?.full_name ||
+                          user?.displayName ||
+                          user?.email ||
+                          "Demo User"}
+                      </div>
+                      {/* Show email as subtitle only if we have a name */}
+                      {(user?.name || user?.full_name || user?.displayName) &&
+                        user?.email && (
+                          <div className="user-email-small">{user?.email}</div>
+                        )}
+                    </div>
+                  </div>
                   <div className="dropdown-divider"></div>
                 </div>
 
@@ -172,7 +223,7 @@ const Header = () => {
                 <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
                   <span className="dropdown-icon">🚪</span>
-                  <span className="dropdown-text">Reset Demo</span>
+                  <span className="dropdown-text">Logout</span>
                 </button>
               </div>
             )}

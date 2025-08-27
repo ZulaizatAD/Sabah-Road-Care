@@ -3,33 +3,38 @@ import { toast } from "react-toastify";
 
 const sabahDistricts = [
   { value: "", label: "All Districts" },
-  { value: "kota-kinabalu", label: "Kota Kinabalu" },
-  { value: "sandakan", label: "Sandakan" },
-  { value: "tawau", label: "Tawau" },
-  { value: "penampang", label: "Penampang" },
-  { value: "putatan", label: "Putatan" },
-  { value: "papar", label: "Papar" },
-  { value: "tuaran", label: "Tuaran" },
-  { value: "kudat", label: "Kudat" },
-  { value: "beaufort", label: "Beaufort" },
-  { value: "ranau", label: "Ranau" },
-  { value: "kota-belud", label: "Kota Belud" },
-  { value: "keningau", label: "Keningau" },
-  { value: "semporna", label: "Semporna" },
-  { value: "kuala-penyu", label: "Kuala Penyu" },
-  { value: "lahad-datu", label: "Lahad Datu" },
-  { value: "others", label: "Others" },
+  { value: "Kota Kinabalu", label: "Kota Kinabalu" },
+  { value: "Sandakan", label: "Sandakan" },
+  { value: "Tawau", label: "Tawau" },
+  { value: "Penampang", label: "Penampang" },
+  { value: "Putatan", label: "Putatan" },
+  { value: "Papar", label: "Papar" },
+  { value: "Tuaran", label: "Tuaran" },
+  { value: "Kudat", label: "Kudat" },
+  { value: "Beaufort", label: "Beaufort" },
+  { value: "Ranau", label: "Ranau" },
+  { value: "Kota Belud", label: "Kota Belud" },
+  { value: "Keningau", label: "Keningau" },
+  { value: "Semporna", label: "Semporna" },
+  { value: "Kuala Penyu", label: "Kuala Penyu" },
+  { value: "Lahad Datu", label: "Lahad Datu" },
+  { value: "Others", label: "Others" },
 ];
 
 const Filter = ({ filters, handleFilterChange, handleShare }) => {
   const handleClearFilters = () => {
-    handleFilterChange("location", "");
-    handleFilterChange("date", "");
+    handleFilterChange("district", "");
+    handleFilterChange("start_date", "");
+    handleFilterChange("end_date", "");
     handleFilterChange("severity", "");
     toast.info("Filters cleared");
   };
 
-  const hasActiveFilters = filters.location || filters.date || filters.severity;
+  const hasActiveFilters =
+    filters.district ||
+    filters.start_date ||
+    filters.end_date ||
+    filters.severity;
 
   return (
     <div className="filter-container">
@@ -44,15 +49,15 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
           </button>
         )}
       </div>
-      
+
       <div className="filter-inputs">
         <div className="filter-group">
-          <label htmlFor="location-filter">Location:</label>
+          <label htmlFor="district-filter">District:</label>
           <select
-            id="location-filter"
+            id="district-filter"
             className="filter-select"
-            value={filters.location}
-            onChange={(e) => handleFilterChange("location", e.target.value)}
+            value={filters.district}
+            onChange={(e) => handleFilterChange("district", e.target.value)}
           >
             {sabahDistricts.map((district) => (
               <option key={district.value} value={district.value}>
@@ -63,14 +68,26 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
         </div>
 
         <div className="filter-group">
-          <label htmlFor="date-filter">Date:</label>
+          <label htmlFor="start-date-filter">Start Date:</label>
           <input
-            id="date-filter"
+            id="start-date-filter"
             type="date"
             className="filter-date"
-            value={filters.date}
-            onChange={(e) => handleFilterChange("date", e.target.value)}
-            max={new Date().toISOString().split('T')[0]} // Prevent future dates
+            value={filters.start_date}
+            onChange={(e) => handleFilterChange("start_date", e.target.value)}
+            max={new Date().toISOString().split("T")[0]} // Prevent future dates
+          />
+        </div>
+
+        <div className="filter-group">
+          <label htmlFor="end-date-filter">End Date:</label>
+          <input
+            id="end-date-filter"
+            type="date"
+            className="filter-date"
+            value={filters.end_date}
+            onChange={(e) => handleFilterChange("end_date", e.target.value)}
+            max={new Date().toISOString().split("T")[0]} // Prevent future dates
           />
         </div>
 
@@ -83,10 +100,9 @@ const Filter = ({ filters, handleFilterChange, handleShare }) => {
             onChange={(e) => handleFilterChange("severity", e.target.value)}
           >
             <option value="">All Severities</option>
-            <option value="low">Low</option>
-            <option value="medium">Medium</option>
-            <option value="high">High</option>
-            <option value="critical">Critical</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
           </select>
         </div>
       </div>
