@@ -13,6 +13,33 @@ cloudinary.config(
 
 class CloudinaryService:
     @staticmethod
+    async def upload_profile_image(file_content: bytes, filename: str) -> dict:
+        """
+        Upload user profile picture to Cloudinary
+        """
+        try:
+            folder_path = "profile_pictures"
+            public_id = f"{folder_path}/{filename.split('.')[0]}"
+            
+            result = cloudinary.uploader.upload(
+                file_content,
+                public_id=public_id,
+                folder=folder_path,
+                resource_type="image",
+                format="jpg",
+                quality="auto",
+                fetch_format="auto"
+            )
+            
+            return {
+                "success": True,
+                "public_id": result["public_id"],
+                "secure_url": result["secure_url"]
+            }
+        except Exception as e:
+            return {"success": False, "error": str(e)}
+
+
     async def upload_pothole_image(
         file_content: bytes, 
         filename: str, 
