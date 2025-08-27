@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
@@ -9,7 +9,7 @@ import "./Login.css";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useUser();
+  const { login, isAuthenticated } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -18,6 +18,36 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigate("/homepage", { replace: true });
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Load remembered user on component mount
+  useEffect(() => {
+    const remembered = localStorage.getItem("rememberUser");
+    if (remembered) {
+      try {
+        const { email, timestamp } = JSON.parse(remembered);
+        // Check if not expired (30 days)
+        const thirtyDaysInMs = 30 * 24 * 60 * 60 * 1000;
+        if (Date.now() - timestamp < thirtyDaysInMs) {
+          setFormData((prev) => ({ ...prev, email }));
+          setRememberMe(true);
+        } else {
+          // Remove expired remember data
+          localStorage.removeItem("rememberUser");
+        }
+      } catch (error) {
+        console.error("Error parsing remembered user:", error);
+        localStorage.removeItem("rememberUser");
+      }
+    }
+  }, []);
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -26,6 +56,22 @@ const Login = () => {
       ...prev,
       [name]: value,
     }));
+  };
+
+  // Handle remember me checkbox
+  const handleRememberMeChange = (e) => {
+    setRememberMe(e.target.checked);
+  };
+
+  // Toggle between sign in and sign up with form reset
+  const toggleAuthMode = () => {
+    setIsSignUp(!isSignUp);
+    setFormData({
+      email: rememberMe ? formData.email : "",
+      password: "",
+      confirmPassword: "",
+    });
+    setShowPassword(false);
   };
 
   // Handle form submission
@@ -52,16 +98,20 @@ const Login = () => {
       let userData;
 
       if (isSignUp) {
-        // Call API sign up
         await signUp(
           formData.email,
-          formData.email.split("@")[0], // 👈 use part of email as full_name
+          formData.email.split("@")[0],
           formData.password,
           formData.confirmPassword
         );
 
-        toast.success("Account created successfully! 🚗 Please log in.");
+        toast.success("Account created successfully! Please log in.");
         setIsSignUp(false); // switch to login after signup
+        setFormData({
+          email: formData.email,
+          password: "",
+          confirmPassword: "",
+        });
         setIsLoading(false);
         return;
       } else {
@@ -75,10 +125,23 @@ const Login = () => {
           token: data.access_token,
         };
 
+        // Handle remember me
+        if (rememberMe) {
+          localStorage.setItem(
+            "rememberUser",
+            JSON.stringify({
+              email: formData.email,
+              timestamp: Date.now(),
+            })
+          );
+        } else {
+          localStorage.removeItem("rememberUser");
+        }
+
         // Save to context
         login(userData);
 
-        toast.success("Welcome back to Sabah Road Care! 🚗");
+        toast.success("Welcome back to Sabah Road Care!");
 
         // Redirect after successful login
         setTimeout(() => {
@@ -87,11 +150,22 @@ const Login = () => {
       }
     } catch (error) {
       console.error(error);
-      toast.error(
-        isSignUp
-          ? error.response?.data?.detail || "Sign up failed. Please try again."
-          : error.response?.data?.detail || "Login failed. Please try again."
-      );
+
+      if (error.response?.status === 401) {
+        toast.error("Invalid credentials. Please try again.");
+      } else if (error.response?.status === 409) {
+        toast.error("Email already exists. Please sign in instead.");
+        setIsSignUp(false);
+      } else if (error.response?.status >= 500) {
+        toast.error("Server error. Please try again later.");
+      } else {
+        toast.error(
+          isSignUp
+            ? error.response?.data?.detail ||
+                "Sign up failed. Please try again."
+            : error.response?.data?.detail || "Login failed. Please try again."
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -105,8 +179,8 @@ const Login = () => {
   // Demo login function
   const handleDemoLogin = () => {
     setFormData({
-      email: "demo@sabahroadcare.my",
-      password: "demo123",
+      email: "zul@example.com",
+      password: "password123",
       confirmPassword: "",
     });
     toast.info("Demo credentials filled! Click Sign In to continue.");
@@ -131,7 +205,7 @@ const Login = () => {
         <div className="logo-container">
           <LogoLoopVideoAnimation />
         </div>
-        <div className="neumorphic-card">
+        <div className={`neumorphic-card ${isSignUp ? 'signup-mode' : ''}`}>
           <div className="card-header">
             <h2>{isSignUp ? "SIGN UP" : "SIGN IN"}</h2>
             <p>
@@ -157,7 +231,7 @@ const Login = () => {
               <input
                 type={showPassword ? "text" : "password"}
                 name="password"
-                placeholder="password"
+                placeholder="Password"
                 value={formData.password}
                 onChange={handleInputChange}
                 required
@@ -171,7 +245,7 @@ const Login = () => {
                 {showPassword ? (
                   <img src={assets.passwordHide} alt="Hide password" />
                 ) : (
-                  "👁️"
+                  <img src={assets.passwordShow} alt="Show password" />
                 )}
               </button>
             </div>
@@ -190,15 +264,28 @@ const Login = () => {
               </div>
             )}
 
-            <div className="form-options">
-              <label className="remember-me">
-                <input type="checkbox" />
-                <span>Remember me</span>
-              </label>
-              <a href="#" className="forgot-password">
-                Forgot password?
-              </a>
-            </div>
+            {!isSignUp && (
+              <div className="form-options">
+                <label className="remember-me">
+                  <input
+                    type="checkbox"
+                    checked={rememberMe}
+                    onChange={handleRememberMeChange}
+                  />
+                  <span>Remember me</span>
+                </label>
+                <a
+                  href="#"
+                  className="forgot-password"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    toast.info("Password reset feature coming soon!");
+                  }}
+                >
+                  Forgot password?
+                </a>
+              </div>
+            )}
 
             <button
               type="submit"
@@ -225,12 +312,10 @@ const Login = () => {
           </div>
 
           <button className="google-btn" onClick={handleGoogleSignIn}>
-            <img
-              src="https://developers.google.com/identity/images/g-logo.png"
-              alt="Google"
-            />
+            <img src={assets.GoogleLogo} alt="Google Logo" />
             {isSignUp ? "Sign up with Google" : "Sign in with Google"}
           </button>
+
           <div className="signup-link">
             <p>
               {isSignUp
@@ -239,7 +324,7 @@ const Login = () => {
               <button
                 type="button"
                 className="toggle-auth-btn"
-                onClick={() => setIsSignUp(!isSignUp)}
+                onClick={toggleAuthMode}
               >
                 {isSignUp ? "Sign in here" : "Sign up here"}
               </button>
