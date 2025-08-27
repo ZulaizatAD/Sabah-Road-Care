@@ -5,6 +5,7 @@ import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
 import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
+import AnimatedBackground001 from "./components/VideoBG/AnimatedBackground001";
 import Login from "./pages/Login/Login";
 import Homepage from "./pages/Homepage/Homepage";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -23,14 +24,7 @@ const App = () => {
     <UserProvider>
       <EnvironmentCheck>
         <div className="app-container">
-          <div className="background-image">
-            <video autoPlay muted loop playsInline className="background-video">
-              <source
-                src="/assets/VideoFiles/GreyBackgroundAE_Loop_002.webm"
-                type="video/webm"
-              />
-            </video>
-          </div>
+          <AnimatedBackground001 />
           <Header />
           <main className="main-content">
             <Routes>

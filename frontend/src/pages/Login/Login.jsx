@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
-import { signIn, signUp } from "../../services/userApi"; // 👈 import here
+import { signIn, signUp } from "../../services/userApi";
+import LogoLoopVideoAnimation from "../../components/VideoBG/LogoLoopVideo/LogoLoopVideoAnimation";
 import "./Login.css";
 
 const Login = () => {
@@ -128,11 +129,7 @@ const Login = () => {
 
       <div className="right-panel">
         <div className="logo-container">
-          <img
-            src="/SRC-test.png"
-            alt="Sabah Road Care"
-            className="login-logo"
-          />
+          <LogoLoopVideoAnimation />
         </div>
         <div className="neumorphic-card">
           <div className="card-header">

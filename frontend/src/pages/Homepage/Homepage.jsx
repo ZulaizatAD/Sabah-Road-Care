@@ -15,7 +15,6 @@ import {
 } from "../../utils/duplicateDetection";
 import { useHomepage } from "./useHomepage";
 import "./Homepage.css";
-import config from "../../config/environment";
 
 const Homepage = () => {
   const navigate = useNavigate();
