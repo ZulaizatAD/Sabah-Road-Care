@@ -1,0 +1,48 @@
+.logo-loop-container {
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  margin-bottom: -7rem;
+  margin-top: -5rem;
+  margin-left: 0rem;
+  padding: 0.5rem;
+}
+
+.logo-loop-video {
+  width: 100%;
+  height: auto;
+  max-width: 280px; /* Reduced by 20% from 300px */
+  object-fit: contain;
+  border-radius: 0;
+  box-shadow: none;
+  transition: none;
+  outline: none;
+  border: none;
+}
+
+.logo-loop-video:hover {
+  transform: none;
+}
+
+/* Responsive adjustments for logo loop */
+@media (max-width: 768px) {
+  .logo-loop-container {
+    margin-bottom: 1.2rem;
+    padding: 0.4rem;
+  }
+  
+  .logo-loop-video {
+    max-width: 200px; /* Reduced by 20% from 250px */
+  }
+}
+
+@media (max-width: 480px) {
+  .logo-loop-container {
+    margin-bottom: 1rem;
+    padding: 0.3rem;
+  }
+  
+  .logo-loop-video {
+    max-width: 160px; /* Reduced by 20% from 200px */
+  }
+}

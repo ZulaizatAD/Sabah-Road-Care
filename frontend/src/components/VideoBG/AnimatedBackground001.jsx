@@ -6,13 +6,9 @@ const AnimatedBG = () => {
   return (
     
       <div className='AnimatedBG'>
-       <video src= '/GreyBackgroundAE_Loop_002.webm' autoPlay loop muted/>
+       <video src= '/assets/VideoFiles/MainPageBG001.webm' autoPlay loop muted playsInline/>
       </div>
   )
 }
 
 export default AnimatedBG;
-
-
-
-
