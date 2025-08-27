@@ -2,20 +2,19 @@ import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { formatDistanceToNow, format } from "date-fns";
-import { getUserReports } from "../../services/history";
+import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
   const navigate = useNavigate();
-  const [reports, setReports] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({
     status: "all",
     district: "all",
     severity: "all",
   });
+
   const [sortBy, setSortBy] = useState("date-desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -43,23 +42,15 @@ const ReportHistory = () => {
   ];
   const severities = ["Low", "Medium", "High", "Critical"];
 
-  // Fetch reports from backend
-  useEffect(() => {
-    const fetchReports = async () => {
-      try {
-        setLoading(true);
-        const data = await getUserReports();
-        setReports(data || []);
-      } catch (error) {
-        toast.error("Failed to load reports");
-        console.error("Error fetching reports:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { reports, loading, error, setReports } = useUserReports(filters);
 
-    fetchReports();
-  }, []);
+  console.log("📋 ReportHistory: reports received from hook:", reports);
+
+  if (loading) return <p>Loading reports...</p>;
+  if (error) return <p>Failed to load reports</p>;
+  if (!reports || reports.length === 0) {
+    return <p>No reports found</p>;
+  }
 
   // Apply filters + search + sorting
   const filteredReports = reports
@@ -127,8 +118,6 @@ const ReportHistory = () => {
 
   const getSeverityColor = (severity) => {
     switch (severity) {
-      case "Critical":
-        return "critical";
       case "High":
         return "high";
       case "Medium":
