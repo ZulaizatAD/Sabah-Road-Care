@@ -19,37 +19,37 @@ const StatusCards = ({ data }) => {
       title: "Total Cases",
       value: stats.totalCases,
       color: "var(--total-case)",
-      icon: "📊"
+      icon: ""
     },
     {
       title: "Under Review",
       value: stats.underReview,
       color: "var(--under-review)",
-      icon: "👀"
+      icon: ""
     },
     {
       title: "Approved",
       value: stats.approved,
       color: "var(--approved)",
-      icon: "✅"
+      icon: ""
     },
     {
       title: "In Progress",
       value: stats.inProgress,
       color: "var(--in-progress)",
-      icon: "🔄"
+      icon: ""
     },
     {
       title: "Completed",
       value: stats.completed,
       color: "var(--complete)",
-      icon: "🎉"
+      icon: ""
     },
     {
       title: "Rejected",
       value: stats.rejected,
       color: "var(--rejected)",
-      icon: "❌"
+      icon: ""
     }
   ];
 

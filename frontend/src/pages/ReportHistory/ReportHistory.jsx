@@ -5,6 +5,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import { reportAPI } from "../../services/api";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import AnimatedBackground001 from "../../components/VideoBG/AnimatedBackground001";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -390,6 +391,7 @@ const ReportHistory = () => {
   if (loading) {
     return (
       <div className="report-history">
+        <AnimatedBackground001 />
         <div className="main-content">
           <LoadingSpinner size="large" message="Loading your reports..." />
         </div>
@@ -402,6 +404,7 @@ const ReportHistory = () => {
 
   return (
     <div className="report-history">
+      <AnimatedBackground001 />
       {/* Left Side - Main Content */}
       <div className="main-content">
         {/* Header */}
