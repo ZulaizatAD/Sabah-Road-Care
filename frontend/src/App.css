@@ -1,54 +1,40 @@
 .background-image {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -2;
-  overflow: hidden;
-}
-
-.background-image::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: 1;
-}
-
-.background-video {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-/* Global animated video background component */
-.AnimatedBG {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: -2; /* content sits above */
-  pointer-events: none; /* avoid intercepting clicks */
-}
-
-.AnimatedBG video {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  /* This is the original image-based background */
+  background-image: linear-gradient(rgba(74, 74, 74, 0.7), rgba(0, 0, 0, 0.9)),
+    url("/assets/MountKinabalu001.png");
+  filter: blur(30px); /* Use filter for blur effect */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
 }
 
 .app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  position: relative;
+}
+
+#background-video {
+  position: fixed; /* Fix the video to the viewport */
+  right: 0;
+  bottom: 0;
+  min-width: 100%;
+  min-height: 100%;
+  width: auto;
+  height: auto;
+  z-index: -2; /* Place it behind all content */
+}
+
+.background-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  z-index: -1; /* Place it between the video and the content */
 }
 
 .main-content {

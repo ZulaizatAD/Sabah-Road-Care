@@ -19,10 +19,10 @@ import FunFactMainPage from "./pages/Information/FunFactPage/FunFactMainPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
 
+
 const App = () => {
   return (
-    <UserProvider>
-      <EnvironmentCheck>
+    <EnvironmentCheck>
         <div className="app-container">
           {/* Global animated background video for all pages */}
           <AnimatedBackground001 />
@@ -42,23 +42,22 @@ const App = () => {
             </Routes>
           </main>
           <Footer />
-
-          <ToastContainer
-            position="top-right"
-            autoClose={3000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <DevTools />
-        </div>
-      </EnvironmentCheck>
-    </UserProvider>
+    
+      <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <DevTools />
+      </div>
+    </EnvironmentCheck>
   );
 };
 
