@@ -1,20 +1,10 @@
 import React, { useState } from 'react';
 import FunFactCarousel from './Section/FunFactCarousel';
 import SabahHistoryCarousel from './Section/SabahHistoryCarousel';
-import SabahRoadsCarousel from './Section/SabahRoadsCarousel'; // Import the new component
-import FunFactCardPopup from './Section/FunFactCardPopup'; // Path is correct as per the image
-import AnimatedBackground001 from '../../../components/VideoBG/AnimatedBackground001';
-import AvatarMain from './Section/Avatar/AvatarMain'
+import SabahRoadsCarousel from './Section/SabahRoadsCarousel';
+import FunFactCardPopup from './Section/FunFactCardPopup';
+import AvatarMain from './Section/Avatar/AvatarMain';
 import './FunFactMainPage.css';
-
-// Fun Fact data
-// const funFactsData = [
-//   { id: 1, title: "Great Wall of China", text: "The Great Wall of China is not a single, continuous wall; it's a system of fortifications.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3", image: "https://placehold.co/400x200/5C6BC0/FFFFFF?text=Great+Wall" },
-//   { id: 2, title: "Mount Everest", text: "Mauna Kea is taller than Mount Everest when measured from its underwater base.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-2.mp3", image: "https://placehold.co/400x200/4CAF50/FFFFFF?text=Mount+Everest" },
-//   { id: 3, title: "Mariana Trench", text: "More people have visited the moon than the deepest part of the ocean, the Mariana Trench.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-3.mp3", image: "https://placehold.co/400x200/2196F3/FFFFFF?text=Ocean+Trench" },
-//   { id: 4, title: "The Banana", text: "Bananas are berries, but a strawberry is not.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3", image: "https://placehold.co/400x200/FFC107/FFFFFF?text=Bananas" },
-//   { id: 5, title: "Nocturnal Animals", text: "Owls cannot move their eyeballs. Instead, they can rotate their necks up to 270 degrees.", audio: "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3", image: "https://placehold.co/400x200/795548/FFFFFF?text=Owls" },
-// ];
 
 export default function FunFactMainPage() {
   const [currentPage, setCurrentPage] = useState('main');
@@ -32,30 +22,28 @@ export default function FunFactMainPage() {
     switch (currentPage) {
       case 'main':
         return (
-          <div className="ff-body-container">
+          <div className="body-container">
             <div className="text-section">
-              <h1>Explore Our Facts</h1>
-              <p>Discover interesting facts about various topics or dive into the history of Sabah.</p>
+              <h1>Sabah Fun Facts and History</h1>
+              <p>Choose a section to explore, or tap the avatar to hear a brief intro.</p>
             </div>
             <div className="cards-section">
-              <div className="fun-fact-card" onClick={() => setCurrentPage('funFacts')}>
+              <div className="fun-fact-card top" onClick={() => setCurrentPage('funFacts')}>
                 <h2>Fun Facts</h2>
-                <p>Curated list of interesting tidbits from around the world.</p>
-                <button>Explore</button>
+                <p>Interesting and surprising facts related to Sabah roads.</p>
+                <button>Open</button>
               </div>
-              <div className="fun-fact-card" onClick={() => setCurrentPage('sabahHistory')}>
-                <h2>Sabah History</h2>
-                <p>Learn about the rich and unique history of the state of Sabah.</p>
-                <button>Explore</button>
+              <div className="fun-fact-card bottom" onClick={() => setCurrentPage('sabahHistory')}>
+                <h2>History of Sabah Road</h2>
+                <p>From the early days to modern highways.</p>
+                <button>Open</button>
               </div>
-                <div className="fun-fact-card">
-                  <AvatarMain />
-                </div>
             </div>
           </div>
         );
+        
       case 'funFacts':
-        return <FunFactCarousel cards={funFactsData} goBack={() => setCurrentPage('main')} title="Fun Facts" onCardClick={handleCardClick} />;
+        return <SabahRoadsCarousel goBack={() => setCurrentPage('main')} onCardClick={handleCardClick} />;
       case 'sabahHistory':
         return <SabahHistoryCarousel goBack={() => setCurrentPage('main')} onCardClick={handleCardClick} />;
       case 'sabahRoads':
@@ -66,17 +54,14 @@ export default function FunFactMainPage() {
   };
 
   return (
-        <div className="fun-fact-page">
-            <AnimatedBackground001 />
-
-            {/* A new, top-level container for the avatar with high z-index */}
-            <div className="avatar-container">
-                <AvatarMain />
-            </div>
-      
-      {/* The main-content div remains, but it's now a sibling to the background component. */}
+    <div className="fun-fact-page">
       <div className="ff-main-content">
         {renderContent()}
+        {currentPage === 'main' && (
+          <div className="avatar-overlay">
+            <AvatarMain />
+          </div>
+        )}
       </div>
       {selectedCard && <FunFactCardPopup card={selectedCard} onClose={handleClosePopup} />}
     </div>

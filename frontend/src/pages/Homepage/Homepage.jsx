@@ -13,13 +13,14 @@ import {
   calculatePriorityFromDuplicates,
   generateLocationHash,
 } from "../../utils/duplicateDetection";
-import { reportAPI } from "../../services/api";
+import { useHomepage } from "./useHomepage";
 import "./Homepage.css";
-import config from "../../config/environment";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const { user } = useUser();
+  const token = user?.token; // adjust if stored differently
+  const { addReport } = useHomepage(token);
 
   // Add duplicate detection state
   const [duplicateDetection, setDuplicateDetection] = useState(null);
@@ -340,18 +341,25 @@ const Homepage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (!user || !user.id) {
+      toast.error("You must be logged in to submit a report.");
+      navigate("/"); // redirect to login/home
+      return;
+    }
+
     if (!validateForm()) {
       toast.error("Please fill in all required fields correctly.");
       return;
     }
 
-    // Check if user has pending location changes
     if (hasLocationChanged) {
       toast.warning(
         "Please confirm your location selection before submitting."
       );
       return;
     }
+
+    // ... rest of your code
 
     // Generate location hash for duplicate detection
     const locationHash = generateLocationHash(
@@ -372,16 +380,26 @@ const Homepage = () => {
     const loadingToast = toast.loading("Submitting your report...");
 
     try {
-      const submitData = new FormData();
-
-      submitData.append("description", formData.description);
-      submitData.append("district", formData.district);
-      submitData.append("latitude", formData.location.latitude);
-      submitData.append("longitude", formData.location.longitude);
-      submitData.append("address", formData.location.address);
-      submitData.append("locationHash", locationHash);
-      submitData.append("submissionTime", new Date().toISOString());
-      submitData.append("userId", user.id);
+      const payload = {
+        case_id: `SRC_${Date.now()}`, // or let backend generate
+        email: user.email,
+        location: {
+          latitude: formData.location.latitude,
+          longitude: formData.location.longitude,
+          address: formData.location.address,
+          remarks: formData.description || "",
+        },
+        district: formData.district,
+        severity: "Low", // later: make this user-selectable
+        status: "Submitted",
+        latitude: formData.location.latitude,
+        longitude: formData.location.longitude,
+        photo_top: formData.photos[0], // should be Cloudinary URL string
+        photo_far: formData.photos[1],
+        photo_close: formData.photos[2],
+        description: formData.description,
+        user_id: user.id,
+      };
 
       if (duplicateDetection) {
         const priority = calculatePriorityFromDuplicates(
@@ -411,12 +429,12 @@ const Homepage = () => {
       }
 
       // Replace simulation with real API call
-      const response = await reportAPI.submitReport(submitData);
+      const response = await addReport(submitData);
 
       toast.dismiss(loadingToast);
 
       // Show success message with priority info
-      let successMessage = `Report submitted successfully! Report ID: ${response.data.reportId}`;
+      let successMessage = `Report submitted successfully! Report ID: ${response.case_id}`;
       if (duplicateDetection?.similarReportsCount > 0) {
         successMessage += `\n\nPriority boosted due to ${duplicateDetection.similarReportsCount} similar reports!`;
       }

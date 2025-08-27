@@ -37,3 +37,15 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Python compiled files and cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# CPython 3.12 specific files
+*cpython-312*
+*.cpython-312.pyc
+*.cpython-312.pyo
+__pycache__/*cpython-312*
