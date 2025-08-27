@@ -9,7 +9,7 @@ from schemas.report import CaseBase
 
 router = APIRouter()
 
-@router.get("/reports", response_model=List[CaseBase])
+@router.get("/reports")
 def get_user_reports(
     district: Optional[str] = Query(None, description="Filter by district"),
     start_date: Optional[str] = Query(None, description="Filter by start date (YYYY-MM-DD)"),
