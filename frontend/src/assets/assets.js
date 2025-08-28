@@ -4,6 +4,7 @@ import AbuBakarEllah from "./AbuBakarEllah.png";
 import GoogleLogo from "./GoogleLogo.png";
 import TransparentLogo from "./SRCTransparent.png";
 import SRCBackground from "./SRCBackground.png";
+import passwordShow from "./password-show.png";
 import passwordHide from "./password-hide.png";
 import defaultUser from "./user.png";
 
@@ -16,6 +17,7 @@ const assets = {
   SRCBackground,
   passwordHide,
   defaultUser,
+  passwordShow,
 };
 
 export default assets;

@@ -56,11 +56,9 @@ async def upload_profile_picture(
         await CloudinaryService.delete_image(public_id)
 
     # Upload new picture
-    upload_result = await CloudinaryService.upload_pothole_image(
+    upload_result = await CloudinaryService.upload_profile_image(
         file_content=file_content,
-        filename=file.filename,
-        report_id=f"user_{current_user.id}",
-        image_type="profile"
+        filename=file.filename
     )
 
     if not upload_result["success"]:

@@ -8,19 +8,22 @@
 /* Left side */
 .left-panel {
   flex: 1;
-  background: transparent;
-  color: white;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 3rem;
+  padding: 2rem 4rem;
+  margin: 0 4rem;
   position: relative;
 }
 
 .welcome-content {
   max-width: 800px;
-  margin-left: 5rem;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  margin-left: 6rem;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -32,17 +35,22 @@
 }
 
 .welcome-content::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
 }
 
 .welcome-content::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -84,14 +92,18 @@
 
 .logo-container {
   text-align: center;
-  margin-bottom: 2rem;
+  margin-bottom: 3.5rem;
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
 .demo-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -110,13 +122,18 @@
 }
 
 .demo-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -127,7 +144,11 @@
 .demo-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 
 /* Right side */
@@ -143,7 +164,11 @@
 
 /* Glassmorphic card style */
 .neumorphic-card {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 20px;
@@ -158,17 +183,22 @@
 }
 
 .neumorphic-card::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
 }
 
 .neumorphic-card::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -226,7 +256,11 @@
 }
 
 .login-input-group input {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   width: 100%;
@@ -244,7 +278,11 @@
 .login-input-group input:focus {
   border-color: rgba(255, 255, 255, 0.5);
   box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 
 .login-input-group input::placeholder {
@@ -331,7 +369,11 @@
   margin-top: 1rem;
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 16px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   font-weight: 700;
@@ -346,18 +388,22 @@
   gap: 0.5rem;
   position: relative;
   overflow: hidden;
-  position: relative;
   z-index: 3;
 }
 
 .green-signin-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -368,7 +414,11 @@
 .green-signin-btn:hover:not(:disabled) {
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 
 .green-signin-btn:disabled {
@@ -378,7 +428,11 @@
 }
 
 .green-signin-btn.loading {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
 }
 
 .loading-spinner {
@@ -415,7 +469,12 @@
 .divider hr {
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   border: none;
 }
 
@@ -427,7 +486,11 @@
 
 /* Glassmorphic Google Sign In Button */
 .google-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   width: 100%;
@@ -446,18 +509,22 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-  position: relative;
   z-index: 3;
 }
 
 .google-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -466,7 +533,11 @@
 }
 
 .google-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
@@ -492,6 +563,15 @@
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
+.toggle-auth-btn {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.toggle-auth-btn:active {
+  transform: scale(0.95);
+}
+
 button.toggle-auth-btn,
 .toggle-auth-btn {
   all: unset;
@@ -510,6 +590,24 @@ button.toggle-auth-btn:hover,
   text-decoration: underline !important;
 }
 
+/* Large tablets and small desktops */
+@media (max-width: 1024px) {
+  .welcome-content {
+    margin-left: 2rem;
+    padding: 3rem;
+  }
+
+  .left-panel h1 {
+    font-size: 3.5rem;
+    margin: 0;
+  }
+
+  .neumorphic-card {
+    width: 350px;
+    padding: 40px;
+  }
+}
+
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .login-container {
@@ -518,81 +616,170 @@ button.toggle-auth-btn:hover,
     min-height: 100vh;
   }
 
+  .left-panel {
+    flex: none;
+    text-align: center;
+    padding: 2rem 1rem;
+    min-height: 40vh;
+  }
+
+  .left-panel h1 {
+    font-size: 3rem;
+  }
+
   .welcome-content {
     max-width: 100%;
     margin-left: 0rem;
     margin: 0 1rem;
-  }
-
-  .logo-container {
-    margin-bottom: 1.5rem;
-  }
-
-  .left-panel {
-    flex: none;
-    text-align: center;
-  }
-
-  .left-panel h1 {
-    font-size: 2.5rem;
+    padding: 3rem 2rem;
   }
 
   .subtitle {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
   }
 
   .description {
     font-size: 1rem;
   }
 
+  .logo-container {
+    margin-bottom: 2.5rem;
+  }
+
   .right-panel {
+    flex: none;
     padding: 1rem;
+    min-height: 60vh;
+    justify-content: flex-start;
+    padding-top: 2rem;
   }
 
   .neumorphic-card {
     width: 100%;
-    max-width: 350px;
-    padding: 2rem 1.5rem;
+    max-width: 400px;
+    padding: 2.5rem 2rem;
     border-radius: 16px;
   }
 
   .card-header h2 {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
 
   .login-input-group input {
-    padding: 0.9rem 0.9rem 0.9rem 2.8rem;
+    padding: 1rem 1rem 1rem 2.5rem;
     font-size: 0.95rem;
   }
 
   .green-signin-btn {
-    padding: 0.9rem;
+    padding: 1rem;
     font-size: 0.95rem;
   }
 
   .google-btn {
-    padding: 0.8rem;
+    padding: 1rem;
     font-size: 0.9rem;
+  }
+
+  .form-options {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
   }
 }
 
 @media (max-width: 480px) {
   .left-panel {
-    padding: 1.5rem 1rem;
+    flex: none;
+    width: 100%;
+    height: 50vh;
+    min-height: 50vh;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin: 0;
   }
 
   .left-panel h1 {
-    font-size: 2rem;
+    font-size: 2.5rem;
+  }
+
+  .welcome-content {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 1.5rem 1rem;
+    border-radius: 0 0 20px 20px;
+  }
+
+  .subtitle {
+    font-size: 1.1rem;
+  }
+
+  .description {
+    font-size: 0.95rem;
+  }
+
+  .right-panel {
+    padding: 0.5rem;
+    padding-top: 1rem;
   }
 
   .neumorphic-card {
-    padding: 1.5rem 1rem;
+    padding: 2rem 1.5rem;
     border-radius: 16px;
+    max-width: 350px;
+  }
+
+  .card-header h2 {
+    font-size: 1.4rem;
+  }
+
+  .card-header p {
+    font-size: 0.85rem;
+  }
+
+  .login-input-group input {
+    padding: 0.9rem 0.9rem 0.9rem 2.2rem;
+    font-size: 0.9rem;
+  }
+
+  .green-signin-btn {
+    padding: 0.9rem;
+    font-size: 0.9rem;
+  }
+
+  .google-btn {
+    padding: 0.9rem;
+    font-size: 0.85rem;
   }
 
   .form-options {
     gap: 1rem;
     align-items: flex-start;
+  }
+
+  .remember-me {
+    font-size: 0.8rem;
+  }
+
+  .forgot-password {
+    font-size: 0.8rem;
+  }
+
+  .signup-link p {
+    font-size: 0.85rem;
+  }
+
+  .demo-btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+
+  .neumorphic-card.signup-mode {
+    transform: scaleY(1.05);
+    padding: 2.2rem 1.5rem;
   }
 }
 
@@ -617,7 +804,11 @@ button.toggle-auth-btn:hover,
 
 .green-signin-btn.success {
   animation: successPulse 0.6s ease-in-out;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
 }
 
 /* Error states */
@@ -639,4 +830,58 @@ button.toggle-auth-btn:hover,
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 3px rgba(255, 255, 255, 0.2);
 }
 
+/* Confirm password field ease-in animation */
+.login-input-group:has(input[name="confirmPassword"]) {
+  animation: confirmPasswordSlideIn 0.4s ease-out;
+  transform-origin: top;
+}
 
+@keyframes confirmPasswordSlideIn {
+  0% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    max-height: 80px;
+    transform: translateY(0);
+  }
+}
+
+/* Panel stretching animation when switching to sign up */
+.neumorphic-card {
+  transition: all 0.4s ease-out;
+}
+
+.neumorphic-card.signup-mode {
+  transform: scaleY(1.1);
+  padding: 50px 45px;
+}
+
+/* Toggle button animation */
+.toggle-auth-btn {
+  transition: all 0.2s ease-out;
+}
+
+.toggle-auth-btn:active {
+  transform: scale(0.95);
+}
+
+/* Ease out animation for confirm password when switching back to sign in */
+.login-input-group:has(input[name="confirmPassword"]).fade-out {
+  animation: confirmPasswordSlideOut 0.3s ease-in forwards;
+}
+
+@keyframes confirmPasswordSlideOut {
+  0% {
+    opacity: 1;
+    max-height: 80px;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    max-height: 0;
+    transform: translateY(-10px);
+  }
+}

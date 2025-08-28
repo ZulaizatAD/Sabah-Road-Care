@@ -9,7 +9,6 @@ import AnimatedBackground001 from "./components/VideoBG/AnimatedBackground001";
 import Login from "./pages/Login/Login";
 import Homepage from "./pages/Homepage/Homepage";
 import Dashboard from "./pages/Dashboard/Dashboard";
-import Information from "./pages/Information/Information";
 import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
 import Confirm from "./pages/Confirm/Confirm";
 import ReportHistory from "./pages/ReportHistory/ReportHistory";
@@ -44,7 +43,7 @@ const App = () => {
 
           <ToastContainer
             position="top-right"
-            autoClose={3000}
+            autoClose={2000}
             hideProgressBar={false}
             newestOnTop={false}
             closeOnClick
@@ -52,7 +51,7 @@ const App = () => {
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="light"
+            theme="green"
           />
           <DevTools />
         </div>
