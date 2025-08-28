@@ -554,7 +554,7 @@ const Homepage = () => {
                 <div key={index} className="duplicate-item blocked">
                   <div className="duplicate-info">
                     <span className="duplicate-location">
-                      📍 {duplicate.report.location || "Same location"}
+                       {duplicate.report.location || "Same location"}
                     </span>
                     <div className="duplicate-meta">
                       <span className="distance">
@@ -588,7 +588,7 @@ const Homepage = () => {
                   )}
                 </span>
                 <span className="severity-info">
-                  📈 Severity x{duplicateDetection.severityMultiplier}
+                   Severity x{duplicateDetection.severityMultiplier}
                 </span>
               </div>
 
@@ -695,7 +695,7 @@ const Homepage = () => {
 
           {/* Photos Section */}
           <FormSection
-            title="📸 PHOTOS (Required: 3 angles)"
+            title="PHOTOS (Required: 3 angles)"
             error={errors.photos}
           >
             <div className="photo-grid">
@@ -738,7 +738,7 @@ const Homepage = () => {
           </div>
 
           {/* Location Section - ALWAYS SHOW MAP */}
-          <FormSection title="🗺️ LOCATION" error={errors.location}>
+          <FormSection title="LOCATION" error={errors.location}>
             {/* Always display the embedded map */}
             <div className="embedded-map-container">
               <MapPicker
@@ -766,7 +766,7 @@ const Homepage = () => {
                 </div>
                 <div className="pending-details">
                   <div className="pending-address">
-                    🛣️ {tempLocation.roadName || "Road name not available"}
+                    {tempLocation.roadName || "Road name not available"}
                   </div>
                   <div className="pending-full-address">
                     {tempLocation.address}
@@ -782,7 +782,7 @@ const Homepage = () => {
                     className="confirm-location-btn"
                     onClick={handleConfirmLocation}
                   >
-                    ✅ Confirm Location
+                    Confirm Location
                   </button>
                   <button
                     type="button"
@@ -793,7 +793,7 @@ const Homepage = () => {
                       toast.info("Location selection cancelled.");
                     }}
                   >
-                    ❌ Cancel
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -804,11 +804,10 @@ const Homepage = () => {
               <div className="location-info confirmed">
                 <div className="location-details">
                   <div className="location-primary">
-                    <span className="location-icon">🛣️</span>
                     <span className="road-name">
                       {formData.location.roadName || "Road name not available"}
                     </span>
-                    <span className="confirmed-badge">✅ Confirmed</span>
+                    <span className="confirmed-badge">Confirmed</span>
                   </div>
                   <div className="location-secondary">
                     <span className="full-address">
@@ -829,7 +828,7 @@ const Homepage = () => {
                     className="clear-location-btn"
                     onClick={handleClearLocation}
                   >
-                    🗑️ Clear & Reselect
+                    Clear & Reselect
                   </button>
                 </div>
               </div>
@@ -838,7 +837,7 @@ const Homepage = () => {
             {/* Instructions */}
             <div className="map-instructions">
               <p>
-                💡 <strong>Instructions:</strong> Click anywhere on the map or
+                 <strong>Instructions:</strong> Click anywhere on the map or
                 drag the marker to select a location, then click "Confirm
                 Location" to proceed.
               </p>
@@ -865,7 +864,7 @@ const Homepage = () => {
           </div>
 
           {/* District Section */}
-          <FormSection title="🏙 DISTRICT" error={errors.district}>
+          <FormSection title="DISTRICT" error={errors.district}>
             <select
               value={formData.district}
               onChange={(e) => handleInputChange("district", e.target.value)}
@@ -898,7 +897,7 @@ const Homepage = () => {
 
           {/* Description Section */}
           <FormSection
-            title="📝 REMARKS / DESCRIPTION"
+            title="REMARKS / DESCRIPTION"
             error={errors.description}
           >
             <textarea
