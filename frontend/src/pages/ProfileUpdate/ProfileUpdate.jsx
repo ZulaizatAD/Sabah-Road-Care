@@ -8,7 +8,7 @@ import {
   getProfile,
   uploadProfilePicture,
   deleteProfilePicture,
-} from "../../services/profilepicApi"; // Adjust the import path as needed
+} from "../../services/profilepicApi";
 import { updateProfile } from "../../services/userApi";
 
 const ProfileUpdate = () => {
