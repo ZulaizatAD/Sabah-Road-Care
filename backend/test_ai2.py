@@ -7,11 +7,11 @@ async def test_with_real_images():
     
     # Load real image files (put some test images in your project)
     try:
-        with open("test_images/pothole_top.jpg", "rb") as f:
+        with open(r"C:\Users\whale\Documents\GitHub\Sabah-Road-Care\Test Photo\Low Prio\Pothole_001_Near.jpeg", "rb") as f:
             top_image = f.read()
-        with open("test_images/pothole_far.jpg", "rb") as f:
+        with open(r"C:\Users\whale\Documents\GitHub\Sabah-Road-Care\Test Photo\Low Prio\Pothole_001_Far.jpeg", "rb") as f:
             far_image = f.read()
-        with open("test_images/pothole_close.jpg", "rb") as f:
+        with open(r"C:\Users\whale\Documents\GitHub\Sabah-Road-Care\Test Photo\Low Prio\Pothole_001_Side.jpeg", "rb") as f:
             close_image = f.read()
     except FileNotFoundError:
         print("❌ Test images not found. Create test_images/ folder with pothole photos")

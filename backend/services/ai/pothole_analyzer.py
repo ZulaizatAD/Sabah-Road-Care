@@ -149,11 +149,15 @@ class PotholeAnalyzer:
         }
 
         SEVERITY RULES:
-        - High: Average score ≥ 7.5 OR safety hazard
-        - Medium: Average score 4.0-7.4
-        - Low: Average score < 4.0
+        - High: Average score ≥ 9.0 OR safety hazard
+        - Medium: Average score 7.0-8.9
+        - Low: Average score < 7.0
 
         Return ONLY the JSON, no other text.
+
+        CONTEXT: This is a road in Sabah, Malaysia.
+        Consider local road conditions and standards.
+        Be conservative with severity assessment.
         """
         
         if report_text:
