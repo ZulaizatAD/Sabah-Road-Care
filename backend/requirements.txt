@@ -9,3 +9,5 @@ python-decouple
 cloudinary
 Pillow
 pydantic[email]
+langchain-google-genai 
+python-dotenv
