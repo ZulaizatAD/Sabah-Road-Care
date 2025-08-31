@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ArrowRight, Calendar, MapPin, Clock } from "lucide-react";
 import ImageCarousel from "./ImageCarousel";
+import assets from "../../../assets/assets";
 
 const HeroSection = ({ onGetStarted }) => {
   const [isVisible, setIsVisible] = useState(false);
@@ -11,7 +12,7 @@ const HeroSection = ({ onGetStarted }) => {
   // Historical content for each slide based on Sabah's road development
   const historicalContent = [
     {
-      // Default content for first image (existing)
+      // Default content for first image
       era: "Present Day",
       title: "Report",
       subtitle: "Road Issues",
@@ -198,38 +199,38 @@ const HeroSection = ({ onGetStarted }) => {
         {
           year: "1881",
           event: "First plantation roads under British North Borneo Company",
-          icon: "🌱",
+          icon: "",
         },
-        { year: "1946", event: "Post-WWII reconstruction begins", icon: "🔨" },
+        { year: "1946", event: "Post-WWII reconstruction begins", icon: "" },
         {
           year: "1963",
           event: "Road expansion after Malaysia's formation",
-          icon: "🇲🇾",
+          icon: "",
         },
         {
           year: "1970s",
           event: "World Bank loans enable rural connectivity",
-          icon: "🏦",
+          icon: "",
         },
         {
           year: "1996",
           event: "Federal Route 1 system introduced",
-          icon: "🛣️",
+          icon: "",
         },
         {
           year: "2008",
           event: "Launch of Sabah Development Corridor",
-          icon: "🌉",
+          icon: "",
         },
         {
           year: "2016",
           event: "Start of Pan-Borneo Highway Sabah section",
-          icon: "🛤️",
+          icon: "",
         },
         {
           year: "2024",
           event: "RM285m allocated for road recycling upgrades",
-          icon: "🤖",
+          icon: "",
         },
       ],
     },
@@ -277,7 +278,7 @@ const HeroSection = ({ onGetStarted }) => {
 
       {/* Loading overlay for content transitions */}
       {contentLoading && (
-        <div className="absolute inset-0 z-30 bg-asphalt-black/20 backdrop-blur-xxs flex items-center justify-center">
+        <div className="absolute inset-0 z-30 bg-asphalt-black/20 backdrop-blur-sm flex items-center justify-center">
           <div className="loading-spinner primary large"></div>
         </div>
       )}
@@ -296,9 +297,9 @@ const HeroSection = ({ onGetStarted }) => {
                     : "translate-y-10 opacity-0"
                 }`}
               >
-                <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-xxs border border-white/20 px-4 lg:px-6 py-2 lg:py-3 rounded-full mb-6 lg:mb-8">
+                <div className="inline-flex items-center gap-3 bg-white/10 backdrop-blur-md border border-white/20 px-4 lg:px-6 py-2 lg:py-3 rounded-full mb-6 lg:mb-8">
                   <Clock size={20} className="text-safety-green" />
-                  <span className="text-safety-green font-medium text-sm lg:text-base">
+                  <span className="text-green-500 font-medium text-sm lg:text-base">
                     Historical Overview
                   </span>
                 </div>
@@ -310,7 +311,7 @@ const HeroSection = ({ onGetStarted }) => {
                   </span>
                 </h1>
 
-                <p className="text-lg lg:text-xl text-concrete-gray mb-8 lg:mb-12 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg">
+                <p className="text-lg lg:text-xl text-road-white mb-8 lg:mb-12 leading-relaxed max-w-3xl mx-auto font-light drop-shadow-lg">
                   {currentContent.description}
                 </p>
               </div>
@@ -327,7 +328,7 @@ const HeroSection = ({ onGetStarted }) => {
                   {currentContent.timelineData?.map((item, index) => (
                     <div
                       key={index}
-                      className={`bg-white/10 backdrop-blur-xs border border-white/20 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-2xl hover:bg-white/15 transition-all duration-300 transform hover:scale-105 ${
+                      className={`bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl lg:rounded-2xl p-4 lg:p-6 shadow-2xl hover:bg-white/15 transition-all duration-300 transform hover:scale-105 ${
                         index % 2 === 0 ? "hover:rotate-1" : "hover:-rotate-1"
                       }`}
                       style={{
@@ -361,11 +362,11 @@ const HeroSection = ({ onGetStarted }) => {
                     : "translate-y-10 opacity-0"
                 }`}
               >
-                <div className="bg-white/5 backdrop-blur-xs border border-white/10 rounded-2xl lg:rounded-3xl p-6 lg:p-8 max-w-2xl mx-auto">
+                <div className="bg-white/5 backdrop-blur-xl border border-white/10 rounded-2xl lg:rounded-3xl p-6 lg:p-8 max-w-2xl mx-auto">
                   <h3 className="text-xl lg:text-2xl font-bold text-white mb-3 lg:mb-4">
                     Be Part of Sabah's Road Future
                   </h3>
-                  <p className="text-concrete-gray mb-4 lg:mb-6 text-sm lg:text-base">
+                  <p className="text-road-white mb-4 lg:mb-6 text-sm lg:text-base">
                     Help us continue this legacy by reporting road issues and
                     contributing to safer infrastructure.
                   </p>
@@ -398,14 +399,14 @@ const HeroSection = ({ onGetStarted }) => {
                 {/* Era Badge - only for historical content */}
                 {currentContent.showHistoricalInfo && (
                   <div
-                    className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 px-3 lg:px-4 py-1 lg:py-2 rounded-full mb-4 lg:mb-6 transition-all duration-1000 transform ${
+                    className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl border border-white/20 px-3 lg:px-4 py-1 lg:py-2 rounded-full mb-4 lg:mb-6 transition-all duration-1000 transform ${
                       isVisible
                         ? "translate-y-0 opacity-100"
                         : "translate-y-10 opacity-0"
                     }`}
                   >
-                    <Calendar size={16} className="text-safety-green" />
-                    <span className="text-safety-green font-medium text-xs lg:text-sm">
+                    <Calendar size={16} className="text-green-500" />
+                    <span className="text-green-500 font-medium text-xs lg:text-sm">
                       {currentContent.timeframe}
                     </span>
                   </div>
@@ -413,16 +414,16 @@ const HeroSection = ({ onGetStarted }) => {
 
                 {/* Brand Icon - only for default content */}
                 {currentContent.showBrandIcon && (
-                  <div
-                    className={`inline-flex w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full mb-6 lg:mb-8 items-center justify-center animate-bounce transition-all duration-1000 transform ${
-                      isVisible
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-10 opacity-0"
-                    }`}
-                  >
-                    <span className="text-stone-900 font-bold text-2xl lg:text-3xl">
-                      🛣️
-                    </span>
+                  <div className="flex justify-center mt-8 lg:mt-12">
+                    <img
+                      src={assets.SRC_logo}
+                      alt="Sabah Road Care Logo"
+                      className={`w-40 h-40 lg:w-48 lg:h-48 object-contain animate-bounce transition-all duration-1000 transform mb-6 lg:mb-8 ${
+                        isVisible
+                          ? "translate-y-0 opacity-100"
+                          : "translate-y-10 opacity-0"
+                      }`}
+                    />
                   </div>
                 )}
 
@@ -461,7 +462,7 @@ const HeroSection = ({ onGetStarted }) => {
                       currentContent.showHistoricalInfo
                         ? "text-base lg:text-lg xl:text-xl"
                         : "text-xl lg:text-2xl xl:text-3xl"
-                    } text-concrete-gray mb-8 lg:mb-12 leading-relaxed ${
+                    } text-road-white mb-8 lg:mb-12 leading-relaxed ${
                       !currentContent.showHistoricalInfo
                         ? "max-w-3xl mx-auto"
                         : ""
@@ -498,10 +499,6 @@ const HeroSection = ({ onGetStarted }) => {
                         size={20}
                       />
                     </button>
-
-                    <button className="border-3 lg:border-4 border-green-400 text-safety-green hover:bg-green-400/20 hover:text-green-200 hover:border-green-300 px-8 lg:px-12 py-4 lg:py-5 rounded-full font-bold text-base lg:text-lg transition-all duration-300 backdrop-blur-md">
-                      Learn More
-                    </button>
                   </div>
                 )}
               </div>
@@ -515,7 +512,7 @@ const HeroSection = ({ onGetStarted }) => {
                       : "translate-y-10 opacity-0"
                   }`}
                 >
-                  <div className="bg-white/10 backdrop-blur-md border border-white/20 rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-2xl">
+                  <div className="bg-white/10 backdrop-blur-lg border border-white/20 rounded-2xl lg:rounded-3xl p-6 lg:p-8 shadow-2xl">
                     {/* Era Header */}
                     <div className="flex items-center gap-3 mb-4 lg:mb-6">
                       <div className="w-10 h-10 lg:w-12 lg:h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-full flex items-center justify-center">
@@ -525,7 +522,7 @@ const HeroSection = ({ onGetStarted }) => {
                         <h3 className="text-lg lg:text-xl xl:text-2xl font-bold text-white">
                           {currentContent.era}
                         </h3>
-                        <p className="text-safety-green text-xs lg:text-sm xl:text-base">
+                        <p className="text-green-500 text-xs lg:text-sm xl:text-base">
                           {currentContent.timeframe}
                         </p>
                       </div>
@@ -533,7 +530,7 @@ const HeroSection = ({ onGetStarted }) => {
 
                     {/* Historical Details */}
                     <div className="space-y-3 lg:space-y-4">
-                      <h4 className="text-base lg:text-lg font-semibold text-safety-green mb-2 lg:mb-3">
+                      <h4 className="text-base lg:text-lg font-semibold text-green-500 mb-2 lg:mb-3">
                         Key Developments:
                       </h4>
                       <ul className="space-y-2 lg:space-y-3">
@@ -552,7 +549,7 @@ const HeroSection = ({ onGetStarted }) => {
                     <div className="mt-6 lg:mt-8">
                       <button
                         onClick={onGetStarted}
-                        className="w-full bg-gradient-to-r from-green-500/20 to-green-600/20 hover:from-green-500/30 hover:to-green-600/30 border-2 border-green-400/50 hover:border-green-400/70 text-safety-green hover:text-green-200 px-4 lg:px-6 py-3 lg:py-4 rounded-xl font-semibold transition-all duration-300 backdrop-blur-lg text-sm lg:text-base"
+                        className="w-full bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-stone-900 border-2 border-green-400/50 px-4 lg:px-6 py-3 lg:py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl text-sm lg:text-base"
                       >
                         Explore Modern Road Reporting
                       </button>
@@ -572,7 +569,7 @@ const HeroSection = ({ onGetStarted }) => {
                     : "translate-y-10 opacity-0"
                 }`}
               >
-                <div className="flex flex-col items-center text-safety-green">
+                <div className="flex flex-col items-center text-green-400">
                   <span className="text-xs lg:text-sm font-medium mb-3 tracking-widest uppercase">
                     Scroll to Explore
                   </span>

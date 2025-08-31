@@ -1,5 +1,5 @@
 import SRC_white from "./SRC_white.svg";
-import SRC_Black from "./SRC-black.jpg";
+import SRC_logo from "./logo_SRC.png";
 import AbuBakarEllah from "./AbuBakarEllah.png";
 import GoogleLogo from "./GoogleLogo.png";
 import TransparentLogo from "./SRCTransparent.png";
@@ -23,7 +23,7 @@ import history10 from "./SabahHistory/history-10.svg";
 
 const assets = {
   SRC_white,
-  SRC_Black,
+  SRC_logo,
   AbuBakarEllah,
   GoogleLogo,
   TransparentLogo,
