@@ -35,7 +35,7 @@ const QuickAction = () => {
 
   return (
     <div className="quick-actions">
-      <h3 className="sidebar-title">Quick Actions</h3>
+      <h3 className="quick-actions-title">Quick Actions</h3>
       <div className="action-buttons">
         {quickActions.map((action) => (
           <button

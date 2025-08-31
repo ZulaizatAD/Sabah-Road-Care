@@ -331,7 +331,7 @@ const MapPicker = ({
             className="google-map embedded"
             style={{
               width: "100%",
-              height: "300px",
+              height: "450px",
               display: isLoading ? "none" : "block",
               borderRadius: "8px",
             }}
@@ -395,7 +395,7 @@ const MapPicker = ({
               className="google-map"
               style={{
                 width: "100%",
-                height: "400px",
+                height: "500px",
                 display: isLoading ? "none" : "block",
               }}
             />

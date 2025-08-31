@@ -28,7 +28,7 @@
 }
 
 /* Main Content Styles */
-.main {
+.dashboard-main {
   max-width: 1400px;
   margin: 0 auto;
   padding: 2rem;
@@ -37,7 +37,7 @@
 }
 
 /* Container Styles */
-.container {
+.dashboard-container {
   background: var(--glass-bg);
   backdrop-filter: var(--glass-blur);
   -webkit-backdrop-filter: var(--glass-blur);
@@ -49,7 +49,7 @@
   overflow: hidden;
 }
 
-.container::before {
+.dashboard-container::before {
   content: '';
   position: absolute;
   top: 0;
@@ -537,11 +537,11 @@
 }
 
 @media (max-width: 768px) {
-  .main {
+  .dashboard-main {
     padding: 1rem;
   }
   
-  .container {
+  .dashboard-container {
     padding: 1.5rem;
   }
   

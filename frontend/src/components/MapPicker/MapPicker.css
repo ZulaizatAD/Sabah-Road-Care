@@ -15,13 +15,17 @@
 }
 
 .map-picker-modal {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    var(--glass-bg) 0%,
+    rgba(28, 28, 28, 0.05) 100%
+  );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   border-radius: 20px;
   width: 100%;
-  max-width: 800px;
+  max-width: 900px;
   max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
@@ -30,19 +34,24 @@
 }
 
 .map-picker-modal::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
   z-index: 2;
 }
 
 .map-picker-modal::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -69,8 +78,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 24px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  border-bottom: 1px solid var(--glass-border);
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   position: relative;
@@ -81,15 +90,15 @@
   margin: 0;
   font-size: 20px;
   font-weight: 700;
-  color: #fff;
+  color: var(--road-white);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .close-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--glass-border);
   border-radius: 12px;
   width: 36px;
   height: 36px;
@@ -98,7 +107,7 @@
   justify-content: center;
   font-size: 18px;
   cursor: pointer;
-  color: #fff;
+  color: var(--road-white);
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
@@ -106,13 +115,18 @@
 }
 
 .close-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -121,7 +135,8 @@
 }
 
 .close-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), var(--glass-bg));
+  border-color: var(--safety-green);
   transform: scale(1.05);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
@@ -143,31 +158,38 @@
 }
 
 .current-location-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg,
+    var(--safety-green),
+    var(--pedestrian-green)
+  );
+  color: var(--asphalt-black);
+  border: 1px solid var(--safety-green);
   padding: 12px 20px;
   border-radius: 16px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
   flex-shrink: 0;
   position: relative;
   overflow: hidden;
 }
 
 .current-location-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -176,9 +198,13 @@
 }
 
 .current-location-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    var(--pedestrian-green),
+    var(--safety-green)
+  );
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
 .current-location-btn:disabled {
@@ -194,7 +220,7 @@
 
 .coordinates {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--concrete-gray);
   margin: 0 0 4px 0;
   font-family: monospace;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -202,7 +228,7 @@
 
 .address {
   font-size: 14px;
-  color: #fff;
+  color: var(--road-white);
   margin: 0;
   font-weight: 600;
   line-height: 1.4;
@@ -213,7 +239,7 @@
   position: relative;
   border-radius: 16px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--glass-border);
   margin-bottom: 20px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
@@ -223,18 +249,18 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 400px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  height: 500px;
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  color: #fff;
+  color: var(--road-white);
 }
 
 .loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.3);
-  border-top: 4px solid #fff;
+  border: 4px solid var(--glass-border);
+  border-top: 4px solid var(--safety-green);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 12px;
@@ -261,26 +287,31 @@
 }
 
 .map-instructions {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 16px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  border-left: 4px solid rgba(255, 255, 255, 0.4);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--safety-green);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
 }
 
 .map-instructions::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -288,7 +319,7 @@
   margin: 0 0 8px 0;
   font-size: 14px;
   font-weight: 600;
-  color: #fff;
+  color: var(--road-white);
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
@@ -300,7 +331,7 @@
 
 .map-instructions li {
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+  color: var(--concrete-gray);
   margin-bottom: 4px;
   position: relative;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -308,7 +339,7 @@
 
 .map-instructions li::before {
   content: "•";
-  color: #fff;
+  color: var(--safety-green);
   font-weight: bold;
   position: absolute;
   left: -15px;
@@ -320,7 +351,11 @@
   gap: 12px;
   padding: 24px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   position: relative;
@@ -328,11 +363,11 @@
 }
 
 .cancel-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: var(--road-white);
+  border: 1px solid var(--glass-border);
   padding: 12px 24px;
   border-radius: 16px;
   font-size: 14px;
@@ -345,13 +380,18 @@
 }
 
 .cancel-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -360,36 +400,44 @@
 }
 
 .cancel-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(135deg, rgba(244, 67, 54, 0.15), var(--glass-bg));
+  border-color: var(--hazard-red);
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .confirm-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  background: linear-gradient(
+    135deg,
+    var(--safety-green),
+    var(--pedestrian-green)
+  );
+  color: var(--asphalt-black);
+  border: 1px solid var(--safety-green);
   padding: 12px 24px;
   border-radius: 16px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
   position: relative;
   overflow: hidden;
 }
 
 .confirm-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -398,47 +446,57 @@
 }
 
 .confirm-btn:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(
+    135deg,
+    var(--pedestrian-green),
+    var(--safety-green)
+  );
   transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
 .confirm-btn:disabled {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
-  color: rgba(255, 255, 255, 0.5);
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  color: var(--concrete-gray);
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
-  border-color: rgba(255, 255, 255, 0.1);
+  border-color: var(--glass-border);
 }
 
+/* Embedded Map Styles */
 .embedded-map-picker {
   width: 100%;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border: 1px solid var(--glass-border);
   border-radius: 16px;
-  padding: 20px;
+  padding: 24px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   position: relative;
   overflow: hidden;
 }
 
 .embedded-map-picker::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
   z-index: 2;
 }
 
 .embedded-map-picker::after {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -460,30 +518,37 @@
 }
 
 .current-location-btn.embedded {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  color: #fff;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    135deg,
+    var(--safety-green),
+    var(--pedestrian-green)
+  );
+  color: var(--asphalt-black);
+  border: 1px solid var(--safety-green);
   padding: 10px 16px;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
   position: relative;
   overflow: hidden;
 }
 
 .current-location-btn.embedded::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -492,9 +557,13 @@
 }
 
 .current-location-btn.embedded:hover:not(:disabled) {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    var(--pedestrian-green),
+    var(--safety-green)
+  );
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
 .embedded-location-info {
@@ -507,14 +576,14 @@
 
 .embedded-coordinates {
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--concrete-gray);
   font-family: monospace;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
 
 .embedded-address {
   font-size: 13px;
-  color: #fff;
+  color: var(--road-white);
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -523,9 +592,10 @@
   position: relative;
   border-radius: 12px;
   overflow: hidden;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--glass-border);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   z-index: 3;
+  height: 450px;
 }
 
 .google-map.embedded {
@@ -533,34 +603,39 @@
 }
 
 .embedded-map-instructions {
-  margin-top: 12px;
-  padding: 12px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  margin-top: 16px;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-radius: 8px;
-  border-left: 3px solid rgba(255, 255, 255, 0.3);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-left: 3px solid var(--safety-green);
+  border: 1px solid var(--glass-border);
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   position: relative;
   z-index: 3;
 }
 
 .embedded-map-instructions::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   pointer-events: none;
 }
 
 .embedded-map-instructions p {
   margin: 0;
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  color: var(--concrete-gray);
   line-height: 1.4;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -572,7 +647,11 @@
   align-items: center;
   justify-content: center;
   padding: 40px 20px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
@@ -584,13 +663,18 @@
 }
 
 .map-error::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -603,7 +687,11 @@
 }
 
 .map-error button {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.15)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   color: #fff;
@@ -619,13 +707,18 @@
 }
 
 .map-error button::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -634,7 +727,11 @@
 }
 
 .map-error button:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2)
+  );
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
@@ -644,47 +741,47 @@
   .map-picker-overlay {
     padding: 10px;
   }
-  
+
   .map-picker-modal {
     max-height: 95vh;
     border-radius: 16px;
   }
-  
+
   .map-picker-header {
     padding: 20px;
   }
-  
+
   .map-picker-header h3 {
     font-size: 18px;
   }
-  
+
   .map-picker-content {
     padding: 20px;
   }
-  
+
   .map-controls {
     flex-direction: column;
     gap: 12px;
   }
-  
+
   .map-location-info {
     text-align: left;
   }
-  
+
   .current-location-btn {
     width: 100%;
     padding: 14px;
   }
-  
+
   .google-map {
-    height: 300px !important;
+    height: 350px !important;
   }
-  
+
   .map-picker-footer {
     padding: 20px;
     flex-direction: column;
   }
-  
+
   .cancel-btn,
   .confirm-btn {
     width: 100%;
@@ -705,6 +802,14 @@
     text-align: left;
   }
 
+  .embedded-map-container {
+    height: 350px;
+  }
+
+  .map-loading {
+    height: 350px;
+  }
+
   .current-location-btn.embedded {
     width: 100%;
     padding: 12px;
@@ -715,25 +820,29 @@
   .map-picker-header {
     padding: 16px;
   }
-  
+
   .map-picker-content {
     padding: 16px;
   }
-  
+
   .google-map {
-    height: 250px !important;
+    height: 300px !important;
   }
-  
+
   .map-instructions {
     padding: 12px;
   }
-  
+
   .map-instructions p {
     font-size: 13px;
   }
-  
+
   .map-instructions li {
     font-size: 12px;
+  }
+
+    .embedded-map-container {
+    height: 300px;
   }
 
   .embedded-map-picker {
@@ -746,6 +855,10 @@
 
   .embedded-map-instructions p {
     font-size: 12px;
+  }
+
+    .map-loading {
+    height: 300px;
   }
 }
 
@@ -765,14 +878,22 @@
 
 .map-instructions:hover,
 .embedded-map-instructions:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* Animation for embedded map loading */
 .embedded-map-container .map-loading {
   height: 300px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 10px;
@@ -780,7 +901,11 @@
 
 /* Pending location styles for embedded mode */
 .pending-location-info {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -793,13 +918,18 @@
 }
 
 .pending-location-info::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
 }
 
@@ -848,7 +978,11 @@
 
 .confirm-location-btn,
 .cancel-selection-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   color: #fff;
@@ -866,13 +1000,18 @@
 
 .confirm-location-btn::before,
 .cancel-selection-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -882,25 +1021,41 @@
 }
 
 .confirm-location-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.25),
+    rgba(255, 255, 255, 0.15)
+  );
   border-color: rgba(255, 255, 255, 0.3);
 }
 
 .confirm-location-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.2));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.3),
+    rgba(255, 255, 255, 0.2)
+  );
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 .cancel-selection-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
 }
 
 /* Location info confirmed styles */
 .location-info.confirmed {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -913,18 +1068,27 @@
 }
 
 .location-info.confirmed::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
   pointer-events: none;
 }
 
 .confirmed-badge {
-  background: linear-gradient(135deg, rgba(34, 197, 94, 0.8), rgba(22, 163, 74, 0.8));
+  background: linear-gradient(
+    135deg,
+    rgba(34, 197, 94, 0.8),
+    rgba(22, 163, 74, 0.8)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   color: #fff;
@@ -941,7 +1105,11 @@
 }
 
 .clear-location-btn {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   color: #fff;
@@ -958,13 +1126,18 @@
 }
 
 .clear-location-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: -100%;
   width: 100%;
   height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   transition: left 0.5s ease;
 }
 
@@ -973,14 +1146,22 @@
 }
 
 .clear-location-btn:hover {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.1)
+  );
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 /* Map instructions in homepage */
 .map-instructions {
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0.05));
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: 12px 16px;
@@ -993,13 +1174,18 @@
 }
 
 .map-instructions::before {
-  content: '';
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(255, 255, 255, 0.2),
+    transparent
+  );
   pointer-events: none;
 }
 
