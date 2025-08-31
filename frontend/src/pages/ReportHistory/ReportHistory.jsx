@@ -5,7 +5,6 @@ import { formatDistanceToNow, format } from "date-fns";
 import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-import AnimatedBackground001 from "../../components/VideoBG/AnimatedBackground001";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -41,7 +40,7 @@ const ReportHistory = () => {
     "Completed",
     "Rejected",
   ];
-  const severities = ["Low", "Medium", "High", "Critical"];
+  const severities = ["Low", "Medium", "High"];
 
   const { reports, loading, error, setReports } = useUserReports(filters);
 
@@ -143,9 +142,21 @@ const ReportHistory = () => {
     );
   }
 
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "High":
+        return "high";
+      case "Medium":
+        return "medium";
+      case "Low":
+        return "low";
+      default:
+        return "default";
+    }
+  };
+
   return (
     <div className="report-history">
-      <AnimatedBackground001 />
       <div className="main-content">
         {/* Header */}
         <header className="history-page-header">
@@ -240,6 +251,15 @@ const ReportHistory = () => {
                   >
                     {report.severity}
                   </span>
+                  {report.priority && (
+                    <span
+                      className={`priority-badge ${getPriorityColor(
+                        report.priority
+                      )}`}
+                    >
+                      {report.priority}
+                    </span>
+                  )}
                 </div>
               </div>
 
