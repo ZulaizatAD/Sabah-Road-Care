@@ -1,4 +1,4 @@
-:root {
+/* :root {
   --primary-color: #667eea;
   --secondary-color: #764ba2;
   --accent-color: #00d4ff;
@@ -18,7 +18,7 @@
   --gradient-danger: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
   --gradient-info: linear-gradient(135deg, #33b5e5 0%, #0099cc 100%);
   --gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-}
+} */
 
 .report-history {
   display: grid;
