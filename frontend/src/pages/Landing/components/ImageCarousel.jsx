@@ -23,8 +23,8 @@ const ImageCarousel = ({ onSlideChange }) => {
   ];
 
   // Check if mobile for performance optimization
-  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-  const slideInterval = isMobile ? 10000 : 8000; // Longer intervals on mobile
+  const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
+  const slideInterval = isMobile ? 20000 : 10000;
   const floatingElementCount = isMobile ? 6 : 12;
 
   useEffect(() => {
@@ -32,11 +32,11 @@ const ImageCarousel = ({ onSlideChange }) => {
     images.forEach((src, index) => {
       const img = new Image();
       img.onload = () => {
-        setLoadedImages(prev => new Set([...prev, index]));
+        setLoadedImages((prev) => new Set([...prev, index]));
       };
       img.onerror = () => {
         console.warn(`Failed to load image: ${src}`);
-        setLoadedImages(prev => new Set([...prev, index]));
+        setLoadedImages((prev) => new Set([...prev, index]));
       };
       img.src = src;
     });
@@ -63,12 +63,12 @@ const ImageCarousel = ({ onSlideChange }) => {
   // Keyboard navigation
   useEffect(() => {
     const handleKeyPress = (e) => {
-      if (e.key === 'ArrowLeft') prevSlide();
-      if (e.key === 'ArrowRight') nextSlide();
+      if (e.key === "ArrowLeft") prevSlide();
+      if (e.key === "ArrowRight") nextSlide();
     };
 
-    window.addEventListener('keydown', handleKeyPress);
-    return () => window.removeEventListener('keydown', handleKeyPress);
+    window.addEventListener("keydown", handleKeyPress);
+    return () => window.removeEventListener("keydown", handleKeyPress);
   }, [currentSlide]);
 
   const nextSlide = () => {
@@ -95,7 +95,9 @@ const ImageCarousel = ({ onSlideChange }) => {
         <div className="absolute inset-0 bg-asphalt-black flex items-center justify-center z-20">
           <div className="text-center">
             <div className="loading-spinner primary large mb-4"></div>
-            <p className="text-road-white text-sm lg:text-base">Loading historical images...</p>
+            <p className="text-road-white text-sm lg:text-base">
+              Loading historical images...
+            </p>
           </div>
         </div>
       )}
@@ -119,8 +121,8 @@ const ImageCarousel = ({ onSlideChange }) => {
               loading={index === 0 ? "eager" : "lazy"}
             />
 
-            {/* Light overlay for text readability */}
-            <div className="absolute inset-0 bg-gradient-to-br from-stone-900/30 via-stone-800/20 to-green-900/30"></div>
+            {/* Dark overlay for text readability */}
+            <div className="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-green-900/40"></div>
           </div>
         ))}
       </div>
