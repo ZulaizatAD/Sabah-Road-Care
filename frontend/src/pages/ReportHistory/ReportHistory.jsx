@@ -5,6 +5,7 @@ import { formatDistanceToNow, format } from "date-fns";
 import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
+import ReportAI from "./section/ReportAI.jsx";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -18,6 +19,7 @@ const ReportHistory = () => {
   const [sortBy, setSortBy] = useState("date-desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showAI, setShowAI] = useState({});
   const [viewMode, setViewMode] = useState("grid");
   const reportsPerPage = 8;
 
@@ -85,6 +87,39 @@ const ReportHistory = () => {
           return 0;
       }
     });
+
+  // CSV Import
+  const exportToCSV = () => {
+    const csvData = filteredReports.map((report) => ({
+      "Report ID": report.case_id,
+      District: report.district,
+      Status: report.status,
+      Severity: report.severity,
+      Priority: report.priority || "N/A",
+      Description: report.description,
+      "Date Created": format(new Date(report.date_created), "yyyy-MM-dd"),
+      Location: `${report.latitude}, ${report.longitude}`,
+    }));
+
+    const csvContent = [
+      Object.keys(csvData[0]).join(","),
+      ...csvData.map((row) =>
+        Object.values(row)
+          .map((val) => `"${val}"`)
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sabah-road-reports-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    toast.success("Report data exported successfully!");
+  };
 
   // Pagination
   const indexOfLastReport = currentPage * reportsPerPage;
@@ -230,6 +265,33 @@ const ReportHistory = () => {
               <option value="status">Status</option>
             </select>
           </div>
+
+          {/* View Controls and Export Section */}
+          <div className="view-controls">
+            <div className="view-mode-buttons">
+              <button
+                className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+                title="Grid View"
+              >
+                <span className="view-icon">⊞</span>
+                Grid
+              </button>
+              <button
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+                title="List View"
+              >
+                <span className="view-icon">☰</span>
+                List
+              </button>
+            </div>
+
+            <button className="export-csv-btn" onClick={exportToCSV}>
+              <span className="export-icon">📊</span>
+              Export CSV
+            </button>
+          </div>
         </div>
 
         {/* Reports */}
@@ -278,6 +340,36 @@ const ReportHistory = () => {
                       )
                     </span>
                   </div>
+                </div>
+
+                {/* AI Analysis Section */}
+                <div className="ai-analysis-section">
+                  <button
+                    className="generate-ai-btn"
+                    onClick={() =>
+                      setShowAI((prev) => ({
+                        ...prev,
+                        [report.case_id]: !prev[report.case_id],
+                      }))
+                    }
+                  >
+                    <span className="ai-icon">🤖</span>
+                    {showAI[report.case_id]
+                      ? "Hide AI Analysis"
+                      : "Generate AI Analysis"}
+                  </button>
+
+                  {showAI[report.case_id] && (
+                    <ReportAI
+                      report={report}
+                      onClose={() =>
+                        setShowAI((prev) => ({
+                          ...prev,
+                          [report.case_id]: false,
+                        }))
+                      }
+                    />
+                  )}
                 </div>
               </div>
             </div>

@@ -167,12 +167,12 @@
   background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  padding: 45px;
+  border-radius: 24px;
+  padding: 60px;
   border: 1px solid var(--glass-border);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   text-align: center;
-  width: 380px;
+  width: 520px;
   position: relative;
   overflow: hidden;
   transition: all 0.3s ease;
@@ -212,17 +212,15 @@
 }
 
 .card-header {
-  margin-bottom: 2rem;
+  margin-bottom: 2.6rem;
   transition: all 0.3s ease;
   position: relative;
   z-index: 3;
 }
 
 .card-header h2 {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 0.5rem;
-  font-size: 1.8rem;
+  font-size: 2.2rem;
+  margin-bottom: 0.8rem;
   font-weight: 700;
   color: var(--road-white);
   transition: all 0.3s ease;
@@ -230,10 +228,8 @@
 }
 
 .card-header p {
-  display: flex;
-  justify-content: center;
   color: var(--road-white);
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   margin: 0;
   transition: all 0.3s ease;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -248,7 +244,7 @@
 
 .login-input-group {
   position: relative;
-  margin: 1rem 0;
+  margin: 1.2rem 0;
 }
 
 .login-input-group input {
@@ -256,11 +252,11 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   width: 100%;
-  padding: 1rem 1rem 1rem 3rem;
+  padding: 1.2rem 1.2rem 1.2rem 3.2rem;
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 17px;
   outline: none;
-  font-size: 1rem;
+  font-size: 1.05rem;
   color: var(--road-white);
   transition: all 0.3s ease;
   box-sizing: border-box;
@@ -285,7 +281,7 @@
 
 .password-toggle {
   position: absolute;
-  right: 1rem;
+  right: 1.2rem;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -302,8 +298,8 @@
 }
 
 .password-toggle img {
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   object-fit: contain;
   filter: brightness(0) invert(1) opacity(0.8);
   transition: transform 0.2s ease, filter 0.2s ease;
@@ -318,8 +314,8 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin: 1rem 0;
-  font-size: 0.85rem;
+  margin: 1.2rem 0;
+  font-size: 1rem;
   position: relative;
   z-index: 3;
 }
@@ -358,10 +354,10 @@
 /* Glassmorphic Sign In Button */
 .green-signin-btn {
   width: 100%;
-  padding: 0.9rem;
-  margin-top: 1rem;
+  padding: 1.2rem;
+  margin-top: 1.4rem;
   border: 1px solid var(--safety-green);
-  border-radius: 16px;
+  border-radius: 18px;
   background: linear-gradient(
     135deg,
     var(--safety-green),
@@ -372,7 +368,7 @@
   font-weight: 700;
   cursor: pointer;
   color: var(--asphalt-black);
-  font-size: 1rem;
+  font-size: 1.2rem;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
   display: flex;
@@ -457,7 +453,7 @@
   align-items: center;
   text-align: center;
   color: var(--road-white);
-  margin: 1.5rem 0;
+  margin: 2rem 0;
   font-weight: 600;
   position: relative;
   z-index: 3;
@@ -477,8 +473,8 @@
 }
 
 .divider span {
-  margin: 0 1rem;
-  font-size: 0.9rem;
+  margin: 0 1.2rem;
+  font-size: 1rem;
   font-weight: 500;
 }
 
@@ -488,16 +484,16 @@
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   width: 100%;
-  padding: 0.9rem;
+  padding: 1.2rem;
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.7rem;
   font-weight: 600;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1.1rem;
   transition: all 0.3s ease;
   color: var(--road-white);
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
@@ -543,8 +539,8 @@
 }
 
 .signup-link {
-  margin-top: 1.5rem;
-  padding-top: 1rem;
+  margin-top: 2.2rem;
+  padding-top: 1.2rem;
   border-top: 1px solid var(--glass-border);
   position: relative;
   z-index: 3;
@@ -552,7 +548,7 @@
 
 .signup-link p {
   color: var(--road-white);
-  font-size: 0.9rem;
+  font-size: 1rem;
   margin: 0;
   font-weight: 500;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
@@ -855,8 +851,8 @@ button.toggle-auth-btn:hover,
 }
 
 .neumorphic-card.signup-mode {
-  transform: scaleY(1.1);
-  padding: 50px 45px;
+  transform: scaleY(1.08);
+  padding: 65px 55px;
 }
 
 /* Toggle button animation */
