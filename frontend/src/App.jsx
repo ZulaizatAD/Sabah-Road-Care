@@ -1,11 +1,12 @@
 import { Routes, Route } from "react-router-dom";
-import { ToastContainer } from "react-toastify";
+import { Slide, ToastContainer } from "react-toastify";
 import { UserProvider } from "./context/UserContext";
 import EnvironmentCheck from "./components/EnvironmentCheck/EnvironmentCheck";
 import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
-import AnimatedBackground001 from "./components/VideoBG/AnimatedBackground001";
+import AnimatedBG from "./components/VideoBG/AnimatedBG";
+import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Login/Login";
 import Homepage from "./pages/Homepage/Homepage";
 import Dashboard from "./pages/Dashboard/Dashboard";
@@ -23,11 +24,12 @@ const App = () => {
     <UserProvider>
       <EnvironmentCheck>
         <div className="app-container">
-          <AnimatedBackground001 />
+          <AnimatedBG />
           <Header />
           <main className="main-content">
             <Routes>
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
               <Route path="/homepage" element={<Homepage />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/information" element={<FunFactMainPage />} />
@@ -43,15 +45,20 @@ const App = () => {
 
           <ToastContainer
             position="top-right"
-            autoClose={2000}
+            autoClose={3000}
             hideProgressBar={false}
-            newestOnTop={false}
+            newestOnTop={true}
             closeOnClick
             rtl={false}
             pauseOnFocusLoss
             draggable
             pauseOnHover
-            theme="green"
+            theme="light"
+            toastClassName="custom-toast"
+            bodyClassName="custom-toast-body"
+            progressClassName="custom-progress"
+            closeButton={true}
+            transition={Slide}
           />
           <DevTools />
         </div>

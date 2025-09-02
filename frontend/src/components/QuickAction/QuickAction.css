@@ -1,22 +1,24 @@
 .quick-actions {
-  background: var(--white);
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border-radius: 16px;
   padding: 24px;
   box-shadow: 0 8px 25px rgba(44, 44, 44, 0.1);
-  border: 1px solid var(--gray-200);
-  border-left: 4px solid var(--road-yellow);
+  border: 1px solid var(--glass-border);
+  border-left: 4px solid var(--safety-green);
 }
 
-.sidebar-title {
+.quick-actions-title {
   font-size: 18px;
   font-weight: 700;
-  color: var(--asphalt-dark);
+  color: var(--road-white);
   margin: 0 0 20px 0;
   display: flex;
   align-items: center;
   gap: 8px;
   padding-bottom: 8px;
-  border-bottom: 2px solid var(--road-yellow);
+  border-bottom: 2px solid var(--safety-green);
 }
 
 .action-buttons {
@@ -31,34 +33,38 @@
   gap: 12px;
   width: 100%;
   padding: 14px 16px;
-  background: linear-gradient(135deg, var(--gray-50) 0%, var(--white) 100%);
-  border: 2px solid var(--gray-200);
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  border: 2px solid var(--glass-border);
   border-radius: 8px;
+  color: var(--road-white);
   cursor: pointer;
   transition: all 0.3s ease;
   text-align: left;
 }
 
 .action-btn:hover {
-  background: linear-gradient(135deg, var(--hover-green-subtle) 0%, var(--gray-50) 100%);
-  border-color: var(--primary-green);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), var(--glass-bg));
+  border-color: var(--safety-green);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(51, 230, 17, 0.15);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .action-btn.reports:hover {
-  background: linear-gradient(135deg, var(--road-yellow) 0%, #FFF8DC 100%);
-  border-color: var(--warning-orange);
+  background: linear-gradient(135deg, rgba(255, 193, 7, 0.15), var(--glass-bg));
+  border-color: var(--caution-yellow);
+  box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 }
 
 .action-btn.dashboard:hover {
-  background: linear-gradient(135deg, var(--hover-green-subtle) 0%, #F0FFF0 100%);
-  border-color: var(--primary-green);
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), var(--glass-bg));
+  border-color: var(--safety-green);
+  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
 }
 
 .action-btn.profile:hover {
-  background: linear-gradient(135deg, #E6F3FF 0%, #F0F8FF 100%);
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.15), var(--glass-bg));
   border-color: var(--info-blue);
+  box-shadow: 0 4px 12px rgba(33, 150, 243, 0.3);
 }
 
 .action-icon {
@@ -76,28 +82,32 @@
 .action-text {
   font-size: 14px;
   font-weight: 600;
-  color: var(--asphalt-dark);
+  color: var(--road-white);
 }
 
 .action-description {
   font-size: 12px;
-  color: var(--gray-500);
+  color: var(--concrete-gray);
   font-weight: 400;
 }
 
 .action-arrow {
   font-size: 14px;
-  color: var(--gray-400);
+  color: var(--concrete-gray);
   transition: all 0.3s ease;
 }
 
 .action-btn:hover .action-arrow {
-  color: var(--asphalt-dark);
+  color: var(--safety-green);
   transform: translateX(4px);
 }
 
 .action-btn:hover .action-text {
-  color: var(--asphalt-dark);
+  color: var(--road-white);
+}
+
+.action-btn:hover .action-description {
+  color: var(--concrete-gray);
 }
 
 /* Mobile Responsive */
@@ -106,19 +116,19 @@
     margin-top: 15px;
     padding: 20px;
   }
-  
+
   .action-btn {
     padding: 12px 14px;
   }
-  
+
   .action-icon {
     font-size: 16px;
   }
-  
+
   .action-text {
     font-size: 13px;
   }
-  
+
   .action-description {
     font-size: 11px;
   }

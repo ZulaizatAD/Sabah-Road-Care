@@ -1,3 +1,4 @@
+# backend/services/cloudinary/service.py
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
@@ -39,12 +40,12 @@ class CloudinaryService:
         except Exception as e:
             return {"success": False, "error": str(e)}
 
-
+    @staticmethod  # ✅ FIXED: Added missing @staticmethod
     async def upload_pothole_image(
         file_content: bytes, 
         filename: str, 
-        case_id: str,   # 🔄 renamed from report_id
-        image_type: str  # 'top_view', 'far', 'close_up'
+        image_type: str,  # ✅ FIXED: Moved to match homepage router call
+        case_id: str
     ) -> Dict[str, Any]:
         """
         Upload pothole image to Cloudinary
@@ -52,18 +53,26 @@ class CloudinaryService:
         Args:
             file_content: Image file content in bytes
             filename: Original filename
+            image_type: Type of image ('top', 'far', 'close')
             case_id: Case ID to organize images
-            image_type: Type of image (top_view, far, close_up)
             
         Returns:
             Dict containing upload result with public_id and secure_url
         """
         try:
+            # ✅ FIXED: Map image types to consistent naming
+            image_type_mapping = {
+                "top": "top_view",
+                "far": "far_view", 
+                "close": "close_up"
+            }
+            
             # Create folder structure: pothole_reports/case_id/
             folder_path = f"pothole_reports/{case_id}"
             
-            # Generate public_id with image type
-            public_id = f"{folder_path}/{image_type}_{filename.split('.')[0]}"
+            # Generate public_id with mapped image type
+            mapped_type = image_type_mapping.get(image_type, image_type)
+            public_id = f"{folder_path}/{mapped_type}_{filename.split('.')[0]}"
             
             # Upload to Cloudinary
             result = cloudinary.uploader.upload(
@@ -94,6 +103,7 @@ class CloudinaryService:
     
     @staticmethod
     async def delete_image(public_id: str) -> Dict[str, Any]:
+        """Delete image from Cloudinary"""
         try:
             result = cloudinary.uploader.destroy(public_id)
             return {
@@ -122,12 +132,13 @@ class CloudinaryService:
             image_urls = {}
             for resource in result.get("resources", []):
                 public_id = resource["public_id"]
+                # ✅ FIXED: Updated to match new naming convention
                 if "top_view" in public_id:
-                    image_urls["top_view"] = resource["secure_url"]
-                elif "far" in public_id:
+                    image_urls["top"] = resource["secure_url"]
+                elif "far_view" in public_id:
                     image_urls["far"] = resource["secure_url"]
                 elif "close_up" in public_id:
-                    image_urls["close_up"] = resource["secure_url"]
+                    image_urls["close"] = resource["secure_url"]
             
             return image_urls
             
@@ -136,6 +147,7 @@ class CloudinaryService:
     
     @staticmethod
     def get_optimized_url(public_id: str, width: int = None, height: int = None) -> str:
+        """Get optimized image URL with transformations"""
         transformation = []
         if width:
             transformation.append(f"w_{width}")
@@ -145,3 +157,42 @@ class CloudinaryService:
         return cloudinary.CloudinaryImage(public_id).build_url(
             transformation=transformation
         )
+
+    @staticmethod
+    async def delete_case_images(case_id: str) -> Dict[str, Any]:
+        """
+        ✅ NEW: Delete all images for a specific case
+        Useful for cleanup when report is deleted
+        """
+        try:
+            folder_path = f"pothole_reports/{case_id}"
+            
+            # Get all resources in the case folder
+            result = cloudinary.api.resources(
+                type="upload",
+                prefix=folder_path,
+                max_results=10
+            )
+            
+            deleted_count = 0
+            errors = []
+            
+            # Delete each image
+            for resource in result.get("resources", []):
+                delete_result = await CloudinaryService.delete_image(resource["public_id"])
+                if delete_result["success"]:
+                    deleted_count += 1
+                else:
+                    errors.append(delete_result["error"])
+            
+            return {
+                "success": len(errors) == 0,
+                "deleted_count": deleted_count,
+                "errors": errors
+            }
+            
+        except Exception as e:
+            return {
+                "success": False,
+                "error": str(e)
+            }

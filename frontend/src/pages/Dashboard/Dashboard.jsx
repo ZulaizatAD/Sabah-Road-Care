@@ -4,7 +4,6 @@ import Filter from "./Section/Filter";
 import StatsCards from "./Section/StatusCards";
 import Charts from "./Section/Charts";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-import AnimatedBackground001 from "../../components/VideoBG/AnimatedBackground001";
 import { toast } from "react-toastify";
 import "./Dashboard.css";
 
@@ -48,7 +47,6 @@ const Dashboard = () => {
   if (loading) {
     return (
       <div className="dashboard-content">
-        <AnimatedBackground001 />
         <main className="main">
           <div className="container">
             <div className="loading-container">
@@ -63,7 +61,6 @@ const Dashboard = () => {
   if (error) {
     return (
       <div className="dashboard-content">
-        <AnimatedBackground001 />
         <main className="main">
           <div className="container">
             <div className="error-state">
@@ -79,9 +76,8 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-content">
-      <AnimatedBackground001 />
-      <main className="main">
-        <div className="container">
+      <main className="dashboard-main">
+        <div className="dashboard-container">
           {/* Modern Dashboard Header */}
           <div className="dashboard-header">
             <h1 className="dashboard-title"> Analytics Dashboard</h1>

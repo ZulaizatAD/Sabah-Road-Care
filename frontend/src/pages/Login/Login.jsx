@@ -6,6 +6,7 @@ import assets from "../../assets/assets";
 import { signIn, signUp } from "../../services/userApi";
 import LogoLoopVideoAnimation from "../../components/VideoBG/LogoLoopVideo/LogoLoopVideoAnimation";
 import "./Login.css";
+import { showErrorToast, showSuccessToast, showInfoToast } from "../../utils/toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -83,12 +84,12 @@ const Login = () => {
       !formData.password ||
       (isSignUp && !formData.confirmPassword)
     ) {
-      toast.error("Please fill in all fields");
+      showErrorToast("Please fill in all fields");
       return;
     }
 
     if (isSignUp && formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match");
+      showErrorToast("Passwords do not match");
       return;
     }
 
@@ -105,7 +106,7 @@ const Login = () => {
           formData.confirmPassword
         );
 
-        toast.success("Account created successfully! Please log in.");
+        showSuccessToast("Account created successfully! Please log in.");
         setIsSignUp(false); // switch to login after signup
         setFormData({
           email: formData.email,
@@ -141,7 +142,7 @@ const Login = () => {
         // Save to context
         login(userData);
 
-        toast.success("Welcome back to Sabah Road Care!");
+        showSuccessToast("Welcome back to Sabah Road Care!");
 
         // Redirect after successful login
         setTimeout(() => {
@@ -152,14 +153,14 @@ const Login = () => {
       console.error(error);
 
       if (error.response?.status === 401) {
-        toast.error("Invalid credentials. Please try again.");
+        showErrorToast("Invalid credentials. Please try again.");
       } else if (error.response?.status === 409) {
-        toast.error("Email already exists. Please sign in instead.");
+        showErrorToast("Email already exists. Please sign in instead.");
         setIsSignUp(false);
       } else if (error.response?.status >= 500) {
-        toast.error("Server error. Please try again later.");
+        showErrorToast("Server error. Please try again later.");
       } else {
-        toast.error(
+        showErrorToast(
           isSignUp
             ? error.response?.data?.detail ||
                 "Sign up failed. Please try again."
@@ -173,7 +174,7 @@ const Login = () => {
 
   // Handle Google Sign In
   const handleGoogleSignIn = () => {
-    toast.info("Google Sign-In will be implemented with Firebase Auth");
+    showInfoToast("Google Sign-In will be implemented with Firebase Auth");
   };
 
   // Demo login function
@@ -183,7 +184,7 @@ const Login = () => {
       password: "password123",
       confirmPassword: "",
     });
-    toast.info("Demo credentials filled! Click Sign In to continue.");
+    showInfoToast("Demo credentials filled! Click Sign In to continue.");
   };
 
   return (
@@ -279,7 +280,7 @@ const Login = () => {
                   className="forgot-password"
                   onClick={(e) => {
                     e.preventDefault();
-                    toast.info("Password reset feature coming soon!");
+                    showInfoToast("Password reset feature coming soon!");
                   }}
                 >
                   Forgot password?

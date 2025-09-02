@@ -7,7 +7,7 @@ const Footer = () => {
   const location = useLocation();
 
   // Don't show footer on login page
-  if (location.pathname === '/') {
+  if (location.pathname === '/' || location.pathname === "/login") {
     return null;
   }
 

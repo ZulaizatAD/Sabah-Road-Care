@@ -33,7 +33,7 @@ const Header = () => {
   }, []);
 
   // Don't show header on login page
-  if (location.pathname === "/") {
+  if (location.pathname === "/" || location.pathname === "/login") {
     return null;
   }
 
