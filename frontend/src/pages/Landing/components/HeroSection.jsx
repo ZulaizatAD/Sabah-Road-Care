@@ -416,7 +416,7 @@ const HeroSection = ({ onGetStarted }) => {
                 {currentContent.showBrandIcon && (
                   <div className="flex justify-center mt-8 lg:mt-12">
                     <img
-                      src={assets.SRC_logo}
+                      src={assets.TransparentLogo}
                       alt="Sabah Road Care Logo"
                       className={`w-40 h-40 lg:w-48 lg:h-48 object-contain animate-bounce transition-all duration-1000 transform mb-6 lg:mb-8 ${
                         isVisible
