@@ -14,6 +14,7 @@ import {
   generateLocationHash,
 } from "../../utils/duplicateDetection";
 import { useHomepage } from "./useHomepage";
+import assets from "../../assets/assets";
 import "./Homepage.css";
 
 const Homepage = () => {
@@ -695,7 +696,7 @@ const Homepage = () => {
 
           {/* Photos Section */}
           <FormSection
-            title="📸 PHOTOS (Required: 3 angles)"
+            title="PHOTOS (Required: 3 angles)"
             error={errors.photos}
           >
             <div className="photo-grid">
@@ -738,7 +739,7 @@ const Homepage = () => {
           </div>
 
           {/* Location Section - ALWAYS SHOW MAP */}
-          <FormSection title="🗺️ LOCATION" error={errors.location}>
+          <FormSection title="LOCATION" error={errors.location}>
             {/* Always display the embedded map */}
             <div className="embedded-map-container">
               <MapPicker
@@ -761,18 +762,17 @@ const Homepage = () => {
             {tempLocation && hasLocationChanged && (
               <div className="pending-location-info">
                 <div className="pending-header">
-                  <span className="pending-icon">📍</span>
                   <h4>Location Selected - Please Confirm</h4>
                 </div>
                 <div className="pending-details">
                   <div className="pending-address">
-                    🛣️ {tempLocation.roadName || "Road name not available"}
+                    {tempLocation.roadName || "Road name not available"}
                   </div>
                   <div className="pending-full-address">
                     {tempLocation.address}
                   </div>
                   <div className="pending-coordinates">
-                    📍 {tempLocation.latitude.toFixed(6)},{" "}
+                    {tempLocation.latitude.toFixed(6)},{" "}
                     {tempLocation.longitude.toFixed(6)}
                   </div>
                 </div>
@@ -782,7 +782,7 @@ const Homepage = () => {
                     className="confirm-location-btn"
                     onClick={handleConfirmLocation}
                   >
-                    ✅ Confirm Location
+                    Confirm Location
                   </button>
                   <button
                     type="button"
@@ -793,7 +793,7 @@ const Homepage = () => {
                       toast.info("Location selection cancelled.");
                     }}
                   >
-                    ❌ Cancel
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -804,7 +804,6 @@ const Homepage = () => {
               <div className="location-info confirmed">
                 <div className="location-details">
                   <div className="location-primary">
-                    <span className="location-icon">🛣️</span>
                     <span className="road-name">
                       {formData.location.roadName || "Road name not available"}
                     </span>
@@ -829,7 +828,7 @@ const Homepage = () => {
                     className="clear-location-btn"
                     onClick={handleClearLocation}
                   >
-                    🗑️ Clear & Reselect
+                    Clear & Reselect
                   </button>
                 </div>
               </div>
@@ -865,7 +864,7 @@ const Homepage = () => {
           </div>
 
           {/* District Section */}
-          <FormSection title="🏙 DISTRICT" error={errors.district}>
+          <FormSection title="DISTRICT" error={errors.district}>
             <select
               value={formData.district}
               onChange={(e) => handleInputChange("district", e.target.value)}
@@ -898,7 +897,7 @@ const Homepage = () => {
 
           {/* Description Section */}
           <FormSection
-            title="📝 REMARKS / DESCRIPTION"
+            title="REMARKS / DESCRIPTION"
             error={errors.description}
           >
             <textarea

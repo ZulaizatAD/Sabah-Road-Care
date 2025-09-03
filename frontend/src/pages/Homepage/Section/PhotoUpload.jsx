@@ -1,17 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
+import assets from "../../../assets/assets";
 
-// Handles photo capture/upload function
-// Support camera capture and gallery selection
-// Include file validation and preview function
 const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
-  //Reference to hidden file input element
-  // State for storing image preview
   const fileInputRef = useRef(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isDragOver, setIsDragOver] = useState(false);
 
-  // Update preview when photo prop changes
   useEffect(() => {
     if (photo && photo instanceof File) {
       const reader = new FileReader();
@@ -24,52 +20,46 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
     }
   }, [photo]);
 
-  // Validates file type and size, creates preview, and calls onUpload
   const handleFileSelect = (e) => {
     const file = e.target.files[0];
     if (file) {
-      setIsLoading(true);
-      // Validate file type - MUST be an image
-      if (!file.type.startsWith("image/")) {
-        toast.error("Please select an image file (JPG, PNG, etc.)");
-        setIsLoading(false);
-        return;
-      }
-      // Validate file size - maximum 5MB
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("File size must be less than 5MB");
-        setIsLoading(false);
-        return;
-      }
-      // Create preview using FileReader API
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setPreviewUrl(e.target.result);
-        setIsLoading(false);
-      };
-
-      reader.onerror = () => {
-        toast.error("Error reading file");
-        setIsLoading(false);
-      };
-
-      reader.readAsDataURL(file);
-
-      if (typeof onUpload === "function") {
-        onUpload(file);
-      }
+      processFile(file);
     }
   };
 
-  // Handle camera capture button click
-  //Trigger the hidden file input which opens camera on mobile devices
-  const handleCameraCapture = () => {
-    fileInputRef.current.setAttribute("capture", "environment");
+  const processFile = (file) => {
+    setIsLoading(true);
+    if (!file.type.startsWith("image/")) {
+      toast.error("Please select an image file (JPG, PNG, etc.)");
+      setIsLoading(false);
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      setIsLoading(false);
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      setPreviewUrl(e.target.result);
+      setIsLoading(false);
+    };
+    reader.onerror = () => {
+      toast.error("Error reading file");
+      setIsLoading(false);
+    };
+    reader.readAsDataURL(file);
+
+    if (typeof onUpload === "function") {
+      onUpload(file);
+    }
+  };
+
+  const handleUploadClick = () => {
     fileInputRef.current.click();
   };
 
-  // Remove the selected photo and clears preview
-  //Resets the component to initial state
   const removePhoto = () => {
     setPreviewUrl(null);
     onUpload(null);
@@ -78,58 +68,107 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
     }
   };
 
-  // Handle gallery selection button click
-  // Open file picker without camera capture attribute
-  const handleGallerySelect = () => {
-    fileInputRef.current.removeAttribute("capture");
-    fileInputRef.current.click();
+  // Drag and drop handlers
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    setIsDragOver(true);
+  };
+
+  const handleDragLeave = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    const files = e.dataTransfer.files;
+    if (files.length > 0) {
+      processFile(files[0]);
+    }
   };
 
   return (
-    <div className="photo-upload">
-      <div className="photo-label">
-        <strong>{label}</strong>
-        <small>{guideline}</small>
+    <div className="photo-upload-container">
+      {/* Label Section */}
+      <div className="photo-upload-header">
+        <h3 className="photo-upload-title">{label}</h3>
+        <p className="photo-upload-guideline">{guideline}</p>
       </div>
 
-      <div className="photo-container">
+      {/* Main Upload Area */}
+      <div
+        className={`photo-upload-zone ${isDragOver ? "drag-over" : ""} ${
+          previewUrl ? "has-image" : ""
+        }`}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        onClick={!previewUrl ? handleUploadClick : undefined}
+      >
         {isLoading ? (
-          <div className="photo-loading">
-            <div className="loading-spinner"></div>
-            <div>Processing image...</div>
+          <div className="photo-loading-state">
+            <div className="loading-spinner primary large"></div>
+            <p className="loading-text">Processing image...</p>
           </div>
         ) : previewUrl ? (
-          <div className="photo-preview">
-            <img src={previewUrl} alt="Preview" />
-            <button
-              type="button"
-              className="remove-photo"
-              onClick={removePhoto}
-              title="Remove photo"
-            >
-              ✕
-            </button>
+          <div className="photo-preview-container">
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className="photo-preview-image"
+            />
+            <div className="photo-overlay">
+              <button
+                type="button"
+                className="remove-photo-btn"
+                onClick={removePhoto}
+                title="Remove photo"
+              >
+                <span className="remove-icon">✕</span>
+              </button>
+              <button
+                type="button"
+                className="replace-photo-btn"
+                onClick={handleUploadClick}
+                title="Replace photo"
+              >
+                <img
+                  src={assets.replacePhoto}
+                  alt="Replace"
+                  className="replace-icon"
+                />
+                Replace
+              </button>
+            </div>
           </div>
         ) : (
-          // Show placeholder when no image is selected
-          <div className="photo-placeholder" onClick={handleCameraCapture}>
-            <div className="camera-icon">📷</div>
-            {/* Desktop Text */}
-            <div className="upload-text">
-              <div className="upload-text-desktop">
-                <div>Upload Photo</div>
-              </div>
+          <div className="photo-upload-placeholder">
+            <div className="upload-icon-container">
+              <img
+                src={assets.uploadPhoto}
+                alt="Upload"
+                className="upload-icon"
+              />
             </div>
-            {/* Mobile Text */}
-            <div className="upload-text upload-text-mobile">
-              <div>Tap to capture</div>
-              <small>or upload photo</small>
+            <div className="upload-content">
+              <h4 className="upload-title">Upload Road Photo</h4>
+              <p className="upload-description">
+                Click to select or drag & drop an image
+              </p>
+              <div className="upload-specs">
+                <span className="spec-item">📱 Camera</span>
+                <span className="spec-divider">•</span>
+                <span className="spec-item">🖼️ Gallery</span>
+                <span className="spec-divider">•</span>
+                <span className="spec-item">Max 5MB</span>
+              </div>
             </div>
           </div>
         )}
       </div>
 
-      {/* Hidden file input for photo selection */}
+      {/* Hidden file input */}
       <input
         ref={fileInputRef}
         type="file"
@@ -139,25 +178,17 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
         style={{ display: "none" }}
       />
 
-      {/* Action buttons for camera and gallery */}
-      <div className="photo-actions">
+      {/* Quick Action Button */}
+      {!previewUrl && (
         <button
           type="button"
-          className="photo-btn camera"
-          onClick={handleCameraCapture}
-          title="Take photo with camera"
+          className="quick-capture-btn"
+          onClick={handleUploadClick}
+          title="Quick capture"
         >
-          📷 Camera
+          <span>Quick Capture</span>
         </button>
-        <button
-          type="button"
-          className="photo-btn gallery"
-          onClick={handleGallerySelect}
-          title="Select from gallery"
-        >
-          🖼️ Gallery
-        </button>
-      </div>
+      )}
     </div>
   );
 };

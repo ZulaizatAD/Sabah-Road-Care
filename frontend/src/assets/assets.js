@@ -7,6 +7,8 @@ import SRCBackground from "./SRCBackground.png";
 import passwordShow from "./password-show.png";
 import passwordHide from "./password-hide.png";
 import defaultUser from "./user.png";
+import uploadPhoto from "./upload.png";
+import replacePhoto from "./replace.png";
 
 // Sabah History Images
 import historyMain from "./SabahHistory/history-main.png";
@@ -31,6 +33,8 @@ const assets = {
   passwordHide,
   defaultUser,
   passwordShow,
+  uploadPhoto,
+  replacePhoto,
 
   historyMain,
   history1,

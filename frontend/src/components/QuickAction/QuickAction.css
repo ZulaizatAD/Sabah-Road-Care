@@ -87,7 +87,7 @@
 
 .action-description {
   font-size: 12px;
-  color: var(--concrete-gray);
+  color: var(--road-white);
   font-weight: 400;
 }
 
@@ -107,7 +107,7 @@
 }
 
 .action-btn:hover .action-description {
-  color: var(--concrete-gray);
+  color: var(--road-white);
 }
 
 /* Mobile Responsive */
