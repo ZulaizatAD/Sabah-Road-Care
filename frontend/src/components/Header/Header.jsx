@@ -82,7 +82,6 @@ const Header = () => {
             className={`nav-item ${isActive("/history") ? "active" : ""}`}
             onClick={() => handleNavigation("/history")}
           >
-            <span className="nav-icon">📋</span>
             <span className="nav-text">Report History</span>
           </button>
 
@@ -91,7 +90,6 @@ const Header = () => {
             className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}
             onClick={() => handleNavigation("/dashboard")}
           >
-            <span className="nav-icon">📊</span>
             <span className="nav-text">Dashboard</span>
           </button>
 
@@ -100,7 +98,6 @@ const Header = () => {
             className={`nav-item ${isActive("/information") ? "active" : ""}`}
             onClick={() => handleNavigation("/information")}
           >
-            <span className="nav-icon">🎯</span>
             <span className="nav-text">Fun Facts</span>
           </button>
 
@@ -281,7 +278,6 @@ const Header = () => {
             }`}
             onClick={() => handleNavigation("/history")}
           >
-            <span className="mobile-nav-icon">📋</span>
             <span className="mobile-nav-text">Report History</span>
           </button>
 
@@ -292,7 +288,6 @@ const Header = () => {
             }`}
             onClick={() => handleNavigation("/dashboard")}
           >
-            <span className="mobile-nav-icon">📊</span>
             <span className="mobile-nav-text">Dashboard</span>
           </button>
 
@@ -303,14 +298,12 @@ const Header = () => {
             }`}
             onClick={() => handleNavigation("/information")}
           >
-            <span className="mobile-nav-icon">🎯</span>
             <span className="mobile-nav-text">Fun Facts</span>
           </button>
 
           {/* Mobile Profile Section */}
           <div className="mobile-nav-section">
             <div className="mobile-section-title">
-              <span className="mobile-section-icon">👤</span>
               <span className="mobile-section-text">Account</span>
             </div>
             <div className="mobile-section-items">
@@ -320,14 +313,12 @@ const Header = () => {
                 }`}
                 onClick={() => handleNavigation("/profileupdate")}
               >
-                <span className="mobile-nav-icon">⚙️</span>
                 <span className="mobile-nav-text">Update Account</span>
               </button>
               <button
                 className="mobile-nav-subitem logout"
                 onClick={handleLogout}
               >
-                <span className="mobile-nav-icon">🔄</span>
                 <span className="mobile-nav-text">Logout</span>
               </button>
             </div>

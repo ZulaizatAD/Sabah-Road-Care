@@ -1,35 +1,14 @@
-:root {
-  --primary-color: #667eea;
-  --secondary-color: #764ba2;
-  --accent-color: #00d4ff;
-  --success-color: #2bee79;
-  --warning-color: #ffbb33;
-  --danger-color: #ff4444;
-  --info-color: #33b5e5;
-  --dark-color: #2c3e50;
-  --light-color: #ecf0f1;
-  --glass-bg: rgba(255, 255, 255, 0.1);
-  --glass-border: rgba(255, 255, 255, 0.2);
-  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-  --glass-blur: blur(20px);
-  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  --gradient-success: linear-gradient(135deg, #00c851 0%, #00d4aa 100%);
-  --gradient-warning: linear-gradient(135deg, #ffbb33 0%, #ff8800 100%);
-  --gradient-danger: linear-gradient(135deg, #ff4444 0%, #cc0000 100%);
-  --gradient-info: linear-gradient(135deg, #33b5e5 0%, #0099cc 100%);
-  --gradient-dark: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
-}
-
 /* Dashboard Content */
 .dashboard-content {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  background: transparent;
 }
 
 /* Main Content Styles */
 .dashboard-main {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 2rem;
   position: relative;
