@@ -3,8 +3,8 @@ from sqlalchemy.orm import Session
 from typing import Optional, List
 from datetime import datetime
 import models
-from database.connect import get_db
-from auth.security import get_current_user
+from services.database.connect import get_db
+from services.auth.security import get_current_user
 from schemas.report import CaseBase
 
 router = APIRouter()

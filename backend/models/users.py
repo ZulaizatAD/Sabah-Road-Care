@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, DateTime, func
 from sqlalchemy.orm import validates, relationship
-from database.connect import Base
+from services.database.connect import Base
 
 class User(Base):
     __tablename__ = "users"

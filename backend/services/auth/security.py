@@ -9,7 +9,7 @@ from sqlalchemy.orm import Session
 from models.users import User
 import schemas
 import models
-from database.connect import get_db
+from services.database.connect import get_db
 
 
 # --- Security settings ---
