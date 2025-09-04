@@ -28,4 +28,4 @@ class CaseResponse(CaseBase):
     last_date_status_update: datetime
 
     class Config:
-        orm_mode = True
+        from_attributes = True

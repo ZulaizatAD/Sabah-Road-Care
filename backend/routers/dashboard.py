@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Optional
 import models
-from database.connect import get_db
+from services.database.connect import get_db
 import logging
 
 # Set up logging

@@ -8,22 +8,22 @@ from decouple import config
 
 
 # Import database engine and models for reports
-from database.connect import engine as report_engine
+from services.database.connect import engine as report_engine
 import models.report as report_models
 from routers import dashboard, history, homepage
 # Remove the old photos import
 # from routers import photos  # Import the photos router
 
 try:
-    from database.connect import Base, engine, get_db  # Shared auth DB/session
+    from services.database.connect import Base, engine, get_db  # Shared auth DB/session
     import models, schemas
-    from backend.auth import verify_password, create_access_token
+    from services.auth import verify_password, create_access_token
 except ImportError:
     # Fallback if the imports above fail (e.g., if the structure is flat)
-    from database.connect import Base, engine, get_db
+    from services.database.connect import Base, engine, get_db
     import models
     import schemas
-    from auth.security import verify_password, create_access_token
+    from services.auth.security import verify_password, create_access_token
     from routers.user import router as user_router
 
 # Create tables (DEV ONLY). Keep your original report tables + auth tables.
