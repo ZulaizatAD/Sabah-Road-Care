@@ -11,7 +11,6 @@ from services.auth.security import get_current_user
 
 router = APIRouter()
 
-
 @router.post("/report")
 async def submit_report(
     district: str = Form(...),
@@ -140,10 +139,10 @@ def get_recent_submissions(
             "case_id": report.case_id,
             "location": report.location,
             "date_created": report.date_created.strftime("%m/%d/%Y"),
-            "similar_reports_count": getattr(report, 'similar_reports_count', 0),  # Safe access
+            "similar_reports_count": getattr(report, 'similar_reports_count', 0),  
             "status": report.status,
-            "priority": getattr(report, 'priority', 'Medium'),  # 🆕 Include priority
-            "severity": getattr(report, 'severity', 'Low'),     # 🆕 Include severity
+            "priority": getattr(report, 'priority', 'Medium'),  
+            "severity": getattr(report, 'severity', 'Low'),     
         }
         for report in reports
     ]
@@ -179,6 +178,6 @@ def check_duplicates_preview(
         "calculated_severity": duplicate_analysis['calculated_severity'],
         "summary_message": duplicate_analysis['summary_message'],
         "boost_reason": duplicate_analysis['boost_reason'],
-        "user_duplicates": duplicate_analysis['user_duplicates'][:3],  # Show max 3
-        "similar_reports": duplicate_analysis['similar_reports'][:5],  # Show max 5
+        "user_duplicates": duplicate_analysis['user_duplicates'][:3],  
+        "similar_reports": duplicate_analysis['similar_reports'][:5],  
     }
