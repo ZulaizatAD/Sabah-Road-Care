@@ -178,6 +178,12 @@ def check_duplicates_preview(
         "calculated_severity": duplicate_analysis['calculated_severity'],
         "summary_message": duplicate_analysis['summary_message'],
         "boost_reason": duplicate_analysis['boost_reason'],
+        # 🆕 Add extra metadata so frontend matches /report
+        "duplicate_metadata": {
+            "location_hash": duplicate_analysis['location_hash'],
+            "similar_count": duplicate_analysis['similar_count'],
+            "severity_multiplier": duplicate_analysis['severity_multiplier'],
+        },
         "user_duplicates": duplicate_analysis['user_duplicates'][:3],  
         "similar_reports": duplicate_analysis['similar_reports'][:5],  
     }
