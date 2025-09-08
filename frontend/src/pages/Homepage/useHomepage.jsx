@@ -1,11 +1,18 @@
-// src/hooks/useHomepage.js
 import { useState, useEffect } from "react";
-import { getMyReports, submitReport } from "../../services/homepageApi";
+import {
+  submitReport,
+  getRecentSubmissions as getMyReports,
+  checkDuplicates,
+  getNearbyReportsCount,
+} from "../../services/homepageApi";
 
 export const useHomepage = (token) => {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+
+  const [nearbyCount, setNearbyCount] = useState(0);
+  const [duplicationResult, setDuplicationResult] = useState(null);
 
   // Load user reports
   const fetchReports = async () => {
@@ -20,6 +27,18 @@ export const useHomepage = (token) => {
     }
   };
 
+  // Check for duplicates before submission
+  const checkForDuplicates = async (reportData) => {
+    try {
+      const result = await checkDuplicates(reportData, token);
+      setDuplicationResult(result);
+      return result;
+    } catch (err) {
+      setError(err.response?.data?.detail || "Failed to check duplicates");
+      throw err;
+    }
+  };
+
   // Submit a new report
   const addReport = async (reportData) => {
     setLoading(true);
@@ -29,7 +48,7 @@ export const useHomepage = (token) => {
         formData.append(key, value);
       });
       const result = await submitReport(formData, token);
-      await fetchReports(); // ✅ refresh reports after submit
+      await fetchReports();
       return result;
     } catch (err) {
       setError(err.response?.data?.detail || "Failed to submit report");
@@ -39,9 +58,31 @@ export const useHomepage = (token) => {
     }
   };
 
+  // Get nearby reports count
+  const fetchNearbyReports = async (reportData) => {
+    try {
+      const count = await getNearbyReportsCount(reportData);
+      setNearbyCount(count);
+      return count;
+    } catch (err) {
+      setError(err.response?.data?.detail || "Failed to load nearby reports");
+      throw err;
+    }
+  };
+
   useEffect(() => {
     if (token) fetchReports();
   }, [token]);
 
-  return { reports, loading, error, fetchReports, addReport };
+  return {
+    reports,
+    loading,
+    error,
+    nearbyCount,
+    duplicationResult,
+    fetchReports,
+    fetchNearbyReports,
+    addReport,
+    checkForDuplicates,
+  };
 };

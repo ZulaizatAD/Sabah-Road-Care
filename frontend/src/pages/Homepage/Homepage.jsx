@@ -15,12 +15,28 @@ import {
 } from "../../utils/duplicateDetection";
 import { useHomepage } from "./useHomepage";
 import "./Homepage.css";
+import { checkDuplicates } from "../../services/homepageApi";
+// Homepage.jsx
+import {
+  getRecentSubmissions,
+  getNearbyReportsCount,
+} from "../../services/homepageApi";
+
+// ✅ Default location object (avoids repeating)
+const DEFAULT_LOCATION = {
+  latitude: null,
+  longitude: null,
+  address: "",
+  roadName: "",
+};
 
 const Homepage = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const token = user?.token; // adjust if stored differently
+  const token = user?.token;
   const { addReport } = useHomepage(token);
+
+  const [recentSubmissions, setRecentSubmissions] = useState([]);
 
   // Add duplicate detection state
   const [duplicateDetection, setDuplicateDetection] = useState(null);
@@ -42,66 +58,60 @@ const Homepage = () => {
     district: "",
     description: "",
   });
-
-  // Check for duplicates when location changes
   useEffect(() => {
-    if (formData.location.latitude && formData.location.longitude && user?.id) {
-      const checkDuplicates = async () => {
-        try {
-          // Fetch user's reports and all reports for comparison
-          const [userReportsResponse, allReportsResponse] = await Promise.all([
-            reportAPI.getUserReports({ userId: user.id }),
-            reportAPI.getNearbyReports({
-              latitude: formData.location.latitude,
-              longitude: formData.location.longitude,
-              radius: 100, // 100 meter radius
-            }),
-          ]);
-
-          const newReport = {
-            location: formData.location,
-            submissionTime: new Date().toISOString(),
-            userId: user.id,
-          };
-
-          const duplicateResult = checkDuplicateSubmission(
-            newReport,
-            userReportsResponse.data.reports || [],
-            allReportsResponse.data.reports || []
-          );
-
-          setDuplicateDetection(duplicateResult);
-
-          if (
-            !duplicateResult.canSubmit ||
-            duplicateResult.similarReportsCount > 0
-          ) {
-            setShowDuplicateInfo(true);
-          }
-        } catch (error) {
-          console.error("Duplicate detection error:", error);
-          // Fallback to local check with recent submissions
-          const newReport = {
-            location: formData.location,
-            submissionTime: new Date().toISOString(),
-            userId: user.id,
-          };
-
-          const duplicateResult = checkDuplicateSubmission(
-            newReport,
-            recentSubmissions.filter((r) => r.userId === user.id),
-            recentSubmissions
-          );
-
-          setDuplicateDetection(duplicateResult);
-        }
-      };
-
-      // Debounce the duplicate check
-      const timeoutId = setTimeout(checkDuplicates, 1000);
-      return () => clearTimeout(timeoutId);
+    if (
+      !formData.location.latitude ||
+      !formData.location.longitude ||
+      !user?.id
+    ) {
+      return; // Exit early if data not ready
     }
-  }, [formData.location.latitude, formData.location.longitude, user?.id]);
+
+    const checkDuplicates = async () => {
+      try {
+        // Fetch user reports and nearby reports count in parallel
+        const [userReportsResponse, nearbyReportsCount] = await Promise.all([
+          getRecentSubmissions({ userId: user.id }), // likely returns { reports: [...] }
+          getNearbyReportsCount(
+            formData.location.latitude,
+            formData.location.longitude,
+            100 // radius in meters
+          ), // likely returns a number
+        ]);
+
+        // Safely extract user reports
+        const userReports = userReportsResponse?.reports ?? [];
+        console.log("User reports:", userReports);
+
+        // Nearby reports count is likely a number
+        const nearbyCount =
+          typeof nearbyReportsCount === "number" ? nearbyReportsCount : 0;
+        console.log("Nearby reports count:", nearbyCount);
+
+        // Example: Duplicate detection logic
+        const hasDuplicate = userReports.some(
+          (report) =>
+            report.latitude === formData.location.latitude &&
+            report.longitude === formData.location.longitude
+        );
+
+        if (hasDuplicate) {
+          console.warn("Duplicate report detected!");
+        } else {
+          console.log("No duplicates found.");
+        }
+
+        // Optionally, you can handle nearby count logic
+        if (nearbyCount > 0) {
+          console.log(`There are ${nearbyCount} reports nearby.`);
+        }
+      } catch (err) {
+        console.error("Duplicate detection error:", err);
+      }
+    };
+
+    checkDuplicates();
+  }, [formData.location, user]);
 
   // Form validation errors & submission state
   const [errors, setErrors] = useState({});
@@ -128,48 +138,48 @@ const Homepage = () => {
     { value: "others", label: "OTHERS" },
   ];
 
-  const [recentSubmissions] = useState([
-    {
-      id: 1,
-      documentNumber: "RPT-2025-001",
-      location: "Jalan Tuaran, Kota Kinabalu",
-      date: "2025-01-15",
-      status: "Pending",
-      similarReports: 3,
-    },
-    {
-      id: 2,
-      documentNumber: "RPT-2025-002",
-      location: "Jalan Costal, Kota Kinabalu",
-      date: "2025-02-16",
-      status: "Reviewing",
-      similarReports: 7,
-    },
-    {
-      id: 3,
-      documentNumber: "RPT-2025-003",
-      location: "Jalan Beaufort, Beaufort",
-      date: "2025-03-20",
-      status: "Approved",
-      similarReports: 2,
-    },
-    {
-      id: 4,
-      documentNumber: "RPT-2025-004",
-      location: "Jalan Apas, Tawau",
-      date: "2025-01-22",
-      status: "Completed",
-      similarReports: 5,
-    },
-    {
-      id: 5,
-      documentNumber: "RPT-2025-005",
-      location: "Kilimu, Ranau",
-      date: "2025-02-07",
-      status: "Reviewing",
-      similarReports: 1,
-    },
-  ]);
+  // const [recentSubmissions] = useState([
+  //   {
+  //     id: 1,
+  //     documentNumber: "RPT-2025-001",
+  //     location: "Jalan Tuaran, Kota Kinabalu",
+  //     date: "2025-01-15",
+  //     status: "Pending",
+  //     similarReports: 3,
+  //   },
+  //   {
+  //     id: 2,
+  //     documentNumber: "RPT-2025-002",
+  //     location: "Jalan Costal, Kota Kinabalu",
+  //     date: "2025-02-16",
+  //     status: "Reviewing",
+  //     similarReports: 7,
+  //   },
+  //   {
+  //     id: 3,
+  //     documentNumber: "RPT-2025-003",
+  //     location: "Jalan Beaufort, Beaufort",
+  //     date: "2025-03-20",
+  //     status: "Approved",
+  //     similarReports: 2,
+  //   },
+  //   {
+  //     id: 4,
+  //     documentNumber: "RPT-2025-004",
+  //     location: "Jalan Apas, Tawau",
+  //     date: "2025-01-22",
+  //     status: "Completed",
+  //     similarReports: 5,
+  //   },
+  //   {
+  //     id: 5,
+  //     documentNumber: "RPT-2025-005",
+  //     location: "Kilimu, Ranau",
+  //     date: "2025-02-07",
+  //     status: "Reviewing",
+  //     similarReports: 1,
+  //   },
+  // ]);
 
   // Handle input changes
   const handleInputChange = (field, value) => {

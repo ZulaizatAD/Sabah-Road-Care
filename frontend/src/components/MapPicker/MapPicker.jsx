@@ -207,7 +207,7 @@ const MapPicker = ({
 
         // Update parent with full address info
         if (onLocationSelect) {
-          console.log("🏠 Updating with full address:", formattedAddress); 
+          console.log("🏠 Updating with full address:", formattedAddress);
 
           onLocationSelect({
             latitude: location.lat,

@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Form, File, UploadFile, HTTPException
+from fastapi import APIRouter, Query, Depends, Form, File, UploadFile, HTTPException
 from sqlalchemy.orm import Session
 from datetime import datetime
 from models import PotholeReport
@@ -186,4 +186,32 @@ def check_duplicates_preview(
         },
         "user_duplicates": duplicate_analysis['user_duplicates'][:3],  
         "similar_reports": duplicate_analysis['similar_reports'][:5],  
+    }
+
+@router.get("/nearby-reports")
+def get_nearby_reports(
+    lat: float = Query(..., description="User latitude"),
+    lng: float = Query(..., description="User longitude"),
+    radius_km: float = Query(5.0, description="Search radius in kilometers"),
+    db: Session = Depends(get_db)
+):
+    reports = db.query(PotholeReport).all()
+
+    def haversine(lat1, lon1, lat2, lon2):
+        from math import radians, sin, cos, sqrt, atan2
+        R = 6371  # Earth radius in km
+        dlat = radians(lat2 - lat1)
+        dlon = radians(lon2 - lon1)
+        a = sin(dlat/2)**2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon/2)**2
+        c = 2 * atan2(sqrt(a), sqrt(1-a))
+        return R * c
+
+    nearby_reports = [
+        r for r in reports
+        if haversine(lat, lng, r.latitude, r.longitude) <= radius_km
+    ]
+
+    return {
+        "nearby_cases_count": len(nearby_reports),
+        "radius_km": radius_km
     }
