@@ -6,6 +6,7 @@ import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import ReportAI from "./section/ReportAI.jsx";
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -215,16 +216,20 @@ const ReportHistory = () => {
         {/* Header */}
         <header className="history-page-header">
           <div className="history-header-content">
-            <div className="header-title">
-              <h1>Report History</h1>
-              <p>View and track all your submitted reports.</p>
+            <div className="history-header-main">
+              <h1 className="history-title">Report History</h1>
+              <p className="history-subtitle">
+                View and track all your submitted reports.
+              </p>
             </div>
-            <button
-              className="new-report-btn"
-              onClick={() => navigate("/homepage")}
-            >
-              + Submit New Report
-            </button>
+            <div className="history-header-actions">
+              <button
+                className="new-report-btn"
+                onClick={() => navigate("/homepage")}
+              >
+                + Submit New Report
+              </button>
+            </div>
           </div>
         </header>
 
@@ -237,7 +242,7 @@ const ReportHistory = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <MagnifyingGlassIcon className="search-icon" />
           </div>
 
           <div className="filters">
@@ -373,7 +378,9 @@ const ReportHistory = () => {
                       }))
                     }
                   >
-                    {showAI[report.case_id] ? "HIDE AI ANALYSIS" : "GENERATE AI ANALYSIS"}
+                    {showAI[report.case_id]
+                      ? "HIDE AI ANALYSIS"
+                      : "GENERATE AI ANALYSIS"}
                   </button>
 
                   {showAI[report.case_id] && (

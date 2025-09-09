@@ -28,9 +28,9 @@
   background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   backdrop-filter: blur(25px);
   -webkit-backdrop-filter: blur(25px);
-  border-radius: 20px;
-  padding: 24px;
-  margin-bottom: 24px;
+  border-radius: 24px;
+  padding: 2rem;
+  margin-bottom: 1rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   border: 1px solid var(--glass-border);
   position: relative;
@@ -43,14 +43,16 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 2px;
+  height: 3px;
   background: linear-gradient(
     90deg,
     transparent,
     var(--safety-green),
+    var(--pedestrian-green),
+    var(--safety-green),
     transparent
   );
-  animation: shimmer 3s ease-in-out infinite;
+  animation: glowMove 3s ease-in-out infinite;
 }
 
 @keyframes shimmer {
@@ -68,24 +70,45 @@
 .history-header-content {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 2rem;
   position: relative;
   z-index: 2;
 }
 
-.header-title h1 {
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--road-white);
-  margin: 0 0 4px 0;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+.history-header-main {
+  flex: 1;
 }
 
-.header-title p {
-  color: var(--concrete-gray);
+.history-title {
+  font-size: 2.5rem;
+  font-weight: 800;
+  color: var(--road-white);
+  margin: 0 0 0.5rem 0;
+  text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  background: linear-gradient(
+    135deg,
+    var(--road-white) 0%,
+    var(--concrete-gray) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.history-subtitle {
+  font-size: 1.1rem;
+  color: var(--gray-100);
+  font-weight: 400;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.5;
   margin: 0;
-  font-size: 16px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.history-header-actions {
+  display: flex;
+  gap: 1rem;
+  flex-shrink: 0;
 }
 
 .new-report-btn {
@@ -96,9 +119,9 @@
   );
   color: var(--road-white);
   border: none;
-  padding: 12px 20px;
-  border-radius: 16px;
-  font-size: 14px;
+  padding: 0.75rem 1.5rem;
+  border-radius: 12px;
+  font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -197,6 +220,8 @@
   top: 50%;
   transform: translateY(-50%);
   color: var(--concrete-gray);
+  width: 16px;
+  height: 16px;
 }
 
 .filters {
@@ -1033,13 +1058,27 @@
 
   .history-header-content {
     flex-direction: column;
-    gap: 16px;
+    gap: 1.5rem;
     text-align: center;
   }
 
-  .header-title h1 {
-    font-size: 24px;
+  .history-title {
+    font-size: 2rem;
   }
+
+  .history-subtitle {
+    font-size: 1rem;
+  }
+
+  .history-header-actions {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .new-report-btn {
+    width: 100%;
+    justify-content: center;
+  }  
 
   .controls-section {
     padding: 16px;
@@ -1154,6 +1193,15 @@
   .report-history {
     padding: 8px;
   }
+
+  .history-page-header {
+    padding: 1.5rem;
+    border-radius: 20px;
+  }
+
+  .history-title {
+    font-size: 1.8rem;
+  }  
 
   .generate-ai-btn.standardized {
     font-size: 9px;
