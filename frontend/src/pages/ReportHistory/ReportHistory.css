@@ -224,14 +224,14 @@
   height: 16px;
 }
 
-.filters {
+.report-filters {
   display: flex;
   gap: 12px;
   margin-bottom: 16px;
   flex-wrap: wrap;
 }
 
-.filters select {
+.report-filters select {
   padding: 8px 12px;
   border: 1px solid var(--glass-border);
   border-radius: 12px;
@@ -244,13 +244,13 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.filters select:focus {
+.report-filters select:focus {
   outline: none;
   border-color: var(--safety-green);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
-.filters select option {
+.report-filters select option {
   background: var(--asphalt-dark);
   color: var(--road-white);
 }
@@ -1084,11 +1084,11 @@
     padding: 16px;
   }
 
-  .filters {
+  .report-filters {
     flex-direction: column;
   }
 
-  .filters select {
+  .report-filters select {
     width: 100%;
   }
 
@@ -1271,7 +1271,7 @@
     padding: 10px 14px 10px 36px;
   }
 
-  .filters select {
+  .report-filters select {
     font-size: 14px;
     padding: 6px 10px;
   }
@@ -1286,7 +1286,7 @@
 }
 
 .search-bar input:focus,
-.filters select:focus {
+.report-filters select:focus {
   outline: none;
   border-color: var(--safety-green);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);

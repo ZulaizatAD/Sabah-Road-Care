@@ -78,31 +78,77 @@ const Dashboard = () => {
     <div className="dashboard-content">
       <main className="dashboard-main">
         <div className="dashboard-container">
-          {/* Modern Dashboard Header */}
+          {/* Dashboard Header */}
           <div className="dashboard-header">
-            <h1 className="dashboard-title"> Analytics Dashboard</h1>
-            <p className="dashboard-subtitle">
-              Real-time insights into road care reports and maintenance progress
-            </p>
+            <div className="dashboard-header-content">
+              <div className="dashboard-header-main">
+                <h1 className="dashboard-title"> Analytics Dashboard</h1>
+                <p className="dashboard-subtitle">
+                  Real-time insights into road care reports and maintenance
+                  progress
+                </p>
+              </div>
+              <div className="header-actions">
+                <button
+                  className="refresh-btn"
+                  onClick={() => window.location.reload()}
+                >
+                  Refresh
+                </button>
+                <button className="export-btn">Export Data</button>
+              </div>
+            </div>
+            <div className="dashboard-stats-summary">
+              <div className="summary-item">
+                <span className="summary-label">Last Updated</span>
+                <span className="summary-value">
+                  {new Date().toLocaleTimeString()}
+                </span>
+              </div>
+              <div className="summary-item">
+                <span className="summary-label">Data Range</span>
+                <span className="summary-value">
+                  {filters.start_date || "All Time"}
+                </span>
+              </div>
+            </div>
           </div>
 
           {/* Filter and Share Section */}
           <div className="filter-share-container">
-            <Filter
-              filters={filters}
-              handleFilterChange={handleFilterChange}
-              handleShare={handleShare}
-            />
+            <div className="filter-section">
+              <Filter
+                filters={filters}
+                handleFilterChange={handleFilterChange}
+                handleShare={handleShare}
+              />
+            </div>
           </div>
 
           {/* Stats Cards */}
-          <StatsCards data={dashboardData?.stats} />
+          <div className="stats-section">
+            <StatsCards data={dashboardData?.stats} />
+          </div>
 
           {/* Charts Section */}
-          <Charts
-            pieData={dashboardData?.charts?.pieData}
-            trendData={dashboardData?.charts?.trendData}
-          />
+          <div className="charts-section">
+            <div className="section-header">
+              <h2 className="section-title">Analytics Overview</h2>
+              <div className="chart-controls">
+                <select className="chart-period">
+                  <option>Last 7 Days</option>
+                  <option>Last 30 Days</option>
+                  <option>Last 3 Months</option>
+                </select>
+              </div>
+            </div>
+            <div className="charts-grid">
+              <Charts
+                pieData={dashboardData?.charts?.pieData}
+                trendData={dashboardData?.charts?.trendData}
+              />
+            </div>
+          </div>
         </div>
       </main>
     </div>

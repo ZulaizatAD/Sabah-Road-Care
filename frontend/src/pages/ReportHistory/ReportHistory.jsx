@@ -245,7 +245,7 @@ const ReportHistory = () => {
             <MagnifyingGlassIcon className="search-icon" />
           </div>
 
-          <div className="filters">
+          <div className="report-filters">
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange("status", e.target.value)}
