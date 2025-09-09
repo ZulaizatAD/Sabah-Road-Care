@@ -8,21 +8,18 @@ const QuickAction = () => {
   const quickActions = [
     {
       id: "reports",
-      icon: "📊",
       text: "My Reports",
       path: "/history",
       description: "View your submission history",
     },
     {
       id: "dashboard",
-      icon: "🏠",
       text: "Dashboard",
       path: "/dashboard",
       description: "Overview and analytics",
     },
     {
       id: "profile",
-      icon: "👤",
       text: "Update Profile",
       path: "/profileupdate",
       description: "Manage your account",

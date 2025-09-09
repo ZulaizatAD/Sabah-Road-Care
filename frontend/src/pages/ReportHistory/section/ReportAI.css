@@ -3,7 +3,7 @@
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border: 1px solid var(--glass-border);
-  border-radius: 16px;
+  border-radius: 20px;
   margin-top: 16px;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   position: relative;
@@ -98,7 +98,7 @@
 .ai-loading-spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid var(--glass-border);
+  border: 4px solid var(--gray-200);
   border-top: 4px solid rgba(156, 39, 176, 0.8);
   border-radius: 50%;
   animation: spin 1s linear infinite;
@@ -106,7 +106,7 @@
 }
 
 .ai-loading-text p {
-  color: var(--concrete-gray);
+  color: var(--gray-200);
   font-size: 14px;
   margin: 8px 0;
   animation: fadeInOut 2s infinite;
@@ -237,7 +237,7 @@
 
 .confidence {
   font-size: 12px;
-  color: var(--concrete-gray);
+  color: var(--road-white);
   background: var(--glass-bg);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
@@ -247,159 +247,78 @@
   font-weight: 500;
 }
 
-/* Enhanced Badge Styles */
-.severity-badge.critical {
-  background: linear-gradient(135deg, #ff1744, #d50000);
-  color: var(--road-white);
-  border: 1px solid rgba(255, 23, 68, 0.3);
+/* Badge Styles */
+.ai-severity-badge.standardized,
+.ai-priority-badge.standardized {
+  font-size: 10px;
+  font-weight: 700;
   padding: 6px 12px;
   border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.8px;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid;
+  color: var(--road-white);
+  min-width: 70px;
+  text-align: center;
+  display: inline-block;
+  white-space: nowrap;
+  box-sizing: border-box;
+  animation: badgeSlideIn 0.5s ease-out;
+}
+
+.ai-severity-badge.standardized.critical {
+  background: linear-gradient(135deg, #ff1744, #d50000);
+  border-color: rgba(255, 23, 68, 0.3);
   box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
 }
 
-.severity-badge.high {
+.ai-severity-badge.standardized.high {
   background: linear-gradient(135deg, var(--hazard-red), #d32f2f);
-  color: var(--road-white);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-color: rgba(244, 67, 54, 0.3);
   box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
 }
 
-.severity-badge.medium {
+.ai-severity-badge.standardized.medium {
   background: linear-gradient(135deg, var(--caution-yellow), #f57c00);
+  border-color: rgba(255, 193, 7, 0.3);
   color: var(--asphalt-black);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
 }
 
-.severity-badge.low {
+.ai-severity-badge.standardized.low {
   background: linear-gradient(
     135deg,
     var(--safety-green),
     var(--pedestrian-green)
   );
+  border-color: rgba(76, 175, 80, 0.3);
   color: var(--asphalt-black);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
-.priority-badge.high {
+.ai-priority-badge.standardized.high {
   background: linear-gradient(135deg, var(--hazard-red), #d32f2f);
-  color: var(--road-white);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  border-color: rgba(244, 67, 54, 0.3);
   box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
 }
 
-.priority-badge.medium {
+.ai-priority-badge.standardized.medium {
   background: linear-gradient(135deg, var(--caution-yellow), #f57c00);
+  border-color: rgba(255, 193, 7, 0.3);
   color: var(--asphalt-black);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
 }
 
-.priority-badge.low {
+.ai-priority-badge.standardized.low {
   background: linear-gradient(
     135deg,
     var(--safety-green),
     var(--pedestrian-green)
   );
+  border-color: rgba(76, 175, 80, 0.3);
   color: var(--asphalt-black);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  padding: 6px 12px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
-}
-
-.risk-badge.critical {
-  background: linear-gradient(135deg, #ff1744, #d50000);
-  color: var(--road-white);
-  border: 1px solid rgba(255, 23, 68, 0.3);
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(255, 23, 68, 0.3);
-}
-
-.risk-badge.high {
-  background: linear-gradient(135deg, var(--hazard-red), #d32f2f);
-  color: var(--road-white);
-  border: 1px solid rgba(244, 67, 54, 0.3);
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(244, 67, 54, 0.3);
-}
-
-.risk-badge.medium {
-  background: linear-gradient(135deg, var(--caution-yellow), #f57c00);
-  color: var(--asphalt-black);
-  border: 1px solid rgba(255, 193, 7, 0.3);
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  box-shadow: 0 4px 15px rgba(255, 193, 7, 0.3);
-}
-
-.risk-badge.low {
-  background: linear-gradient(
-    135deg,
-    var(--safety-green),
-    var(--pedestrian-green)
-  );
-  color: var(--asphalt-black);
-  border: 1px solid rgba(76, 175, 80, 0.3);
-  padding: 8px 16px;
-  border-radius: 12px;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
 }
 
@@ -422,7 +341,7 @@
 
 .analysis-factors li {
   font-size: 12px;
-  color: var(--concrete-gray);
+  color: var(--road-white);
   margin-bottom: 4px;
   position: relative;
   line-height: 1.4;
@@ -470,7 +389,7 @@
 
 .recommendation-text {
   font-size: 12px;
-  color: var(--concrete-gray);
+  color: var(--road-white);
   line-height: 1.4;
   flex: 1;
 }
@@ -478,13 +397,12 @@
 /* Action Buttons */
 .ai-actions {
   display: flex;
-  gap: 12px;
+  justify-content: center;
   margin-top: 20px;
   padding-top: 16px;
   border-top: 1px solid var(--glass-border);
 }
 
-.regenerate-btn,
 .export-analysis-btn {
   flex: 1;
   display: flex;
@@ -500,22 +418,10 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   position: relative;
   overflow: hidden;
-}
-
-.regenerate-btn {
-  background: linear-gradient(
-    135deg,
-    rgba(156, 39, 176, 0.8),
-    rgba(123, 31, 162, 0.8)
-  );
-  color: var(--road-white);
-  border: 1px solid rgba(156, 39, 176, 0.3);
-}
-
-.export-analysis-btn {
   background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
   color: var(--road-white);
   border: 1px solid var(--glass-border);
+  min-width: 160px;
 }
 
 .regenerate-btn::before,
@@ -535,19 +441,8 @@
   transition: left 0.5s ease;
 }
 
-.regenerate-btn:hover::before,
 .export-analysis-btn:hover::before {
   left: 100%;
-}
-
-.regenerate-btn:hover {
-  background: linear-gradient(
-    135deg,
-    rgba(123, 31, 162, 0.9),
-    rgba(106, 27, 154, 0.9)
-  );
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
 }
 
 .export-analysis-btn:hover {
@@ -625,6 +520,13 @@
     font-size: 12px;
   }
 
+  .ai-severity-badge.standardized,
+  .ai-priority-badge.standardized {
+    padding: 4px 8px;
+    font-size: 9px;
+    min-width: 50px;
+  }
+
   .ai-results {
     padding: 12px;
   }
@@ -639,8 +541,7 @@
   }
 
   .severity-badge,
-  .priority-badge,
-  .risk-badge {
+  .priority-badge {
     padding: 4px 8px;
     font-size: 10px;
   }
@@ -671,8 +572,7 @@
 
 /* Animation for badges */
 .severity-badge,
-.priority-badge,
-.risk-badge {
+.priority-badge {
   animation: badgeSlideIn 0.5s ease-out;
 }
 

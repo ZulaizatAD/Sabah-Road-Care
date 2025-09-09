@@ -946,6 +946,10 @@
   box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
 }
 
+.quick-capture-btn.mobile-only {
+  display: none;
+}
+
 .quick-capture-icon {
   width: 1.2rem;
   height: 1.2rem;
@@ -2236,6 +2240,10 @@
 
   .camera-icon {
     font-size: 28px;
+  }
+
+  .quick-capture-btn.mobile-only {
+    display: block;
   }
 
   .location-btn {

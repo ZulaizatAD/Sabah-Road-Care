@@ -182,7 +182,7 @@ const PhotoUpload = ({ label, guideline, onUpload, photo, index }) => {
       {!previewUrl && (
         <button
           type="button"
-          className="quick-capture-btn"
+          className="quick-capture-btn mobile-only"
           onClick={handleUploadClick}
           title="Quick capture"
         >
