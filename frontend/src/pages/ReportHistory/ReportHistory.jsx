@@ -6,7 +6,7 @@ import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import ReportAI from "./section/ReportAI.jsx";
-import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -20,7 +20,8 @@ const ReportHistory = () => {
   const [sortBy, setSortBy] = useState("date-desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showAI, setShowAI] = useState({});
+  const [aiAnalysisStates, setAiAnalysisStates] = useState({});
+  const [aiAnalysisData, setAiAnalysisData] = useState({});
   const [viewMode, setViewMode] = useState("grid");
   const reportsPerPage = 9;
 
@@ -169,6 +170,83 @@ const ReportHistory = () => {
         return "low";
       default:
         return "default";
+    }
+  };
+
+  const getAiButtonState = (reportId) => {
+    const state = aiAnalysisStates[reportId];
+    if (!state) return "generate";
+    if (state.status === "generating") return "generating";
+    if (state.status === "generated" && !state.hidden) return "hide";
+    if (state.status === "generated" && state.hidden) return "show";
+    return "generate";
+  };
+
+  const getAiButtonText = (reportId) => {
+    const state = getAiButtonState(reportId);
+    switch (state) {
+      case "generate":
+        return "GENERATE AI ANALYSIS";
+      case "generating":
+        return "GENERATING...";
+      case "hide":
+        return "HIDE AI ANALYSIS";
+      case "show":
+        return "SHOW AI ANALYSIS";
+      default:
+        return "GENERATE AI ANALYSIS";
+    }
+  };
+
+  // AI Analysis click handler
+  const handleAiAnalysisClick = async (reportId) => {
+    const currentState = getAiButtonState(reportId);
+
+    if (currentState === "generate") {
+      // Start generating new analysis
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { status: "generating", hidden: false },
+      }));
+
+      try {
+        // Your AI generation logic here - replace with actual API call
+        // const analysis = await generateAiAnalysis(report);
+
+        // Simulate API call for now
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        const mockAnalysis = "AI Analysis generated successfully!";
+
+        setAiAnalysisData((prev) => ({
+          ...prev,
+          [reportId]: mockAnalysis,
+        }));
+
+        setAiAnalysisStates((prev) => ({
+          ...prev,
+          [reportId]: { status: "generated", hidden: false },
+        }));
+
+        toast.success("AI Analysis generated successfully!");
+      } catch (error) {
+        setAiAnalysisStates((prev) => ({
+          ...prev,
+          [reportId]: { status: "error", hidden: false },
+        }));
+        toast.error("Failed to generate AI analysis");
+      }
+    } else if (currentState === "hide") {
+      // Hide existing analysis
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { ...prev[reportId], hidden: true },
+      }));
+    } else if (currentState === "show") {
+      // Show existing analysis
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { ...prev[reportId], hidden: false },
+      }));
     }
   };
 
@@ -331,22 +409,6 @@ const ReportHistory = () => {
                   >
                     {getStandardizedText(report.status, "status")}
                   </span>
-                  <span
-                    className={`severity-badge standardized ${getSeverityColor(
-                      report.severity
-                    )}`}
-                  >
-                    {getStandardizedText(report.severity, "severity")}
-                  </span>
-                  {report.priority && (
-                    <span
-                      className={`priority-badge standardized ${getPriorityColor(
-                        report.priority
-                      )}`}
-                    >
-                      {getStandardizedText(report.priority, "priority")}
-                    </span>
-                  )}
                 </div>
               </div>
 
@@ -354,46 +416,55 @@ const ReportHistory = () => {
                 <h3 className="report-title">District: {report.district}</h3>
                 <p className="report-description">{report.description}</p>
 
-                <div className="report-details">
-                  <div className="detail-item">
-                    <span className="detail-label">Submitted:</span>
-                    <span className="detail-value">
-                      {format(new Date(report.date_created), "MMM dd, yyyy")} (
-                      {formatDistanceToNow(new Date(report.date_created), {
-                        addSuffix: true,
-                      })}
-                      )
+                {/* New severity and priority section */}
+                <div className="severity-priority-section">
+                  <div className="severity-item">
+                    <span className="context-label">Severity:</span>
+                    <span
+                      className={`severity-badge standardized ${getSeverityColor(
+                        report.severity
+                      )}`}
+                    >
+                      {getStandardizedText(report.severity, "severity")}
                     </span>
                   </div>
+                  {report.priority && (
+                    <div className="priority-item">
+                      <span className="context-label">Priority:</span>
+                      <span
+                        className={`priority-badge standardized ${getPriorityColor(
+                          report.priority
+                        )}`}
+                      >
+                        {getStandardizedText(report.priority, "priority")}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 {/* AI Analysis Section */}
                 <div className="ai-analysis-section">
                   <button
-                    className="generate-ai-btn standardized"
-                    onClick={() =>
-                      setShowAI((prev) => ({
-                        ...prev,
-                        [report.case_id]: !prev[report.case_id],
-                      }))
-                    }
+                    className={`generate-ai-btn standardized ${getAiButtonState(
+                      report.case_id
+                    )}`}
+                    onClick={() => handleAiAnalysisClick(report.case_id)}
+                    disabled={getAiButtonState(report.case_id) === "generating"}
                   >
-                    {showAI[report.case_id]
-                      ? "HIDE AI ANALYSIS"
-                      : "GENERATE AI ANALYSIS"}
+                    {getAiButtonText(report.case_id)}
+                    {getAiButtonState(report.case_id) === "generating" && (
+                      <LoadingSpinner size="small" />
+                    )}
                   </button>
 
-                  {showAI[report.case_id] && (
-                    <ReportAI
-                      report={report}
-                      onClose={() =>
-                        setShowAI((prev) => ({
-                          ...prev,
-                          [report.case_id]: false,
-                        }))
-                      }
-                    />
-                  )}
+                  {aiAnalysisStates[report.case_id]?.status === "generated" &&
+                    !aiAnalysisStates[report.case_id]?.hidden && (
+                      <ReportAI
+                        report={report}
+                        analysisData={aiAnalysisData[report.case_id]}
+                        onClose={() => handleAiAnalysisClick(report.case_id)}
+                      />
+                    )}
                 </div>
               </div>
             </div>

@@ -669,6 +669,39 @@
   border-color: rgba(76, 175, 80, 0.3);
 }
 
+/* Severity and Priority Section */
+.severity-priority-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+  padding: 12px 0;
+  border-top: 1px solid var(--glass-border);
+}
+
+.severity-item,
+.priority-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.context-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--road-white);
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  min-width: 70px;
+}
+
+/* Update badge sizes for the new layout */
+.severity-priority-section .severity-badge.standardized,
+.severity-priority-section .priority-badge.standardized {
+  font-size: 11px;
+  padding: 6px 12px;
+  min-width: 80px;
+}
+
 .report-content {
   flex: 1;
   display: flex;
@@ -699,14 +732,13 @@
   color: var(--concrete-gray);
   font-size: 14px;
   line-height: 1.5;
-  margin: 0 0 12px 0;
+  margin: 0 0 0 0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  flex: 1;
   overflow: hidden;
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
-  min-height: 84px;
+  min-height: 75px;
 }
 
 .report-details {
@@ -820,6 +852,29 @@
   border-color: #9ca3af;
   transform: translateY(-1px);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Generate AI Analysis */
+.generate-ai-btn.standardized.generating {
+  opacity: 0.7;
+  cursor: not-allowed;
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+}
+
+.generate-ai-btn.standardized.hide {
+  background: linear-gradient(135deg, var(--caution-yellow), #f57c00);
+  color: var(--asphalt-black);
+  border-color: var(--caution-yellow);
+}
+
+.generate-ai-btn.standardized.show {
+  background: linear-gradient(135deg, var(--info-blue), #1976d2);
+  color: var(--road-white);
+  border-color: var(--info-blue);
+}
+
+.generate-ai-btn.standardized.generating .loading-spinner {
+  margin-left: 8px;
 }
 
 /* Pagination */
@@ -991,7 +1046,6 @@
 /* List View Specific Styles */
 .reports-container.list .report-card {
   min-height: 200px;
-  max-height: 250px;
   display: flex;
   flex-direction: row;
   align-items: stretch;
@@ -999,24 +1053,29 @@
 }
 
 .reports-container.list .history-card-header {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
   margin-bottom: 0;
   min-width: 260px;
   flex-shrink: 0;
   min-height: auto;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
 }
 
 .reports-container.list .report-badges {
-  display: flex;
+  display: flex !important;
   gap: 6px;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: flex-start !important;
+  justify-content: flex-start !important;
+  margin-top: 0 !important;
+  min-height: auto !important;
 }
 
 .reports-container.list .report-number {
-  margin-bottom: 4px;
+  margin-bottom: 8px !important;
   align-self: flex-start;
 }
 
@@ -1078,7 +1137,7 @@
   .new-report-btn {
     width: 100%;
     justify-content: center;
-  }  
+  }
 
   .controls-section {
     padding: 16px;
@@ -1143,6 +1202,12 @@
     border-top: 1px solid var(--glass-border);
   }
 
+  .reports-container.list .report-badges {
+    flex-direction: row !important;
+    align-items: flex-start !important;
+    gap: 4px;
+  }
+
   .reports-container.list .history-card-header {
     min-width: auto;
     margin-bottom: 12px;
@@ -1170,6 +1235,24 @@
   .severity-badge.standardized.low,
   .priority-badge.standardized.low {
     min-width: 40px;
+  }
+
+  .severity-priority-section {
+    gap: 6px;
+    margin: 10px 0;
+    padding: 10px 0;
+  }
+
+  .context-label {
+    font-size: 13px;
+    min-width: 65px;
+  }
+
+  .severity-priority-section .severity-badge.standardized,
+  .severity-priority-section .priority-badge.standardized {
+    font-size: 10px;
+    padding: 5px 10px;
+    min-width: 70px;
   }
 
   .report-badges {
@@ -1201,7 +1284,7 @@
 
   .history-title {
     font-size: 1.8rem;
-  }  
+  }
 
   .generate-ai-btn.standardized {
     font-size: 9px;
@@ -1255,6 +1338,23 @@
     align-self: flex-end;
     flex-direction: row;
     flex-wrap: wrap;
+  }
+
+  .severity-item,
+  .priority-item {
+    gap: 8px;
+  }
+
+  .context-label {
+    font-size: 12px;
+    min-width: 60px;
+  }
+
+  .severity-priority-section .severity-badge.standardized,
+  .severity-priority-section .priority-badge.standardized {
+    font-size: 9px;
+    padding: 4px 8px;
+    min-width: 60px;
   }
 
   .ai-analysis-section {
