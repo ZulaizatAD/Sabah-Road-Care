@@ -16,11 +16,15 @@ DISTRICTS = [
 def gen_case_id(district: str, db: Session) -> str:
     """Generate case ID like SRC_BEA_2025_09_0001"""
 
-    if district not in DISTRICTS:
+    # 🔧 FIX: Convert to title case for validation
+    district_title_case = district.title()
+
+    # 🔧 FIX: Check the formatted district, not the original
+    if district_title_case not in DISTRICTS:
         raise HTTPException(status_code=400, detail=f"Invalid district: {district}")
 
-    # District → 3-letter code
-    district_code = district.replace(" ", "")[:3].upper()
+    # 🔧 FIX: Use the formatted district for code generation
+    district_code = district_title_case.replace(" ", "")[:3].upper()
 
     # Current year/month
     now = datetime.utcnow()

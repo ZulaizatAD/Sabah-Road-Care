@@ -207,7 +207,7 @@ const MapPicker = ({
 
         // Update parent with full address info
         if (onLocationSelect) {
-          console.log("Updating with full address:", formattedAddress); 
+          console.log("Updating with full address:", formattedAddress);
 
           onLocationSelect({
             latitude: location.lat,
@@ -312,9 +312,7 @@ const MapPicker = ({
                 {selectedLocation.lat.toFixed(6)},{" "}
                 {selectedLocation.lng.toFixed(6)}
               </span>
-              {address && (
-                <span className="embedded-address">{address}</span>
-              )}
+              {address && <span className="embedded-address">{address}</span>}
             </div>
           )}
         </div>
@@ -375,9 +373,7 @@ const MapPicker = ({
                     {selectedLocation.lat.toFixed(6)},{" "}
                     {selectedLocation.lng.toFixed(6)}
                   </p>
-                  <p className="address">
-                    {address || "Getting address..."}
-                  </p>
+                  <p className="address">{address || "Getting address..."}</p>
                 </>
               )}
             </div>
