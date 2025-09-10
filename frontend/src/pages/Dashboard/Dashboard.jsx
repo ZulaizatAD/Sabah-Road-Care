@@ -132,8 +132,8 @@ const Dashboard = () => {
 
           {/* Charts Section */}
           <div className="charts-section">
-            <div className="section-header">
-              <h2 className="section-title">Analytics Overview</h2>
+            <div className="charts-section-header">
+              <h2 className="charts-section-title">Analytics Overview</h2>
               <div className="chart-controls">
                 <select className="chart-period">
                   <option>Last 7 Days</option>

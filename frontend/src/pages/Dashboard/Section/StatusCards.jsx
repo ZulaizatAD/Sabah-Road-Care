@@ -1,10 +1,20 @@
 import React, { useState } from "react";
 import { formatNumber } from "../../../utils/formatters";
+import {
+  ChartBarIcon,
+  EyeIcon,
+  CheckCircleIcon,
+  WrenchScrewdriverIcon,
+  CheckBadgeIcon,
+  XCircleIcon,
+  Squares2X2Icon,
+  ListBulletIcon,
+} from "@heroicons/react/24/outline";
 import "./StatusCards.css";
 
 const StatusCards = ({ data }) => {
-  const [viewMode, setViewMode] = useState('cards'); // cards, list, compact
-  const [sortBy, setSortBy] = useState('value'); // value, title
+  const [viewMode, setViewMode] = useState("cards"); // cards, list, compact
+  const [sortBy, setSortBy] = useState("value"); // value, title
 
   const defaultData = {
     totalCases: 0,
@@ -12,7 +22,7 @@ const StatusCards = ({ data }) => {
     approved: 0,
     inProgress: 0,
     completed: 0,
-    rejected: 0
+    rejected: 0,
   };
 
   const stats = data || defaultData;
@@ -22,66 +32,66 @@ const StatusCards = ({ data }) => {
       title: "Total Cases",
       value: stats.totalCases,
       color: "var(--total-case)",
-      icon: "📊",
+      icon: <ChartBarIcon className="status-icon" />,
       trend: "+12%",
       trendDirection: "up",
       description: "All reported cases",
-      priority: 1
+      priority: 1,
     },
     {
       title: "Under Review",
       value: stats.underReview,
       color: "var(--under-review)",
-      icon: "👀",
+      icon: <EyeIcon className="status-icon" />,
       trend: "+5%",
       trendDirection: "up",
       description: "Pending evaluation",
-      priority: 2
+      priority: 2,
     },
     {
       title: "Approved",
       value: stats.approved,
       color: "var(--approved)",
-      icon: "✅",
+      icon: <CheckCircleIcon className="status-icon" />,
       trend: "+8%",
       trendDirection: "up",
       description: "Ready for action",
-      priority: 3
+      priority: 3,
     },
     {
       title: "In Progress",
       value: stats.inProgress,
       color: "var(--in-progress)",
-      icon: "🚧",
+      icon: <WrenchScrewdriverIcon className="status-icon" />,
       trend: "-2%",
       trendDirection: "down",
       description: "Currently being fixed",
-      priority: 4
+      priority: 4,
     },
     {
       title: "Completed",
       value: stats.completed,
       color: "var(--complete)",
-      icon: "🎉",
+      icon: <CheckBadgeIcon className="status-icon" />,
       trend: "+15%",
       trendDirection: "up",
       description: "Successfully resolved",
-      priority: 5
+      priority: 5,
     },
     {
       title: "Rejected",
       value: stats.rejected,
       color: "var(--rejected)",
-      icon: "❌",
+      icon: <XCircleIcon className="status-icon" />,
       trend: "-3%",
       trendDirection: "down",
       description: "Not actionable",
-      priority: 6
-    }
+      priority: 6,
+    },
   ];
 
   const sortedCards = [...cards].sort((a, b) => {
-    if (sortBy === 'value') {
+    if (sortBy === "value") {
       return b.value - a.value;
     }
     return a.title.localeCompare(b.title);
@@ -96,12 +106,12 @@ const StatusCards = ({ data }) => {
     return total > 0 ? ((stats.completed / total) * 100).toFixed(1) : 0;
   };
 
-  if (viewMode === 'list') {
+  if (viewMode === "list") {
     return (
       <div className="status-section">
         <div className="status-header">
           <div className="status-title-section">
-            <h2 className="status-section-title">📈 Case Statistics</h2>
+            <h2 className="status-section-title">Case Statistics</h2>
             <div className="status-summary">
               <span className="summary-item">
                 Total: <strong>{formatNumber(getTotalCases())}</strong>
@@ -112,7 +122,7 @@ const StatusCards = ({ data }) => {
             </div>
           </div>
           <div className="view-controls">
-            <select 
+            <select
               className="sort-select"
               value={sortBy}
               onChange={(e) => setSortBy(e.target.value)}
@@ -121,44 +131,51 @@ const StatusCards = ({ data }) => {
               <option value="title">Sort by Title</option>
             </select>
             <div className="view-toggle">
-              <button 
-                className={`toggle-btn ${viewMode === 'cards' ? 'active' : ''}`}
-                onClick={() => setViewMode('cards')}
+              <button
+                className={`toggle-btn ${viewMode === "cards" ? "active" : ""}`}
+                onClick={() => setViewMode("cards")}
               >
-                📊
+                <Squares2X2Icon className="toggle-icon" />
               </button>
-              <button 
-                className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-                onClick={() => setViewMode('list')}
+              <button
+                className={`toggle-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
               >
-                📋
+                <ListBulletIcon className="toggle-icon" />
               </button>
             </div>
           </div>
         </div>
-        
+
         <div className="status-list">
           {sortedCards.map((card, index) => (
-            <div key={index} className="status-list-item">
+            <div key={index} className="status-list-item" data-status={card.title.toLowerCase().replace(' ', '-')}>
               <div className="list-item-icon">{card.icon}</div>
               <div className="list-item-content">
                 <div className="list-item-header">
                   <span className="list-item-title">{card.title}</span>
-                  <span className="list-item-value">{formatNumber(card.value)}</span>
+                  <span className="list-item-value">
+                    {formatNumber(card.value)}
+                  </span>
                 </div>
                 <div className="list-item-meta">
-                  <span className="list-item-description">{card.description}</span>
+                  <span className="list-item-description">
+                    {card.description}
+                  </span>
                   <span className={`list-item-trend ${card.trendDirection}`}>
-                    {card.trendDirection === 'up' ? '📈' : '📉'} {card.trend}
+                    {card.trend}
                   </span>
                 </div>
               </div>
               <div className="list-item-progress">
-                <div 
+                <div
                   className="progress-bar"
-                  style={{ 
-                    width: `${(card.value / Math.max(...cards.map(c => c.value))) * 100}%`,
-                    backgroundColor: card.color 
+                  style={{
+                    width: `${
+                      (card.value / Math.max(...cards.map((c) => c.value))) *
+                      100
+                    }%`,
+                    backgroundColor: card.color,
                   }}
                 ></div>
               </div>
@@ -173,11 +190,13 @@ const StatusCards = ({ data }) => {
     <div className="status-section">
       <div className="status-header">
         <div className="status-title-section">
-          <h2 className="status-section-title">📈 Case Statistics</h2>
+          <h2 className="status-section-title">Case Statistics</h2>
           <div className="status-summary">
             <div className="summary-card">
               <span className="summary-label">Total Cases</span>
-              <span className="summary-value">{formatNumber(getTotalCases())}</span>
+              <span className="summary-value">
+                {formatNumber(getTotalCases())}
+              </span>
             </div>
             <div className="summary-card">
               <span className="summary-label">Completion Rate</span>
@@ -187,19 +206,19 @@ const StatusCards = ({ data }) => {
         </div>
         <div className="view-controls">
           <div className="view-toggle">
-            <button 
-              className={`toggle-btn ${viewMode === 'cards' ? 'active' : ''}`}
-              onClick={() => setViewMode('cards')}
+            <button
+              className={`toggle-btn ${viewMode === "cards" ? "active" : ""}`}
+              onClick={() => setViewMode("cards")}
               title="Card View"
             >
-              📊
+              <Squares2X2Icon className="toggle-icon" />
             </button>
-            <button 
-              className={`toggle-btn ${viewMode === 'list' ? 'active' : ''}`}
-              onClick={() => setViewMode('list')}
+            <button
+              className={`toggle-btn ${viewMode === "list" ? "active" : ""}`}
+              onClick={() => setViewMode("list")}
               title="List View"
             >
-              📋
+              <ListBulletIcon className="toggle-icon" />
             </button>
           </div>
         </div>
@@ -207,22 +226,20 @@ const StatusCards = ({ data }) => {
 
       <div className="status-grid enhanced">
         {cards.map((card, index) => (
-          <div 
-            key={index} 
-            className="status-card enhanced" 
-            data-status={card.title.toLowerCase().replace(' ', '-')}
+          <div
+            key={index}
+            className="status-card enhanced"
+            data-status={card.title.toLowerCase().replace(" ", "-")}
           >
             <div className="status-card-header">
-              <div className="status-icon-container">
-                <span className="status-icon">{card.icon}</span>
-              </div>
+              <div className="status-icon-container">{card.icon}</div>
               <div className="status-trend-indicator">
                 <span className={`trend-value ${card.trendDirection}`}>
-                  {card.trendDirection === 'up' ? '📈' : '📉'} {card.trend}
+                  {card.trend}
                 </span>
               </div>
             </div>
-            
+
             <div className="status-content">
               <h3 className="status-title">{card.title}</h3>
               <p className="status-value">{formatNumber(card.value)}</p>
@@ -231,16 +248,22 @@ const StatusCards = ({ data }) => {
 
             <div className="status-footer">
               <div className="status-progress">
-                <div 
+                <div
                   className="progress-fill"
-                  style={{ 
-                    width: `${(card.value / Math.max(...cards.map(c => c.value))) * 100}%`,
-                    backgroundColor: card.color 
+                  style={{
+                    width: `${
+                      (card.value / Math.max(...cards.map((c) => c.value))) *
+                      100
+                    }%`,
+                    backgroundColor: card.color,
                   }}
                 ></div>
               </div>
               <span className="status-percentage">
-                {getTotalCases() > 0 ? ((card.value / getTotalCases()) * 100).toFixed(1) : 0}%
+                {getTotalCases() > 0
+                  ? ((card.value / getTotalCases()) * 100).toFixed(1)
+                  : 0}
+                %
               </span>
             </div>
           </div>

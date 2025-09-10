@@ -22,6 +22,9 @@
   color: var(--road-white);
   margin: 0 0 1rem 0;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .status-summary {
@@ -42,7 +45,7 @@
 
 .summary-label {
   font-size: 0.8rem;
-  color: var(--concrete-gray);
+  color: var(--gray-200);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -149,9 +152,33 @@
   left: 0;
   right: 0;
   height: 4px;
-  background: var(--safety-green);
   transform: scaleX(0);
   transition: transform 0.3s ease;
+}
+
+/* Status-specific top border colors */
+.status-card.enhanced[data-status="total-cases"]::before {
+  background: rgba(33, 150, 243, 0.8);
+}
+
+.status-card.enhanced[data-status="under-review"]::before {
+  background: rgba(255, 193, 7, 0.8);
+}
+
+.status-card.enhanced[data-status="approved"]::before {
+  background: var(--safety-green);
+}
+
+.status-card.enhanced[data-status="in-progress"]::before {
+  background: rgba(0, 172, 193, 0.8);
+}
+
+.status-card.enhanced[data-status="completed"]::before {
+  background: rgba(33, 150, 243, 0.8);
+}
+
+.status-card.enhanced[data-status="rejected"]::before {
+  background: var(--hazard-red);
 }
 
 .status-card.enhanced:hover::before {
@@ -161,7 +188,6 @@
 .status-card.enhanced:hover {
   transform: translateY(-8px) scale(1.02);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
-  border-color: var(--safety-green);
 }
 
 .status-card-header {
@@ -169,6 +195,48 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
+}
+
+/* Severity button hover effects using status-icon-container colors */
+.severity-btn.severity-low:hover:not(.active) {
+  border-color: rgba(76, 175, 80, 0.6);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.05),
+    rgba(76, 175, 80, 0.02)
+  );
+}
+
+.severity-btn.severity-medium:hover:not(.active) {
+  border-color: rgba(255, 193, 7, 0.6);
+  box-shadow: 0 0 0 2px rgba(255, 193, 7, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(255, 193, 7, 0.05),
+    rgba(255, 193, 7, 0.02)
+  );
+}
+
+.severity-btn.severity-high:hover:not(.active) {
+  border-color: rgba(244, 67, 54, 0.6);
+  box-shadow: 0 0 0 2px rgba(244, 67, 54, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(244, 67, 54, 0.05),
+    rgba(244, 67, 54, 0.02)
+  );
+}
+
+/* All Levels button hover effect */
+.severity-btn.severity-:hover:not(.active) {
+  border-color: rgba(76, 175, 80, 0.6);
+  box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.1);
+  background: linear-gradient(
+    135deg,
+    rgba(76, 175, 80, 0.05),
+    rgba(76, 175, 80, 0.02)
+  );
 }
 
 .status-icon-container {
@@ -185,6 +253,15 @@
 .status-icon {
   font-size: 1.5rem;
   filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+}
+
+.toggle-icon {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
 }
 
 .status-trend-indicator {
@@ -246,7 +323,7 @@
 
 .status-description {
   font-size: 0.9rem;
-  color: var(--concrete-gray);
+  color: var(--gray-200);
   margin: 0;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
 }
@@ -274,7 +351,7 @@
 
 .status-percentage {
   font-size: 0.8rem;
-  color: var(--concrete-gray);
+  color: var(--gray-200);
   font-weight: 600;
 }
 
@@ -297,9 +374,33 @@
 }
 
 .status-list-item:hover {
-  border-color: var(--safety-green);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+}
+
+/* Status-specific list item hover colors */
+.status-list-item[data-status="total-cases"]:hover {
+  border-color: rgba(33, 150, 243, 0.8);
+}
+
+.status-list-item[data-status="under-review"]:hover {
+  border-color: rgba(255, 193, 7, 0.8);
+}
+
+.status-list-item[data-status="approved"]:hover {
+  border-color: var(--safety-green);
+}
+
+.status-list-item[data-status="in-progress"]:hover {
+  border-color: rgba(0, 172, 193, 0.8);
+}
+
+.status-list-item[data-status="completed"]:hover {
+  border-color: rgba(33, 150, 243, 0.8);
+}
+
+.status-list-item[data-status="rejected"]:hover {
+  border-color: var(--hazard-red);
 }
 
 .list-item-icon {
@@ -339,7 +440,7 @@
 
 .list-item-description {
   font-size: 0.8rem;
-  color: var(--concrete-gray);
+  color: var(--gray-200);
 }
 
 .list-item-trend {
@@ -512,6 +613,13 @@
 
   .status-icon {
     font-size: 1.2rem;
+    width: 20px;
+    height: 20px;
+  }
+
+  .toggle-icon {
+    width: 14px;
+    height: 14px;
   }
 
   .summary-card {

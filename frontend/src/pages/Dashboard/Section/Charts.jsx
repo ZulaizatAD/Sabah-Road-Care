@@ -15,14 +15,19 @@ import {
   Area,
   AreaChart,
 } from "recharts";
+import {
+  ChartBarIcon,
+  PresentationChartLineIcon,
+  Square3Stack3DIcon,
+} from "@heroicons/react/24/outline";
 import "./Charts.css";
 
 const Charts = ({ pieData, trendData }) => {
-  const [chartType, setChartType] = useState('line'); // line, area, bar
-  const [pieView, setPieView] = useState('donut'); // donut, pie
+  const [chartType, setChartType] = useState("line"); // line, area, bar
 
   // Updated colors to match your theme
   const defaultPieData = [
+    { name: "Analyzing", value: 0, color: "var(--road-white)" },
     { name: "Low", value: 0, color: "var(--safety-green)" },
     { name: "Medium", value: 0, color: "var(--caution-yellow)" },
     { name: "High", value: 0, color: "var(--hazard-red)" },
@@ -38,7 +43,8 @@ const Charts = ({ pieData, trendData }) => {
   ];
 
   const chartPieData = pieData && pieData.length > 0 ? pieData : defaultPieData;
-  const chartTrendData = trendData && trendData.length > 0 ? trendData : defaultTrendData;
+  const chartTrendData =
+    trendData && trendData.length > 0 ? trendData : defaultTrendData;
 
   // Enhanced Custom Tooltip
   const CustomTooltip = ({ active, payload, label }) => {
@@ -51,8 +57,8 @@ const Charts = ({ pieData, trendData }) => {
           <div className="tooltip-content">
             {payload.map((entry, index) => (
               <div key={index} className="tooltip-item">
-                <div 
-                  className="tooltip-color" 
+                <div
+                  className="tooltip-color"
                   style={{ backgroundColor: entry.color }}
                 ></div>
                 <span className="tooltip-name">{entry.name}:</span>
@@ -67,19 +73,30 @@ const Charts = ({ pieData, trendData }) => {
   };
 
   const renderTrendChart = () => {
-    switch(chartType) {
-      case 'area':
+    switch (chartType) {
+      case "area":
         return (
           <AreaChart data={chartTrendData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255, 255, 255, 0.1)"
+            />
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
             <YAxis
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
@@ -94,37 +111,63 @@ const Charts = ({ pieData, trendData }) => {
             />
           </AreaChart>
         );
-      case 'bar':
+      case "bar":
         return (
           <BarChart data={chartTrendData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255, 255, 255, 0.1)"
+            />
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
             <YAxis
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Bar dataKey="cases" fill="var(--safety-green)" radius={[4, 4, 0, 0]} />
+            <Bar
+              dataKey="cases"
+              fill="var(--safety-green)"
+              radius={[4, 4, 0, 0]}
+            />
           </BarChart>
         );
       default:
         return (
           <LineChart data={chartTrendData}>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.1)" />
+            <CartesianGrid
+              strokeDasharray="3 3"
+              stroke="rgba(255, 255, 255, 0.1)"
+            />
             <XAxis
               dataKey="month"
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
             <YAxis
-              tick={{ fontSize: 12, fill: "var(--road-white)", fontWeight: "600" }}
+              tick={{
+                fontSize: 12,
+                fill: "var(--road-white)",
+                fontWeight: "600",
+              }}
               axisLine={{ stroke: "var(--glass-border)" }}
               tickLine={{ stroke: "var(--glass-border)" }}
             />
@@ -134,17 +177,17 @@ const Charts = ({ pieData, trendData }) => {
               dataKey="cases"
               stroke="var(--safety-green)"
               strokeWidth={4}
-              dot={{ 
-                fill: "var(--safety-green)", 
-                strokeWidth: 3, 
-                r: 6,
-                stroke: "var(--road-white)"
-              }}
-              activeDot={{ 
-                r: 8, 
-                stroke: "var(--safety-green)", 
+              dot={{
+                fill: "var(--safety-green)",
                 strokeWidth: 3,
-                fill: "var(--road-white)"
+                r: 6,
+                stroke: "var(--road-white)",
+              }}
+              activeDot={{
+                r: 8,
+                stroke: "var(--safety-green)",
+                strokeWidth: 3,
+                fill: "var(--road-white)",
               }}
             />
             <Line
@@ -153,10 +196,10 @@ const Charts = ({ pieData, trendData }) => {
               stroke="var(--pedestrian-green)"
               strokeWidth={3}
               strokeDasharray="5 5"
-              dot={{ 
-                fill: "var(--pedestrian-green)", 
-                strokeWidth: 2, 
-                r: 4
+              dot={{
+                fill: "var(--pedestrian-green)",
+                strokeWidth: 2,
+                r: 4,
               }}
             />
           </LineChart>
@@ -170,40 +213,52 @@ const Charts = ({ pieData, trendData }) => {
       <div className="chart-container trend-chart">
         <div className="chart-header">
           <div className="chart-title-section">
-            <h3 className="chart-title">📈 Monthly Trend</h3>
+            <h3 className="chart-title">Monthly Trend</h3>
             <div className="chart-legend">
               <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: "var(--safety-green)" }}></div>
+                <div
+                  className="legend-color"
+                  style={{ backgroundColor: "var(--safety-green)" }}
+                ></div>
                 <span>Reported</span>
               </div>
               <div className="legend-item">
-                <div className="legend-color" style={{ backgroundColor: "var(--pedestrian-green)" }}></div>
+                <div
+                  className="legend-color"
+                  style={{ backgroundColor: "var(--pedestrian-green)" }}
+                ></div>
                 <span>Resolved</span>
               </div>
             </div>
           </div>
           <div className="chart-controls">
             <div className="chart-type-selector">
-              <button 
-                className={`chart-type-btn ${chartType === 'line' ? 'active' : ''}`}
-                onClick={() => setChartType('line')}
+              <button
+                className={`chart-type-btn ${
+                  chartType === "line" ? "active" : ""
+                }`}
+                onClick={() => setChartType("line")}
                 title="Line Chart"
               >
-                📈
+                <PresentationChartLineIcon className="chart-btn-icon" />
               </button>
-              <button 
-                className={`chart-type-btn ${chartType === 'area' ? 'active' : ''}`}
-                onClick={() => setChartType('area')}
+              <button
+                className={`chart-type-btn ${
+                  chartType === "area" ? "active" : ""
+                }`}
+                onClick={() => setChartType("area")}
                 title="Area Chart"
               >
-                📊
+                <Square3Stack3DIcon className="chart-btn-icon" />
               </button>
-              <button 
-                className={`chart-type-btn ${chartType === 'bar' ? 'active' : ''}`}
-                onClick={() => setChartType('bar')}
+              <button
+                className={`chart-type-btn ${
+                  chartType === "bar" ? "active" : ""
+                }`}
+                onClick={() => setChartType("bar")}
                 title="Bar Chart"
               >
-                📊
+                <ChartBarIcon className="chart-btn-icon" />
               </button>
             </div>
           </div>
@@ -213,32 +268,16 @@ const Charts = ({ pieData, trendData }) => {
             {renderTrendChart()}
           </ResponsiveContainer>
         </div>
-        <div className="chart-subtitle">Cases reported and resolved per month</div>
+        <div className="chart-subtitle">
+          Cases reported and resolved per month
+        </div>
       </div>
 
       {/* Enhanced Pie Chart */}
       <div className="chart-container pie-chart">
         <div className="chart-header">
           <div className="chart-title-section">
-            <h3 className="chart-title">⚠️ Severity Distribution</h3>
-          </div>
-          <div className="chart-controls">
-            <div className="pie-type-selector">
-              <button 
-                className={`chart-type-btn ${pieView === 'pie' ? 'active' : ''}`}
-                onClick={() => setPieView('pie')}
-                title="Pie Chart"
-              >
-                🥧
-              </button>
-              <button 
-                className={`chart-type-btn ${pieView === 'donut' ? 'active' : ''}`}
-                onClick={() => setPieView('donut')}
-                title="Donut Chart"
-              >
-                🍩
-              </button>
-            </div>
+            <h3 className="chart-title">Severity Distribution</h3>
           </div>
         </div>
         <div className="chart-wrapper">
@@ -253,15 +292,15 @@ const Charts = ({ pieData, trendData }) => {
                   `${name} ${(percent * 100).toFixed(0)}%`
                 }
                 outerRadius={90}
-                innerRadius={pieView === 'donut' ? 40 : 0}
+                innerRadius={0}
                 fill="#8884d8"
                 dataKey="value"
                 stroke="var(--glass-border)"
                 strokeWidth={2}
               >
                 {chartPieData.map((entry, index) => (
-                  <Cell 
-                    key={`cell-${index}`} 
+                  <Cell
+                    key={`cell-${index}`}
                     fill={entry.color}
                     stroke="var(--glass-border)"
                     strokeWidth={2}
@@ -276,8 +315,8 @@ const Charts = ({ pieData, trendData }) => {
           <div className="severity-stats">
             {chartPieData.map((item, index) => (
               <div key={index} className="severity-stat">
-                <div 
-                  className="severity-color" 
+                <div
+                  className="severity-color"
                   style={{ backgroundColor: item.color }}
                 ></div>
                 <span className="severity-name">{item.name}</span>

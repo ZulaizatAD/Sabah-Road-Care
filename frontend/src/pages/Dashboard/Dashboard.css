@@ -166,7 +166,7 @@
   margin-bottom: 3rem;
 }
 
-.section-header {
+.charts-section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -175,7 +175,7 @@
   gap: 1rem;
 }
 
-.section-title {
+.charts-section-title {
   font-size: 1.5rem;
   font-weight: 700;
   color: var(--road-white);

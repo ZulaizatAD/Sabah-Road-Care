@@ -413,25 +413,6 @@
   border-color: var(--safety-green);
 }
 
-/* Active states maintain their original colors */
-.severity-btn.severity-low.active {
-  background: var(--safety-green);
-  color: var(--asphalt-black);
-  border-color: var(--safety-green);
-}
-
-.severity-btn.severity-medium.active {
-  background: var(--caution-yellow);
-  color: var(--asphalt-black);
-  border-color: var(--caution-yellow);
-}
-
-.severity-btn.severity-high.active {
-  background: var(--hazard-red);
-  color: var(--road-white);
-  border-color: var(--hazard-red);
-}
-
 .severity-btn.severity-.active {
   background: var(--safety-green);
   color: var(--asphalt-black);
