@@ -60,7 +60,6 @@ const App = () => {
             closeButton={true}
             transition={Slide}
           />
-          <DevTools />
         </div>
       </EnvironmentCheck>
     </UserProvider>

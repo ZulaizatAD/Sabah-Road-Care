@@ -24,7 +24,7 @@ const ImageCarousel = ({ onSlideChange }) => {
 
   // Check if mobile for performance optimization
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
-  const slideInterval = isMobile ? 20000 : 10000;
+  const slideInterval = isMobile ? 10000 : 8000;
   const floatingElementCount = isMobile ? 6 : 12;
 
   useEffect(() => {

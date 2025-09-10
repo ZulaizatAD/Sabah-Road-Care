@@ -396,21 +396,6 @@ const HeroSection = ({ onGetStarted }) => {
                     : "text-center mx-auto max-w-4xl"
                 }`}
               >
-                {/* Era Badge - only for historical content */}
-                {currentContent.showHistoricalInfo && (
-                  <div
-                    className={`inline-flex items-center gap-2 bg-white/10 backdrop-blur-xl border border-white/20 px-3 lg:px-4 py-1 lg:py-2 rounded-full mb-4 lg:mb-6 transition-all duration-1000 transform ${
-                      isVisible
-                        ? "translate-y-0 opacity-100"
-                        : "translate-y-10 opacity-0"
-                    }`}
-                  >
-                    <Calendar size={16} className="text-green-500" />
-                    <span className="text-green-500 font-medium text-xs lg:text-sm">
-                      {currentContent.timeframe}
-                    </span>
-                  </div>
-                )}
 
                 {/* Brand Icon - only for default content */}
                 {currentContent.showBrandIcon && (
@@ -549,7 +534,7 @@ const HeroSection = ({ onGetStarted }) => {
                     <div className="mt-6 lg:mt-8">
                       <button
                         onClick={onGetStarted}
-                        className="w-full bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-stone-900 border-2 border-green-400/50 px-4 lg:px-6 py-3 lg:py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl text-sm lg:text-base"
+                        className="w-full bg-gradient-to-r from-green-500 via-green-600 to-green-700 hover:from-green-600 hover:via-green-700 hover:to-green-800 text-stone-900 border-2 border-green-700/100 px-4 lg:px-6 py-3 lg:py-4 rounded-xl font-semibold transition-all duration-300 transform hover:scale-105 flex items-center justify-center shadow-xl text-sm lg:text-base"
                       >
                         Explore Modern Road Reporting
                       </button>
