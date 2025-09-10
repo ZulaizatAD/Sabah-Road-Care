@@ -9,7 +9,7 @@ const api = axios.create({
 // Attach token dynamically before each request
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token"); // Or sessionStorage if you use that
+    const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -32,34 +32,35 @@ export const submitReport = async (formData, token) => {
     return response.data;
   } catch (error) {
     console.error("❌ Error submitting report:", error);
-    throw error.response?.data || error.message;
+    // ✅ Throw the full error object so we can access status codes
+    throw error;
   }
 };
 
 /**
  * ✅ Fetch recent submissions for the current user
- * Backend: GET /recent-submissions
+ * Backend returns: { success: true, reports: [...] }
  */
 export const getRecentSubmissions = async (token) => {
   try {
     const response = await api.get(`/recent-submissions`, {
       headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+    return response.data; // ✅ Return full response (has success + reports)
   } catch (error) {
     console.error("❌ Error fetching recent submissions:", error);
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 
 /**
  * ✅ Check for duplicates before submission
  */
-export const checkDuplicates = async (reportData, token) => {
+export const checkDuplicates = async (latitude, longitude, token) => {
   try {
     const formData = new FormData();
-    formData.append("latitude", reportData.latitude);
-    formData.append("longitude", reportData.longitude);
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
 
     const response = await api.post(`/check-duplicates`, formData, {
       headers: { Authorization: `Bearer ${token}` },
@@ -67,19 +68,22 @@ export const checkDuplicates = async (reportData, token) => {
     return response.data;
   } catch (error) {
     console.error("❌ Error checking duplicates:", error);
-    throw error.response?.data || error.message;
+    throw error;
   }
 };
 
-// ✅ Get only the count of nearby reports
+/**
+ * ✅ Get nearby reports count
+ * Backend returns: { success: true, nearby_cases_count: 5, radius_km: 5 }
+ */
 export const getNearbyReportsCount = async (lat, lng, radiusKm = 5) => {
   try {
     const response = await api.get(`/nearby-reports`, {
       params: { lat, lng, radius_km: radiusKm },
     });
-    return response.data.nearby_cases_count; // ✅ only return the number
+    return response.data.nearby_cases_count; // ✅ Return just the count
   } catch (error) {
     console.error("❌ Error fetching nearby reports count:", error);
-    throw error;
+    return 0; // ✅ Return 0 on error instead of throwing
   }
 };
