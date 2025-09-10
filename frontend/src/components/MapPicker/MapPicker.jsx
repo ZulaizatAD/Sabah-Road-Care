@@ -131,7 +131,7 @@ const MapPicker = ({
 
     // For interactive mode, call onLocationSelect immediately with coordinates
     if (interactiveMode && onLocationSelect) {
-      console.log("📍 Calling onLocationSelect immediately");
+      console.log("Calling onLocationSelect immediately");
 
       // Call immediately with basic coordinates
       onLocationSelect({
@@ -207,7 +207,7 @@ const MapPicker = ({
 
         // Update parent with full address info
         if (onLocationSelect) {
-          console.log("🏠 Updating with full address:", formattedAddress);
+          console.log("Updating with full address:", formattedAddress);
 
           onLocationSelect({
             latitude: location.lat,
@@ -286,7 +286,7 @@ const MapPicker = ({
         roadName: address.split(",")[0].trim(),
       });
       if (onClose) onClose();
-      toast.success("📍 Location selected successfully!");
+      toast.success("Location selected successfully!");
     } else {
       toast.error("Please select a location on the map.");
     }
@@ -304,17 +304,15 @@ const MapPicker = ({
             onClick={getCurrentLocation}
             disabled={isLoading}
           >
-            🎯 Use Current Location
+            Use Current Location
           </button>
           {selectedLocation && (
             <div className="embedded-location-info">
               <span className="embedded-coordinates">
-                📍 {selectedLocation.lat.toFixed(6)},{" "}
+                {selectedLocation.lat.toFixed(6)},{" "}
                 {selectedLocation.lng.toFixed(6)}
               </span>
-              {address && (
-                <span className="embedded-address">🛣️ {address}</span>
-              )}
+              {address && <span className="embedded-address">{address}</span>}
             </div>
           )}
         </div>
@@ -353,7 +351,7 @@ const MapPicker = ({
     <div className="map-picker-overlay">
       <div className="map-picker-modal">
         <div className="map-picker-header">
-          <h3>📍 Select Report Location</h3>
+          <h3>Select Report Location</h3>
           <button className="close-btn" onClick={onClose}>
             ✕
           </button>
@@ -366,18 +364,16 @@ const MapPicker = ({
               onClick={getCurrentLocation}
               disabled={isLoading}
             >
-              🎯 Use Current Location
+              Use Current Location
             </button>
             <div className="map-location-info">
               {selectedLocation && (
                 <>
                   <p className="coordinates">
-                    📍 {selectedLocation.lat.toFixed(6)},{" "}
+                    {selectedLocation.lat.toFixed(6)},{" "}
                     {selectedLocation.lng.toFixed(6)}
                   </p>
-                  <p className="address">
-                    🛣️ {address || "Getting address..."}
-                  </p>
+                  <p className="address">{address || "Getting address..."}</p>
                 </>
               )}
             </div>

@@ -5,6 +5,7 @@ import Navigation from "./components/Navigation";
 import FeaturesSection from "./components/FeaturesSection";
 import CTASection from "./components/CTASection";
 import LandFooter from "./components/LandFooter";
+import assets from "../../assets/assets";
 
 const Landing = () => {
   const navigate = useNavigate();
@@ -43,8 +44,12 @@ const Landing = () => {
     return (
       <div className="min-h-screen bg-asphalt-black flex items-center justify-center">
         <div className="text-center">
-          <div className="w-20 h-20 lg:w-24 lg:h-24 bg-gradient-to-br from-green-400 to-green-600 rounded-full mb-6 flex items-center justify-center animate-bounce mx-auto">
-            <span className="text-stone-900 font-bold text-2xl lg:text-3xl">🛣️</span>
+          <div className="mb-6 flex items-center justify-center animate-bounce mx-auto">
+            <img
+              src={assets.TransparentLogo}
+              alt="Sabah Road Care Logo"
+              className="w-28 h-28 lg:w-36 lg:h-36 object-contain"
+            />
           </div>
           <h2 className="text-2xl lg:text-3xl font-bold text-road-white mb-4">
             Sabah Road Care

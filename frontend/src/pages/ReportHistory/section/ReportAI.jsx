@@ -44,14 +44,13 @@ const ReportAI = ({ report, onClose }) => {
           "Monitor for expansion during rainy season",
           "Consider traffic rerouting if conditions worsen",
         ],
-        riskLevel: calculateRiskLevel(report),
       };
 
       setAnalysis(mockAnalysis);
-      toast.success("🤖 AI Analysis completed successfully!");
+      toast.success("AI Analysis completed successfully!");
     } catch (err) {
       setError("Failed to generate AI analysis. Please try again.");
-      toast.error("❌ AI Analysis failed. Please try again.");
+      toast.error("AI Analysis failed. Please try again.");
     } finally {
       setIsAnalyzing(false);
     }
@@ -81,9 +80,22 @@ const ReportAI = ({ report, onClose }) => {
     return priorities[Math.floor(Math.random() * 3)];
   };
 
-  const calculateRiskLevel = (report) => {
-    const risks = ["Low Risk", "Moderate Risk", "High Risk", "Critical Risk"];
-    return risks[Math.floor(Math.random() * 4)];
+  const getStandardizedText = (text, type) => {
+    const standardTexts = {
+      severity: {
+        Critical: "CRITICAL",
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+      },
+      priority: {
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+      },
+    };
+
+    return standardTexts[type]?.[text] || text?.toUpperCase() || "";
   };
 
   // Auto-generate analysis on component mount
@@ -119,18 +131,10 @@ const ReportAI = ({ report, onClose }) => {
     }
   };
 
-  const getRiskColor = (risk) => {
-    if (risk.includes("Critical")) return "critical";
-    if (risk.includes("High")) return "high";
-    if (risk.includes("Moderate")) return "medium";
-    return "low";
-  };
-
   return (
     <div className="report-ai-container">
       <div className="ai-header">
         <div className="ai-title">
-          <span className="ai-icon">🤖</span>
           <h4>AI Analysis Report</h4>
         </div>
         <button className="ai-close-btn" onClick={onClose}>
@@ -142,10 +146,10 @@ const ReportAI = ({ report, onClose }) => {
         <div className="ai-loading">
           <div className="ai-loading-spinner"></div>
           <div className="ai-loading-text">
-            <p>🔍 Analyzing pothole images...</p>
-            <p>📊 Calculating severity metrics...</p>
-            <p>⚡ Determining priority level...</p>
-            <p>🎯 Generating recommendations...</p>
+            <p> Analyzing pothole images...</p>
+            <p> Calculating severity metrics...</p>
+            <p> Determining priority level...</p>
+            <p> Generating recommendations...</p>
           </div>
         </div>
       )}
@@ -155,7 +159,7 @@ const ReportAI = ({ report, onClose }) => {
           <span className="error-icon">❌</span>
           <p>{error}</p>
           <button className="retry-btn" onClick={generateAIAnalysis}>
-            🔄 Retry Analysis
+            Retry Analysis
           </button>
         </div>
       )}
@@ -164,15 +168,15 @@ const ReportAI = ({ report, onClose }) => {
         <div className="ai-results">
           {/* Severity Analysis */}
           <div className="analysis-section">
-            <h5>🔍 Severity Analysis</h5>
+            <h5> Severity Analysis</h5>
             <div className="analysis-result">
               <div className="result-header">
                 <span
-                  className={`severity-badge ${getSeverityColor(
+                  className={`ai-severity-badge standardized ${getSeverityColor(
                     analysis.severity.level
                   )}`}
                 >
-                  {analysis.severity.level}
+                  {getStandardizedText(analysis.severity.level, "severity")}
                 </span>
                 <span className="confidence">
                   {analysis.severity.confidence}% confidence
@@ -193,15 +197,15 @@ const ReportAI = ({ report, onClose }) => {
 
           {/* Priority Analysis */}
           <div className="analysis-section">
-            <h5>⚡ Priority Assessment</h5>
+            <h5>Priority Assessment</h5>
             <div className="analysis-result">
               <div className="result-header">
                 <span
-                  className={`priority-badge ${getPriorityColor(
+                  className={`ai-priority-badge standardized ${getPriorityColor(
                     analysis.priority.level
                   )}`}
                 >
-                  {analysis.priority.level} Priority
+                  {getStandardizedText(analysis.priority.level, "priority")}
                 </span>
                 <span className="confidence">
                   {analysis.priority.confidence}% confidence
@@ -220,21 +224,9 @@ const ReportAI = ({ report, onClose }) => {
             </div>
           </div>
 
-          {/* Risk Assessment */}
-          <div className="analysis-section">
-            <h5>⚠️ Risk Assessment</h5>
-            <div className="analysis-result">
-              <span
-                className={`risk-badge ${getRiskColor(analysis.riskLevel)}`}
-              >
-                {analysis.riskLevel}
-              </span>
-            </div>
-          </div>
-
           {/* Recommendations */}
           <div className="analysis-section">
-            <h5>💡 AI Recommendations</h5>
+            <h5> AI Recommendations</h5>
             <div className="recommendations">
               {analysis.recommendations.map((recommendation, index) => (
                 <div key={index} className="recommendation-item">
@@ -247,16 +239,13 @@ const ReportAI = ({ report, onClose }) => {
 
           {/* Action Buttons */}
           <div className="ai-actions">
-            <button className="regenerate-btn" onClick={generateAIAnalysis}>
-              🔄 Regenerate Analysis
-            </button>
             <button
               className="export-analysis-btn"
               onClick={() => {
-                toast.info("📋 Analysis export feature coming soon!");
+                toast.info(" Analysis export feature coming soon!");
               }}
             >
-              📊 Export Analysis
+              Export Analysis
             </button>
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { formatDistanceToNow, format } from "date-fns";
@@ -6,6 +6,7 @@ import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
 import ReportAI from "./section/ReportAI.jsx";
+import { MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -21,7 +22,7 @@ const ReportHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [showAI, setShowAI] = useState({});
   const [viewMode, setViewMode] = useState("grid");
-  const reportsPerPage = 8;
+  const reportsPerPage = 9;
 
   const districts = [
     "Kota Kinabalu",
@@ -44,17 +45,11 @@ const ReportHistory = () => {
   ];
   const severities = ["Low", "Medium", "High"];
 
-  const { reports, loading, error, setReports } = useUserReports(filters);
+  const { reports, loading, error } = useUserReports(filters);
 
-  console.log("📋 ReportHistory: reports received from hook:", reports);
+  console.log(" ReportHistory: reports received from hook:", reports);
 
-  if (loading) return <p>Loading reports...</p>;
-  if (error) return <p>Failed to load reports</p>;
-  if (!reports || reports.length === 0) {
-    return <p>No reports found</p>;
-  }
-
-  // Apply filters + search + sorting
+  // Filters + search + sorting
   const filteredReports = reports
     .filter((report) => {
       const matchesSearch =
@@ -164,19 +159,6 @@ const ReportHistory = () => {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="report-history">
-        <div className="main-content">
-          <LoadingSpinner size="large" message="Loading your reports..." />
-        </div>
-        <div className="sidebar-history">
-          <QuickAction />
-        </div>
-      </div>
-    );
-  }
-
   const getPriorityColor = (priority) => {
     switch (priority) {
       case "High":
@@ -190,22 +172,64 @@ const ReportHistory = () => {
     }
   };
 
+  // Standardized badge text function
+  const getStandardizedText = (text, type) => {
+    const standardTexts = {
+      status: {
+        "Under Review": "REVIEW",
+        Approved: "APPROVED",
+        "In Progress": "PROGRESS",
+        Completed: "COMPLETE",
+        Rejected: "REJECTED",
+      },
+      severity: {
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+      },
+      priority: {
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+      },
+    };
+
+    return standardTexts[type]?.[text] || text?.toUpperCase() || "";
+  };
+
+  if (loading) {
+    return (
+      <div className="report-history">
+        <div className="main-content">
+          <LoadingSpinner size="large" message="Loading your reports..." />
+        </div>
+        <div className="sidebar-history">
+          <QuickAction />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="report-history">
       <div className="main-content">
         {/* Header */}
         <header className="history-page-header">
           <div className="history-header-content">
-            <div className="header-title">
-              <h1>Report History</h1>
-              <p>View and track all your submitted reports.</p>
+            <div className="history-header-main">
+              <h1 className="history-title">Report History</h1>
+              <p className="history-subtitle">
+                View and track all your submitted reports.
+              </p>
             </div>
-            <button
-              className="new-report-btn"
-              onClick={() => navigate("/homepage")}
-            >
-              + Submit New Report
-            </button>
+            <div className="history-header-actions">
+              <button
+                className="new-report-btn"
+                onClick={() => navigate("/homepage")}
+              >
+                + Submit New Report
+              </button>
+            </div>
           </div>
         </header>
 
@@ -218,10 +242,10 @@ const ReportHistory = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <MagnifyingGlassIcon className="search-icon" />
           </div>
 
-          <div className="filters">
+          <div className="report-filters">
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange("status", e.target.value)}
@@ -288,7 +312,6 @@ const ReportHistory = () => {
             </div>
 
             <button className="export-csv-btn" onClick={exportToCSV}>
-              <span className="export-icon">📊</span>
               Export CSV
             </button>
           </div>
@@ -302,24 +325,26 @@ const ReportHistory = () => {
                 <div className="report-number">#{report.case_id}</div>
                 <div className="report-badges">
                   <span
-                    className={`status-badge ${getStatusColor(report.status)}`}
+                    className={`status-badge standardized ${getStatusColor(
+                      report.status
+                    )}`}
                   >
-                    {report.status}
+                    {getStandardizedText(report.status, "status")}
                   </span>
                   <span
-                    className={`severity-badge ${getSeverityColor(
+                    className={`severity-badge standardized ${getSeverityColor(
                       report.severity
                     )}`}
                   >
-                    {report.severity}
+                    {getStandardizedText(report.severity, "severity")}
                   </span>
                   {report.priority && (
                     <span
-                      className={`priority-badge ${getPriorityColor(
+                      className={`priority-badge standardized ${getPriorityColor(
                         report.priority
                       )}`}
                     >
-                      {report.priority}
+                      {getStandardizedText(report.priority, "priority")}
                     </span>
                   )}
                 </div>
@@ -345,7 +370,7 @@ const ReportHistory = () => {
                 {/* AI Analysis Section */}
                 <div className="ai-analysis-section">
                   <button
-                    className="generate-ai-btn"
+                    className="generate-ai-btn standardized"
                     onClick={() =>
                       setShowAI((prev) => ({
                         ...prev,
@@ -353,10 +378,9 @@ const ReportHistory = () => {
                       }))
                     }
                   >
-                    <span className="ai-icon">🤖</span>
                     {showAI[report.case_id]
-                      ? "Hide AI Analysis"
-                      : "Generate AI Analysis"}
+                      ? "HIDE AI ANALYSIS"
+                      : "GENERATE AI ANALYSIS"}
                   </button>
 
                   {showAI[report.case_id] && (

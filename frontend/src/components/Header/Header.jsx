@@ -77,6 +77,14 @@ const Header = () => {
 
         {/* Desktop Navigation */}
         <nav className="header-nav">
+          {/* Report History Nav */}
+          <button
+            className={`nav-item ${isActive("/history") ? "active" : ""}`}
+            onClick={() => handleNavigation("/history")}
+          >
+            <span className="nav-text">Report History</span>
+          </button>
+
           {/* Dashboard Nav */}
           <button
             className={`nav-item ${isActive("/dashboard") ? "active" : ""}`}
@@ -85,55 +93,58 @@ const Header = () => {
             <span className="nav-text">Dashboard</span>
           </button>
 
-          {/* Information Dropdown */}
-          <div className="nav-dropdown" ref={informationRef}>
-            <button
-              className={`nav-item dropdown-trigger ${
-                isActive("/information") ? "active" : ""
-              } ${activeDropdown === "information" ? "open" : ""}`}
-              onClick={() => toggleDropdown("information")}
-            >
-              <span className="nav-text">Information</span>
-              <span
-                className={`dropdown-arrow ${
-                  activeDropdown === "information" ? "open" : ""
-                }`}
-              >
-                ▼
-              </span>
-            </button>
+          {/* Fun Facts Nav */}
+          <button
+            className={`nav-item ${isActive("/information") ? "active" : ""}`}
+            onClick={() => handleNavigation("/information")}
+          >
+            <span className="nav-text">Fun Facts</span>
+          </button>
 
-            {activeDropdown === "information" && (
-              <div className="dropdown-menu">
-                <button
-                  className="dropdown-item"
-                  onClick={() => handleNavigation("/information")}
-                >
-                  <span className="dropdown-icon">🎯</span>
-                  <span className="dropdown-text">Fun Facts</span>
-                </button>
-                <button
-                  className="dropdown-item"
-                  onClick={() => handleNavigation("/information")}
-                >
-                  <span className="dropdown-icon">📅</span>
-                  <span className="dropdown-text">Timeline</span>
-                </button>
-              </div>
-            )}
-          </div>
-
-          {/* Profile Dropdown*/}
-          <div className="nav-dropdown" ref={profileRef}>
+          {/* Profile Icon Dropdown */}
+          <div className="nav-dropdown profile-dropdown" ref={profileRef}>
             <button
-              className={`nav-item dropdown-trigger ${
-                isActive("/history") || isActive("/profileupdate")
-                  ? "active"
-                  : ""
+              className={`nav-item profile-trigger ${
+                isActive("/profileupdate") ? "active" : ""
               } ${activeDropdown === "profile" ? "open" : ""}`}
               onClick={() => toggleDropdown("profile")}
             >
-              <span className="nav-text">Profile</span>
+              <div className="profile-avatar">
+                {user?.profileImage ||
+                user?.profile_picture ||
+                user?.photoURL ? (
+                  <img
+                    src={
+                      user.profileImage || user.profile_picture || user.photoURL
+                    }
+                    alt="Profile"
+                    className="profile-image"
+                    onError={(e) => {
+                      e.target.onerror = null;
+                      e.target.style.display = "none";
+                      e.target.nextSibling.style.display = "flex";
+                    }}
+                  />
+                ) : null}
+                {/* Default avatar */}
+                <div
+                  className="default-avatar"
+                  style={{
+                    display:
+                      user?.profileImage ||
+                      user?.profile_picture ||
+                      user?.photoURL
+                        ? "none"
+                        : "flex",
+                  }}
+                >
+                  <img
+                    src={assets.defaultUser}
+                    alt="Default user"
+                    className="default-user-icon"
+                  />
+                </div>
+              </div>
               <span
                 className={`dropdown-arrow ${
                   activeDropdown === "profile" ? "open" : ""
@@ -144,11 +155,11 @@ const Header = () => {
             </button>
 
             {activeDropdown === "profile" && (
-              <div className="dropdown-menu">
-                {/* User Info Display with Photo and Name */}
+              <div className="dropdown-menu profile-menu">
+                {/* User Info Display */}
                 <div className="user-info-dropdown">
                   <div className="user-profile-section">
-                    <div className="user-avatar">
+                    <div className="user-avatar-large">
                       {user?.profileImage ||
                       user?.profile_picture ||
                       user?.photoURL ? (
@@ -159,32 +170,17 @@ const Header = () => {
                             user.photoURL
                           }
                           alt="Profile"
-                          className="profile-image"
-                          onError={(e) => {
-                            e.target.onerror = null;
-                            e.target.style.display = "none";
-                            e.target.nextSibling.style.display = "flex";
-                          }}
+                          className="profile-image-large"
                         />
-                      ) : null}
-                      {/* Default avatar frame */}
-                      <div
-                        className="default-avatar"
-                        style={{
-                          display:
-                            user?.profileImage ||
-                            user?.profile_picture ||
-                            user?.photoURL
-                              ? "none"
-                              : "flex",
-                        }}
-                      >
-                        <img
-                          src={assets.defaultUser}
-                          alt="Default user"
-                          className="default-user-icon"
-                        />
-                      </div>
+                      ) : (
+                        <div className="default-avatar-large">
+                          <img
+                            src={assets.defaultUser}
+                            alt="Default user"
+                            className="default-user-icon-large"
+                          />
+                        </div>
+                      )}
                     </div>
                     <div className="user-details">
                       <div className="user-name">
@@ -194,7 +190,6 @@ const Header = () => {
                           user?.email ||
                           "Demo User"}
                       </div>
-                      {/* Show email as subtitle only if we have a name */}
                       {(user?.name || user?.full_name || user?.displayName) &&
                         user?.email && (
                           <div className="user-email-small">{user?.email}</div>
@@ -206,20 +201,13 @@ const Header = () => {
 
                 <button
                   className="dropdown-item"
-                  onClick={() => handleNavigation("/history")}
-                >
-                  <span className="dropdown-icon">📋</span>
-                  <span className="dropdown-text">User History</span>
-                </button>
-                <button
-                  className="dropdown-item"
                   onClick={() => handleNavigation("/profileupdate")}
                 >
                   <span className="dropdown-icon">⚙️</span>
                   <span className="dropdown-text">Update Account</span>
                 </button>
 
-                {/* Optional logout for capstone demo */}
+                {/* Logout for capstone demo */}
                 <div className="dropdown-divider"></div>
                 <button className="dropdown-item logout" onClick={handleLogout}>
                   <span className="dropdown-icon">🚪</span>
@@ -247,13 +235,51 @@ const Header = () => {
       {/* Mobile Navigation Menu */}
       <div className={`mobile-menu ${isMobileMenuOpen ? "open" : ""}`}>
         <div className="mobile-menu-content">
-          {/* User Info in Mobile - Always show */}
+          {/* User Info in Mobile */}
           <div className="mobile-user-info">
-            <div className="mobile-user-email">
-              {user?.email || "Demo User"}
+            <div className="mobile-user-avatar">
+              {user?.profileImage || user?.profile_picture || user?.photoURL ? (
+                <img
+                  src={
+                    user.profileImage || user.profile_picture || user.photoURL
+                  }
+                  alt="Profile"
+                  className="mobile-profile-image"
+                />
+              ) : (
+                <div className="mobile-default-avatar">
+                  <img
+                    src={assets.defaultUser}
+                    alt="Default user"
+                    className="mobile-default-user-icon"
+                  />
+                </div>
+              )}
+            </div>
+            <div className="mobile-user-details">
+              <div className="mobile-user-name">
+                {user?.name ||
+                  user?.full_name ||
+                  user?.displayName ||
+                  user?.email ||
+                  "Demo User"}
+              </div>
+              {user?.email && (
+                <div className="mobile-user-email">{user?.email}</div>
+              )}
             </div>
             <div className="mobile-user-divider"></div>
           </div>
+
+          {/* Mobile Report History */}
+          <button
+            className={`mobile-nav-item ${
+              isActive("/history") ? "active" : ""
+            }`}
+            onClick={() => handleNavigation("/history")}
+          >
+            <span className="mobile-nav-text">Report History</span>
+          </button>
 
           {/* Mobile Dashboard */}
           <button
@@ -265,61 +291,35 @@ const Header = () => {
             <span className="mobile-nav-text">Dashboard</span>
           </button>
 
-          {/* Mobile Information Section */}
-          <div className="mobile-nav-section">
-            <div className="mobile-section-title">
-              <span className="mobile-section-icon">ℹ️</span>
-              <span className="mobile-section-text">Information</span>
-            </div>
-            <div className="mobile-section-items">
-              <button
-                className="mobile-nav-subitem"
-                onClick={() => handleNavigation("/information")}
-              >
-                <span className="mobile-nav-icon">🎯</span>
-                <span className="mobile-nav-text">Fun Facts</span>
-              </button>
-              <button
-                className="mobile-nav-subitem"
-                onClick={() => handleNavigation("/information")}
-              >
-                <span className="mobile-nav-icon">📅</span>
-                <span className="mobile-nav-text">Timeline</span>
-              </button>
-            </div>
-          </div>
+          {/* Mobile Fun Facts */}
+          <button
+            className={`mobile-nav-item ${
+              isActive("/information") ? "active" : ""
+            }`}
+            onClick={() => handleNavigation("/information")}
+          >
+            <span className="mobile-nav-text">Fun Facts</span>
+          </button>
 
-          {/* Mobile Profile Section - Always visible */}
+          {/* Mobile Profile Section */}
           <div className="mobile-nav-section">
             <div className="mobile-section-title">
-              <span className="mobile-section-icon">👤</span>
-              <span className="mobile-section-text">Profile</span>
+              <span className="mobile-section-text">Account</span>
             </div>
             <div className="mobile-section-items">
-              <button
-                className={`mobile-nav-subitem ${
-                  isActive("/history") ? "active" : ""
-                }`}
-                onClick={() => handleNavigation("/history")}
-              >
-                <span className="mobile-nav-icon">📋</span>
-                <span className="mobile-nav-text">User History</span>
-              </button>
               <button
                 className={`mobile-nav-subitem ${
                   isActive("/profileupdate") ? "active" : ""
                 }`}
                 onClick={() => handleNavigation("/profileupdate")}
               >
-                <span className="mobile-nav-icon">⚙️</span>
                 <span className="mobile-nav-text">Update Account</span>
               </button>
               <button
                 className="mobile-nav-subitem logout"
                 onClick={handleLogout}
               >
-                <span className="mobile-nav-icon">🔄</span>
-                <span className="mobile-nav-text">Reset Demo</span>
+                <span className="mobile-nav-text">Logout</span>
               </button>
             </div>
           </div>
