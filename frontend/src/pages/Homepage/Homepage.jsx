@@ -708,7 +708,9 @@ const Homepage = () => {
                     {submission.status}
                   </span>
                 </div>
-                <h4 className="submission-title">{submission.location}</h4>
+                <h4 className="submission-title">
+                  {submission.location?.address || "Location not specified"}
+                </h4>
                 <div className="submission-meta">
                   <span className="submission-date">
                     {submission.date_created}
