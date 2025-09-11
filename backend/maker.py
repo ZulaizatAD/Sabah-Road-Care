@@ -6,10 +6,10 @@ import json
 from sqlalchemy.orm import sessionmaker
 from dotenv import load_dotenv
 
-from database.connect import Base, engine
+from services.database.connect import Base, engine
 from models.users import User
 from models.report import PotholeReport
-from auth.security import get_password_hash
+from services.auth.security import get_password_hash
 
 # --- Load environment variables ---
 load_dotenv()
@@ -20,7 +20,7 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 # --- Static test users (team emails + extras) ---
 TEAM_EMAILS = [
     "adli@example.com",
-    "zul@example.com",
+    "zul@example.com", 
     "angelo@example.com",
     "william@example.com",
 ]
@@ -48,13 +48,14 @@ districts = [
     "Lahad Datu", "Others"
 ]
 
-statuses = ["Submitted", "Under Review", "In Progress", "Completed", "Rejected"]
+# ✅ Fixed: Match your model's default status
+statuses = ["Under Review", "In Progress", "Completed", "Rejected"]
 severity_levels = ["Low", "Medium", "High"]
 priority_levels = ["Low", "Medium", "High"]
 
 sabah_addresses = [
     "Jalan Tuaran, Kota Kinabalu",
-    "Jalan Gaya, Kota Kinabalu",
+    "Jalan Gaya, Kota Kinabalu", 
     "Jalan Tanjung Aru, Kota Kinabalu",
     "Jalan Labuk, Sandakan",
     "Jalan Tawau Lama, Tawau",
@@ -152,7 +153,7 @@ def calculate_community_data():
         priority = random.choice(["Medium", "High"])
     else:
         multiplier = 1.0
-        priority = random.choice(severity_levels)
+        priority = random.choice(priority_levels)
     
     return {
         "similar_reports": similar_reports,
@@ -201,19 +202,26 @@ def create_fake_reports(db, users, num_reports=500):
     sequence_counters = defaultdict(int)
     reports = []
 
-    for _ in range(num_reports):
+    for i in range(num_reports):
+        if i % 50 == 0:
+            print(f"Creating report {i+1}/{num_reports}...")
+            
         created_date = datetime.datetime.now(datetime.timezone.utc) - datetime.timedelta(
             days=random.randint(0, 365)
         )
-        days_after = random.randint(0, (datetime.datetime.now(datetime.timezone.utc) - created_date).days)
-        status_update_date = created_date + datetime.timedelta(days=days_after)
-
+        
         district = random.choice(districts)
         case_id = generate_case_id(district, created_date, sequence_counters)
         user = random.choice(users)
+        
+        # Generate coordinates
+        latitude = random.uniform(4.0, 7.4)  # Sabah range
+        longitude = random.uniform(115.0, 119.3)  # Sabah range
+        address = random.choice(sabah_addresses)
+        description = random.choice(descriptions)
 
-        # Determine if AI analysis is completed (90% completed for testing)
-        ai_completed = random.choices([True, False], weights=[90, 10])[0]
+        # Determine if AI analysis is completed (85% completed for testing)
+        ai_completed = random.choices([True, False], weights=[85, 15])[0]
         
         if ai_completed:
             # Generate AI analysis data
@@ -230,10 +238,14 @@ def create_fake_reports(db, users, num_reports=500):
             unique_users_count = community_data["unique_users"]
             community_multiplier = community_data["multiplier"]
             ai_analysis_details = ai_data["analysis_details"]
+            
+            # Status logic for completed AI analysis
+            status = random.choice(statuses)
+            
         else:
-            # Reports still being analyzed
-            severity = "Analyzing"
-            priority = "Medium"
+            # Reports still being analyzed - use model defaults
+            severity = "Analyzing"  # Custom value for pending analysis
+            priority = "Medium"     # Default from model
             ai_confidence = 0.0
             pothole_length_cm = None
             pothole_width_cm = None
@@ -242,22 +254,40 @@ def create_fake_reports(db, users, num_reports=500):
             unique_users_count = 0
             community_multiplier = 1.0
             ai_analysis_details = None
+            
+            # Limit status options for pending analysis
+            status = random.choice(["Under Review", "In Progress"])
+
+        # Calculate status update date
+        if status == "Under Review":
+            status_update_date = created_date
+        else:
+            days_after = random.randint(1, min(30, (datetime.datetime.now(datetime.timezone.utc) - created_date).days + 1))
+            status_update_date = created_date + datetime.timedelta(days=days_after)
+
+        # ✅ Fixed: Create location as JSON object
+        location_data = {
+            "latitude": latitude,
+            "longitude": longitude,
+            "address": address,
+            "remarks": description
+        }
 
         report = PotholeReport(
             case_id=case_id,
             email=user.email,
-            location=random.choice(sabah_addresses),
+            location=location_data,  # ✅ Now JSON as expected
             district=district,
             date_created=created_date,
             last_date_status_update=status_update_date,
             severity=severity,
-            status=random.choice(statuses),
-            latitude=random.uniform(4.0, 7.5),
-            longitude=random.uniform(115.0, 119.0),
-            photo_top="https://res.cloudinary.com/demo/image/upload/v1234567890/top.jpg",
-            photo_far="https://res.cloudinary.com/demo/image/upload/v1234567890/far.jpg",
-            photo_close="https://res.cloudinary.com/demo/image/upload/v1234567890/close.jpg",
-            description=random.choice(descriptions),
+            status=status,
+            latitude=latitude,
+            longitude=longitude,
+            photo_top=f"https://res.cloudinary.com/demo/image/upload/v1234567890/top_{case_id}.jpg",
+            photo_far=f"https://res.cloudinary.com/demo/image/upload/v1234567890/far_{case_id}.jpg",
+            photo_close=f"https://res.cloudinary.com/demo/image/upload/v1234567890/close_{case_id}.jpg",
+            description=description,
             user_id=user.id,
             
             # AI Analysis Fields
@@ -276,34 +306,51 @@ def create_fake_reports(db, users, num_reports=500):
 
     db.add_all(reports)
     db.commit()
+    return reports
 
 # --- Populate DB ---
 def populate_database(num_reports=500):
     db = SessionLocal()
     try:
-        Base.metadata.drop_all(bind=engine)  # ✅ cleanup old tables
+        # ✅ Add confirmation
+        confirm = input(f"This will delete all existing data and create {num_reports} new reports. Continue? (y/N): ")
+        if confirm.lower() != 'y':
+            print("Operation cancelled.")
+            return
+            
+        print("Dropping and recreating tables...")
+        Base.metadata.drop_all(bind=engine)
         Base.metadata.create_all(bind=engine)
 
         print("Creating fixed users...")
         users = create_fixed_users(db)
 
         print("Creating fake reports with AI analysis data...")
-        create_fake_reports(db, users, num_reports)
+        reports = create_fake_reports(db, users, num_reports)
 
         # Print statistics
         completed_ai = db.query(PotholeReport).filter(PotholeReport.ai_analysis_completed == True).count()
         pending_ai = db.query(PotholeReport).filter(PotholeReport.ai_analysis_completed == False).count()
         
-        print(f"✅ Database populated successfully!")
+        # Status breakdown
+        status_counts = {}
+        for status in statuses + ["Under Review"]:  # Include default status
+            count = db.query(PotholeReport).filter(PotholeReport.status == status).count()
+            if count > 0:
+                status_counts[status] = count
+        
+        print(f"\n✅ Database populated successfully!")
         print(f"   Users: {len(users)}")
         print(f"   Total Reports: {num_reports}")
         print(f"   AI Completed: {completed_ai}")
         print(f"   AI Pending: {pending_ai}")
+        print(f"   Status breakdown: {status_counts}")
         print(f"   Login password for all users: password123")
         
     except Exception as e:
         db.rollback()
-        print("❌ Error:", e)
+        print(f"❌ Error: {e}")
+        raise
     finally:
         db.close()
 
