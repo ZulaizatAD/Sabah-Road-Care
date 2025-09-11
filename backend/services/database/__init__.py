@@ -1,4 +1,4 @@
-from services.database.connect import engine, Base
+from .connect import engine, Base
 
 # Import all your models here so they're registered with Base
 from models.report import PotholeReport
