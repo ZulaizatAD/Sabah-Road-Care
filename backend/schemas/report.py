@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr
-from typing import Optional, Dict
+from typing import Optional, Dict, Union
 from datetime import datetime
 
 # ---- Shared base schema ----
@@ -8,7 +8,7 @@ class CaseBase(BaseModel):
     district: str
     latitude: float
     longitude: float
-    location: Dict  # JSON object {latitude, longitude, address, remarks}
+    location: Union[Dict, str]
     severity: str
     status: str
     photo_top: str

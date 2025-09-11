@@ -1,11 +1,11 @@
-// src/hooks/useUserReports.js
+// src/pages/ReportHistory/useUserReports.jsx
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { getUserReports } from "../../services/history";
+import { getUserReports, generateAIAnalysis } from "../../services/history";
 
 /**
  * Custom hook to fetch and manage user report history
- * @param {Object} filters - Optional filters { district, start_date, end_date, severity, status }
+ * @param {Object} filters - Optional filters { status, district, severity }
  */
 const useUserReports = (filters = {}) => {
   const [reports, setReports] = useState([]);
@@ -17,13 +17,20 @@ const useUserReports = (filters = {}) => {
       try {
         setLoading(true);
 
-        // 🧹 Clean filters: remove "all" values before calling API
+        // 🧹 Clean filters: remove "all" values and map to backend parameter names
         const cleanFilters = {};
-        Object.entries(filters).forEach(([key, value]) => {
-          if (value && value !== "all") {
-            cleanFilters[key] = value;
-          }
-        });
+
+        if (filters.status && filters.status !== "all") {
+          cleanFilters.status_filter = filters.status;
+        }
+
+        if (filters.district && filters.district !== "all") {
+          cleanFilters.district_filter = filters.district;
+        }
+
+        if (filters.severity && filters.severity !== "all") {
+          cleanFilters.severity_filter = filters.severity;
+        }
 
         console.log(
           "🔎 useUserReports: fetching reports with filters:",
@@ -34,12 +41,17 @@ const useUserReports = (filters = {}) => {
 
         console.log("✅ useUserReports: raw data received:", data);
 
-        setReports(data || []);
+        // Extract reports array from the response
+        const reportsArray = data.reports || data || [];
+        setReports(reportsArray);
         setError(null);
+
+        console.log(`📊 useUserReports: loaded ${reportsArray.length} reports`);
       } catch (err) {
-        console.error("Error fetching reports:", err);
+        console.error("❌ Error fetching reports:", err);
         setError(err);
         toast.error("Failed to load reports");
+        setReports([]); // Set empty array on error
       } finally {
         setLoading(false);
         console.log("⏳ useUserReports: loading set to false");
@@ -49,7 +61,86 @@ const useUserReports = (filters = {}) => {
     fetchReports();
   }, [filters]);
 
-  return { reports, loading, error, setReports };
+  /**
+   * Trigger AI analysis for a specific report
+   * @param {string} caseId - The case ID to analyze
+   * @returns {Promise<Object>} AI analysis results
+   */
+  const triggerAIAnalysis = async (caseId) => {
+    try {
+      console.log(`🤖 Triggering AI analysis for case: ${caseId}`);
+
+      const analysisResult = await generateAIAnalysis(caseId);
+
+      // Update the specific report in the state with new analysis
+      setReports((prevReports) =>
+        prevReports.map((report) =>
+          report.case_id === caseId
+            ? {
+                ...report,
+                severity: analysisResult.base_severity,
+                priority: analysisResult.final_priority,
+                ai_analysis_details:
+                  analysisResult.analysis_details || analysisResult,
+              }
+            : report
+        )
+      );
+
+      toast.success("AI analysis completed successfully!");
+      console.log(`✅ AI analysis completed for ${caseId}`);
+
+      return analysisResult;
+    } catch (err) {
+      console.error(`❌ AI analysis failed for ${caseId}:`, err);
+      toast.error("AI analysis failed. Please try again.");
+      throw err;
+    }
+  };
+
+  /**
+   * Refresh the reports list
+   */
+  const refreshReports = async () => {
+    console.log("🔄 Refreshing reports...");
+
+    try {
+      setLoading(true);
+
+      const cleanFilters = {};
+      if (filters.status && filters.status !== "all") {
+        cleanFilters.status_filter = filters.status;
+      }
+      if (filters.district && filters.district !== "all") {
+        cleanFilters.district_filter = filters.district;
+      }
+      if (filters.severity && filters.severity !== "all") {
+        cleanFilters.severity_filter = filters.severity;
+      }
+
+      const data = await getUserReports(cleanFilters);
+      const reportsArray = data.reports || data || [];
+      setReports(reportsArray);
+      setError(null);
+
+      toast.success("Reports refreshed!");
+    } catch (err) {
+      console.error("❌ Error refreshing reports:", err);
+      setError(err);
+      toast.error("Failed to refresh reports");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return {
+    reports,
+    loading,
+    error,
+    setReports,
+    triggerAIAnalysis,
+    refreshReports,
+  };
 };
 
 export default useUserReports;

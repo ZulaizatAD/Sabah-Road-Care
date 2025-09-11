@@ -46,9 +46,16 @@ const ReportHistory = () => {
   ];
   const severities = ["Low", "Medium", "High"];
 
-  const { reports, loading, error } = useUserReports(filters);
+  // 🔄 Updated hook usage with new functions
+  const { reports, loading, error, triggerAIAnalysis, refreshReports } =
+    useUserReports(filters);
 
-  console.log(" ReportHistory: reports received from hook:", reports);
+  console.log("📊 ReportHistory: reports received from hook:", reports);
+
+  // 🔍 Enhanced error handling
+  if (error) {
+    console.error("❌ ReportHistory: Error from hook:", error);
+  }
 
   // Filters + search + sorting
   const filteredReports = reports
@@ -84,17 +91,23 @@ const ReportHistory = () => {
       }
     });
 
-  // CSV Import
+  // CSV Export
   const exportToCSV = () => {
+    if (filteredReports.length === 0) {
+      toast.warning("No reports to export");
+      return;
+    }
+
     const csvData = filteredReports.map((report) => ({
       "Report ID": report.case_id,
       District: report.district,
       Status: report.status,
       Severity: report.severity,
       Priority: report.priority || "N/A",
-      Description: report.description,
+      Description: report.description || "N/A",
       "Date Created": format(new Date(report.date_created), "yyyy-MM-dd"),
       Location: `${report.latitude}, ${report.longitude}`,
+      "AI Analysis": report.ai_analysis_details ? "Completed" : "Pending",
     }));
 
     const csvContent = [
@@ -128,6 +141,53 @@ const ReportHistory = () => {
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({ ...prev, [filterType]: value }));
+    setCurrentPage(1); // Reset to first page when filtering
+  };
+
+  // 🤖 AI Analysis Handler
+  const handleAIAnalysis = async (report) => {
+    try {
+      console.log(`🤖 Starting AI analysis for case: ${report.case_id}`);
+
+      // Show loading state
+      setShowAI((prev) => ({
+        ...prev,
+        [`${report.case_id}_loading`]: true,
+      }));
+
+      // Trigger AI analysis using the hook function
+      const analysisResult = await triggerAIAnalysis(report.case_id);
+
+      console.log(
+        `✅ AI analysis completed for ${report.case_id}:`,
+        analysisResult
+      );
+
+      // Show the AI results
+      setShowAI((prev) => ({
+        ...prev,
+        [report.case_id]: true,
+        [`${report.case_id}_loading`]: false,
+      }));
+    } catch (error) {
+      console.error(`❌ AI analysis failed for ${report.case_id}:`, error);
+
+      // Hide loading state on error
+      setShowAI((prev) => ({
+        ...prev,
+        [`${report.case_id}_loading`]: false,
+      }));
+    }
+  };
+
+  // 🔄 Refresh handler
+  const handleRefresh = async () => {
+    try {
+      await refreshReports();
+      toast.success("Reports refreshed!");
+    } catch (error) {
+      console.error("❌ Failed to refresh reports:", error);
+    }
   };
 
   const getStatusColor = (status) => {
@@ -155,6 +215,8 @@ const ReportHistory = () => {
         return "medium";
       case "Low":
         return "low";
+      case "Analyzing":
+        return "analyzing";
       default:
         return "default";
     }
@@ -264,6 +326,7 @@ const ReportHistory = () => {
         High: "HIGH",
         Medium: "MEDIUM",
         Low: "LOW",
+        Analyzing: "ANALYZING",
       },
       priority: {
         High: "HIGH",
