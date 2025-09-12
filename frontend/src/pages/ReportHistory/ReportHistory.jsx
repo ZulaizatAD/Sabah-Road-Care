@@ -23,7 +23,8 @@ const ReportHistory = () => {
   const [aiAnalysisStates, setAiAnalysisStates] = useState({});
   const [aiAnalysisData, setAiAnalysisData] = useState({});
   const [viewMode, setViewMode] = useState("grid");
-  const reportsPerPage = 9;
+  const reportsPerPage = 8;
+  const [showAI, setShowAI] = useState({});
 
   const districts = [
     "Kota Kinabalu",
@@ -47,10 +48,14 @@ const ReportHistory = () => {
   const severities = ["Low", "Medium", "High"];
 
   // 🔄 Updated hook usage with new functions
-  const { reports, loading, error, triggerAIAnalysis, refreshReports } =
-    useUserReports(filters);
-
-  console.log("📊 ReportHistory: reports received from hook:", reports);
+  const {
+    reports,
+    loading,
+    error,
+    setReports,
+    triggerAIAnalysis,
+    refreshReports,
+  } = useUserReports(filters);
 
   // 🔍 Enhanced error handling
   if (error) {
@@ -144,52 +149,6 @@ const ReportHistory = () => {
     setCurrentPage(1); // Reset to first page when filtering
   };
 
-  // 🤖 AI Analysis Handler
-  const handleAIAnalysis = async (report) => {
-    try {
-      console.log(`🤖 Starting AI analysis for case: ${report.case_id}`);
-
-      // Show loading state
-      setShowAI((prev) => ({
-        ...prev,
-        [`${report.case_id}_loading`]: true,
-      }));
-
-      // Trigger AI analysis using the hook function
-      const analysisResult = await triggerAIAnalysis(report.case_id);
-
-      console.log(
-        `✅ AI analysis completed for ${report.case_id}:`,
-        analysisResult
-      );
-
-      // Show the AI results
-      setShowAI((prev) => ({
-        ...prev,
-        [report.case_id]: true,
-        [`${report.case_id}_loading`]: false,
-      }));
-    } catch (error) {
-      console.error(`❌ AI analysis failed for ${report.case_id}:`, error);
-
-      // Hide loading state on error
-      setShowAI((prev) => ({
-        ...prev,
-        [`${report.case_id}_loading`]: false,
-      }));
-    }
-  };
-
-  // 🔄 Refresh handler
-  const handleRefresh = async () => {
-    try {
-      await refreshReports();
-      toast.success("Reports refreshed!");
-    } catch (error) {
-      console.error("❌ Failed to refresh reports:", error);
-    }
-  };
-
   const getStatusColor = (status) => {
     switch (status) {
       case "Completed":
@@ -265,24 +224,43 @@ const ReportHistory = () => {
     const currentState = getAiButtonState(reportId);
 
     if (currentState === "generate") {
-      // Start generating new analysis
       setAiAnalysisStates((prev) => ({
         ...prev,
         [reportId]: { status: "generating", hidden: false },
       }));
 
       try {
-        // Your AI generation logic here - replace with actual API call
-        // const analysis = await generateAiAnalysis(report);
+        console.log(`🤖 Starting real AI analysis for case: ${reportId}`);
 
-        // Simulate API call for now
-        await new Promise((resolve) => setTimeout(resolve, 2000));
-        const mockAnalysis = "AI Analysis generated successfully!";
+        const analysisResult = await triggerAIAnalysis(reportId);
 
+        console.log(`✅ Real AI analysis completed:`, analysisResult);
+
+        // 🔥 FIX: Store AI data
         setAiAnalysisData((prev) => ({
           ...prev,
-          [reportId]: mockAnalysis,
+          [reportId]: analysisResult,
         }));
+
+        // 🔥 NEW: Also update the main reports array so the badges show correct data
+        setReports((prevReports) =>
+          prevReports.map((report) =>
+            report.case_id === reportId
+              ? {
+                  ...report,
+                  severity:
+                    analysisResult.base_severity ||
+                    analysisResult.severity ||
+                    report.severity,
+                  priority:
+                    analysisResult.final_priority ||
+                    analysisResult.priority ||
+                    report.priority,
+                  ai_analysis_details: analysisResult,
+                }
+              : report
+          )
+        );
 
         setAiAnalysisStates((prev) => ({
           ...prev,
@@ -291,20 +269,21 @@ const ReportHistory = () => {
 
         toast.success("AI Analysis generated successfully!");
       } catch (error) {
+        console.error(`❌ AI analysis failed for ${reportId}:`, error);
+
         setAiAnalysisStates((prev) => ({
           ...prev,
           [reportId]: { status: "error", hidden: false },
         }));
-        toast.error("Failed to generate AI analysis");
+
+        toast.error("Failed to generate AI analysis. Please try again.");
       }
     } else if (currentState === "hide") {
-      // Hide existing analysis
       setAiAnalysisStates((prev) => ({
         ...prev,
         [reportId]: { ...prev[reportId], hidden: true },
       }));
     } else if (currentState === "show") {
-      // Show existing analysis
       setAiAnalysisStates((prev) => ({
         ...prev,
         [reportId]: { ...prev[reportId], hidden: false },

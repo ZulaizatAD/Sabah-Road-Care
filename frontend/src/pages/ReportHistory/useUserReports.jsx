@@ -32,21 +32,12 @@ const useUserReports = (filters = {}) => {
           cleanFilters.severity_filter = filters.severity;
         }
 
-        console.log(
-          "🔎 useUserReports: fetching reports with filters:",
-          cleanFilters
-        );
-
         const data = await getUserReports(cleanFilters);
-
-        console.log("✅ useUserReports: raw data received:", data);
 
         // Extract reports array from the response
         const reportsArray = data.reports || data || [];
         setReports(reportsArray);
         setError(null);
-
-        console.log(`📊 useUserReports: loaded ${reportsArray.length} reports`);
       } catch (err) {
         console.error("❌ Error fetching reports:", err);
         setError(err);
@@ -54,7 +45,6 @@ const useUserReports = (filters = {}) => {
         setReports([]); // Set empty array on error
       } finally {
         setLoading(false);
-        console.log("⏳ useUserReports: loading set to false");
       }
     };
 
@@ -68,27 +58,29 @@ const useUserReports = (filters = {}) => {
    */
   const triggerAIAnalysis = async (caseId) => {
     try {
-      console.log(`🤖 Triggering AI analysis for case: ${caseId}`);
-
       const analysisResult = await generateAIAnalysis(caseId);
 
       // Update the specific report in the state with new analysis
-      setReports((prevReports) =>
-        prevReports.map((report) =>
-          report.case_id === caseId
-            ? {
-                ...report,
-                severity: analysisResult.base_severity,
-                priority: analysisResult.final_priority,
-                ai_analysis_details:
-                  analysisResult.analysis_details || analysisResult,
-              }
-            : report
-        )
-      );
+      setReports((prevReports) => {
+        const updatedReports = prevReports.map((report) => {
+          if (report.case_id === caseId) {
+            const updatedReport = {
+              ...report,
+              severity: analysisResult.base_severity,
+              priority: analysisResult.final_priority,
+              ai_analysis_details:
+                analysisResult.analysis_details || analysisResult,
+            };
+
+            return updatedReport;
+          }
+          return report;
+        });
+
+        return updatedReports;
+      });
 
       toast.success("AI analysis completed successfully!");
-      console.log(`✅ AI analysis completed for ${caseId}`);
 
       return analysisResult;
     } catch (err) {

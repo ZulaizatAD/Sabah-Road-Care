@@ -2,83 +2,52 @@ import React, { useState, useEffect } from "react";
 import { toast } from "react-toastify";
 import "./ReportAI.css";
 
-const ReportAI = ({ report, onClose }) => {
+const ReportAI = ({ report, analysisData, onClose }) => {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysis, setAnalysis] = useState(null);
   const [error, setError] = useState(null);
 
-  // Simulate AI analysis (replace with actual API call)
-  const generateAIAnalysis = async () => {
-    setIsAnalyzing(true);
-    setError(null);
+  // 🔥 NEW: Use real analysis data instead of generating fake data
+  useEffect(() => {
+    if (analysisData) {
+      console.log("🔍 ReportAI received analysisData:", analysisData);
 
-    try {
-      // Simulate API delay
-      await new Promise((resolve) => setTimeout(resolve, 3000));
-
-      // Mock AI analysis based on report data
-      const mockAnalysis = {
+      // Transform real API data into display format
+      const realAnalysis = {
         severity: {
-          level: calculateSeverity(report),
-          confidence: Math.floor(Math.random() * 20) + 80, // 80-99%
+          level: analysisData.base_severity || report.severity || "Low",
+          confidence: 95, // You can get this from analysisData if available
           factors: [
-            "Pothole depth analysis from image",
+            `Estimated depth: ${analysisData.estimated_depth || "Unknown"}`,
             "Road surface condition assessment",
             "Traffic impact evaluation",
             "Weather condition consideration",
           ],
         },
         priority: {
-          level: calculatePriority(report),
-          confidence: Math.floor(Math.random() * 15) + 85, // 85-99%
+          level: analysisData.final_priority || report.priority || "Low",
+          confidence: 88, // You can get this from analysisData if available
           factors: [
             "Location traffic density",
             "Road importance classification",
             "Safety risk assessment",
-            "Repair urgency evaluation",
+            `Community reports: ${analysisData.community_reports || 1}`,
           ],
         },
         recommendations: [
-          "Immediate temporary marking recommended",
-          "Schedule repair within 48-72 hours",
-          "Monitor for expansion during rainy season",
-          "Consider traffic rerouting if conditions worsen",
+          "Analysis completed based on image assessment",
+          "Priority determined by AI evaluation",
+          "Monitor for changes in condition",
+          "Follow standard repair procedures",
         ],
       };
 
-      setAnalysis(mockAnalysis);
-      toast.success("AI Analysis completed successfully!");
-    } catch (err) {
-      setError("Failed to generate AI analysis. Please try again.");
-      toast.error("AI Analysis failed. Please try again.");
-    } finally {
+      setAnalysis(realAnalysis);
       setIsAnalyzing(false);
+    } else {
+      setError("No analysis data available");
     }
-  };
-
-  // Helper functions for mock calculations
-  const calculateSeverity = (report) => {
-    const severityLevels = ["Low", "Medium", "High", "Critical"];
-    // Mock calculation based on description keywords
-    const description = report.description?.toLowerCase() || "";
-    if (description.includes("large") || description.includes("deep"))
-      return "High";
-    if (description.includes("medium") || description.includes("moderate"))
-      return "Medium";
-    if (description.includes("small") || description.includes("minor"))
-      return "Low";
-    return severityLevels[Math.floor(Math.random() * 3)]; // Random for demo
-  };
-
-  const calculatePriority = (report) => {
-    const priorities = ["Low", "Medium", "High"];
-    // Mock calculation based on district (main roads get higher priority)
-    const mainDistricts = ["Kota Kinabalu", "Sandakan", "Tawau"];
-    if (mainDistricts.includes(report.district)) {
-      return Math.random() > 0.3 ? "High" : "Medium";
-    }
-    return priorities[Math.floor(Math.random() * 3)];
-  };
+  }, [analysisData, report]);
 
   const getStandardizedText = (text, type) => {
     const standardTexts = {
@@ -97,11 +66,6 @@ const ReportAI = ({ report, onClose }) => {
 
     return standardTexts[type]?.[text] || text?.toUpperCase() || "";
   };
-
-  // Auto-generate analysis on component mount
-  useEffect(() => {
-    generateAIAnalysis();
-  }, []);
 
   const getSeverityColor = (severity) => {
     switch (severity) {
@@ -146,10 +110,7 @@ const ReportAI = ({ report, onClose }) => {
         <div className="ai-loading">
           <div className="ai-loading-spinner"></div>
           <div className="ai-loading-text">
-            <p> Analyzing pothole images...</p>
-            <p> Calculating severity metrics...</p>
-            <p> Determining priority level...</p>
-            <p> Generating recommendations...</p>
+            <p>📊 Processing analysis results...</p>
           </div>
         </div>
       )}
@@ -158,9 +119,6 @@ const ReportAI = ({ report, onClose }) => {
         <div className="ai-error">
           <span className="error-icon">❌</span>
           <p>{error}</p>
-          <button className="retry-btn" onClick={generateAIAnalysis}>
-            Retry Analysis
-          </button>
         </div>
       )}
 
@@ -168,7 +126,7 @@ const ReportAI = ({ report, onClose }) => {
         <div className="ai-results">
           {/* Severity Analysis */}
           <div className="analysis-section">
-            <h5> Severity Analysis</h5>
+            <h5>🔍 Severity Analysis</h5>
             <div className="analysis-result">
               <div className="result-header">
                 <span
@@ -197,7 +155,7 @@ const ReportAI = ({ report, onClose }) => {
 
           {/* Priority Analysis */}
           <div className="analysis-section">
-            <h5>Priority Assessment</h5>
+            <h5>⚡ Priority Assessment</h5>
             <div className="analysis-result">
               <div className="result-header">
                 <span
@@ -226,7 +184,7 @@ const ReportAI = ({ report, onClose }) => {
 
           {/* Recommendations */}
           <div className="analysis-section">
-            <h5> AI Recommendations</h5>
+            <h5>💡 AI Recommendations</h5>
             <div className="recommendations">
               {analysis.recommendations.map((recommendation, index) => (
                 <div key={index} className="recommendation-item">
@@ -242,7 +200,7 @@ const ReportAI = ({ report, onClose }) => {
             <button
               className="export-analysis-btn"
               onClick={() => {
-                toast.info(" Analysis export feature coming soon!");
+                toast.info("📊 Analysis export feature coming soon!");
               }}
             >
               Export Analysis
