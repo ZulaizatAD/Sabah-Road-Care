@@ -617,7 +617,7 @@ const Homepage = () => {
             <select
               value={formData.district}
               onChange={(e) => handleInputChange("district", e.target.value)}
-              className={errors.district ? "error" : ""}
+              className={errors.district ? "error" : "district-select"}
             >
               {sabahDistricts.map((district) => (
                 <option key={district.value} value={district.value}>

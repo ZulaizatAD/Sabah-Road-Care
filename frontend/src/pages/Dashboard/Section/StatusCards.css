@@ -284,7 +284,7 @@
     rgba(76, 175, 80, 0.2),
     rgba(76, 175, 80, 0.1)
   );
-  color: var(--safety-green);
+  color: var(--road-white);
   border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
@@ -294,7 +294,7 @@
     rgba(244, 67, 54, 0.2),
     rgba(244, 67, 54, 0.1)
   );
-  color: var(--hazard-red);
+  color: var(--road-white);
   border: 1px solid rgba(244, 67, 54, 0.3);
 }
 

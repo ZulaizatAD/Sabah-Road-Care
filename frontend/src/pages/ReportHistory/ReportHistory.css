@@ -235,7 +235,7 @@
   padding: 8px 12px;
   border: 1px solid var(--glass-border);
   border-radius: 12px;
-  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  background: var(--glass-bg);
   backdrop-filter: blur(15px);
   -webkit-backdrop-filter: blur(15px);
   cursor: pointer;
@@ -251,8 +251,8 @@
 }
 
 .report-filters select option {
-  background: var(--asphalt-dark);
-  color: var(--road-white);
+  background: var(--glass-bg);
+  color: var(--asphalt-black);
 }
 
 /* View Controls Section */

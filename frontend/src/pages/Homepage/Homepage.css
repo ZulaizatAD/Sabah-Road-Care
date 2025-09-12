@@ -390,7 +390,7 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-.section-title {
+.form-section-title {
   font-size: 18px;
   font-weight: 700;
   color: var(--road-white);
@@ -406,8 +406,7 @@
 }
 
 /* Input Styling */
-.section-content textarea,
-.section-content select {
+.form-section-content textarea {
   width: 100%;
   padding: 14px 16px;
   margin-top: 1rem;
@@ -422,29 +421,45 @@
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.section-content select {
+.form-section-content select {
   padding: 12px 16px;
   margin-top: 1rem;
+  width: 100%;
+  padding: 14px 16px;
+  margin-top: 1rem;
+  background: var(--glass-bg);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  font-size: 16px;
+  transition: all 0.3s ease;
+  color: var(--road-white);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
 }
 
-.section-content textarea::placeholder,
-.section-content select::placeholder {
+.form-section-content option {
+  color: var(--asphalt-black);
+}
+
+.form-section-content textarea::placeholder,
+.form-section-content select::placeholder {
   color: var(--concrete-gray);
   font-weight: 500;
 }
 
-.section-content textarea:focus,
-.section-content select:focus {
+/*.form-section-content textarea:focus,
+.form-section-content select:focus {
   outline: none;
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
   background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), var(--glass-bg));
 }
 
-.section-content textarea.error,
-.section-content select.error {
+.form-section-content textarea.error,
+.form-section-content select.error {
   border-color: var(--hazard-red);
   box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
-}
+} */
 
 .char-count {
   text-align: right;
@@ -2044,7 +2059,7 @@
     margin-bottom: 16px;
   }
 
-  .section-title {
+  .form-section-title {
     font-size: 16px;
   }
 
@@ -2202,7 +2217,7 @@
     font-size: 13px;
   }
 
-  .section-title {
+  .form-section-title {
     font-size: 15px;
   }
 

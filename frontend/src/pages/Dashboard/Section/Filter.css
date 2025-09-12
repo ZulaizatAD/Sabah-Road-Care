@@ -205,7 +205,6 @@
 .filter-group label {
   font-size: 0.9rem;
   font-weight: 600;
-  color: var(--concrete-gray);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -233,14 +232,13 @@
 
 .filter-select:hover,
 .filter-date:hover {
-  border-color: var(--safety-green);
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  color: var(--asphalt-black);
 }
 
 .filter-select:focus,
 .filter-date:focus {
-  border-color: var(--safety-green);
   box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
 }
 
@@ -252,43 +250,9 @@
   padding-right: 2.5rem;
 }
 
-.filter-select.no-arrow {
-  background-image: none;
-  padding-right: 1rem;
-}
-
-/* Dropdown Options Styling */
-.filter-select option {
-  background: var(--asphalt-black);
-  color: var(--road-white);
-  padding: 0.5rem 1rem;
-  border: none;
-  font-weight: 500;
-}
-
-.filter-select option:hover {
-  background: var(--safety-green) !important;
-  color: var(--asphalt-black) !important;
-}
-
-.filter-select option:checked {
-  background: var(--safety-green);
-  color: var(--asphalt-black);
-  font-weight: 600;
-}
-
-.filter-select option:selected {
-  background: var(--safety-green);
-  color: var(--asphalt-black);
-}
-
 /* Focus and Active States */
 .filter-select:focus {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), var(--glass-bg));
-}
-
-.filter-select:active {
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), var(--glass-bg));
+  background: var(--glass-bg);
 }
 
 /* Quick Date Filters */
