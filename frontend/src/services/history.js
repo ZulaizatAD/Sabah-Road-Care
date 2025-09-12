@@ -25,13 +25,9 @@ api.interceptors.request.use(
  */
 export const getUserReports = async (filters = {}) => {
   try {
-    console.log("📡 API Call: getUserReports with filters:", filters);
-
     const response = await api.get("/api/user/reports", {
       params: filters,
     });
-
-    console.log("✅ API Response:", response.data);
     return response.data;
   } catch (error) {
     console.error(
@@ -49,11 +45,7 @@ export const getUserReports = async (filters = {}) => {
  */
 export const generateAIAnalysis = async (caseId) => {
   try {
-    console.log(`🤖 API Call: generateAIAnalysis for case ${caseId}`);
-
     const response = await api.post(`/api/${caseId}/analyze`);
-
-    console.log("✅ AI Analysis Response:", response.data);
     return response.data;
   } catch (error) {
     console.error(
