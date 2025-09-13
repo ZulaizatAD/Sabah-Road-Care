@@ -261,7 +261,7 @@
 }
 
 .step.expanded .step-content {
-  max-height: 180px;
+  max-height: 580px;
   opacity: 1;
   transform: translateY(0);
   padding: 0 18px 14px 58px;
@@ -349,6 +349,183 @@
 .instructions-note strong {
   color: var(--asphalt-black);
   font-weight: 700;
+}
+
+/* Enhanced Step 1 Content - Photo Guide */
+.photo-guide-content {
+  padding-top: 8px;
+}
+
+.guide-intro {
+  font-size: 14px;
+  color: var(--road-white);
+  margin: 0 0 20px 0;
+  font-weight: 500;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.guide-shots {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.shot-guide {
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 12px;
+  padding: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.shot-guide::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--glass-border),
+    transparent
+  );
+  transition: left 0.5s ease;
+}
+
+.shot-guide:hover::before {
+  left: 100%;
+}
+
+.shot-guide:hover {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), var(--glass-bg));
+  transform: translateX(4px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.shot-number {
+  background: linear-gradient(
+    135deg,
+    var(--safety-green),
+    var(--pedestrian-green)
+  );
+  color: var(--asphalt-black);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 14px;
+  flex-shrink: 0;
+  box-shadow: 0 3px 12px rgba(76, 175, 80, 0.3);
+  border: 1px solid var(--safety-green);
+  position: relative;
+  z-index: 3;
+  transition: all 0.3s ease;
+}
+
+.shot-guide:hover .shot-number {
+  transform: scale(1.05);
+  box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+}
+
+.shot-info {
+  flex: 1;
+  position: relative;
+  z-index: 3;
+}
+
+.shot-info h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--road-white);
+  margin: 0 0 6px 0;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.shot-info p {
+  font-size: 13px;
+  color: var(--concrete-gray);
+  margin: 0 0 10px 0;
+  line-height: 1.4;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+.shot-tips {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.shot-tips span {
+  font-size: 11px;
+  color: var(--road-white);
+  background: linear-gradient(135deg, var(--glass-bg), rgba(28, 28, 28, 0.05));
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  padding: 3px 6px;
+  border-radius: 6px;
+  border: 1px solid var(--glass-border);
+  width: fit-content;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.shot-guide:hover .shot-tips span {
+  background: linear-gradient(135deg, rgba(76, 175, 80, 0.15), var(--glass-bg));
+  border-color: var(--safety-green);
+  color: var(--road-white);
+}
+
+.safety-note {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(
+    135deg,
+    var(--caution-yellow),
+    var(--warning-orange)
+  );
+  color: var(--asphalt-black);
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--caution-yellow);
+  box-shadow: 0 3px 12px rgba(255, 193, 7, 0.3);
+  text-align: center;
+  justify-content: center;
+}
+
+.safety-icon {
+  font-size: 14px;
+}
+
+/* Enhanced step expanded state for photo guide */
+.step.expanded .photo-guide-content {
+  animation: fadeInUp 0.4s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Form Section */
@@ -448,18 +625,17 @@
   font-weight: 500;
 }
 
-/*.form-section-content textarea:focus,
+.form-section-content textarea:focus,
 .form-section-content select:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.2);
-  background: linear-gradient(135deg, rgba(76, 175, 80, 0.1), var(--glass-bg));
+  background: var(--glass-bg);
 }
 
 .form-section-content textarea.error,
 .form-section-content select.error {
   border-color: var(--hazard-red);
   box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
-} */
+}
 
 .char-count {
   text-align: right;
@@ -2051,9 +2227,45 @@
     font-size: 13px;
   }
 
+    .guide-shots {
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  
+  .shot-guide {
+    padding: 12px;
+    gap: 10px;
+  }
+  
+  .shot-number {
+    width: 28px;
+    height: 28px;
+    font-size: 12px;
+  }
+  
+  .shot-info h4 {
+    font-size: 14px;
+  }
+  
+  .shot-info p {
+    font-size: 12px;
+  }
+  
+  .shot-tips span {
+    font-size: 10px;
+  }
+  
+  .safety-note {
+    padding: 8px 12px;
+    font-size: 11px;
+    flex-direction: column;
+    gap: 4px;
+  }
+
   .report-form {
     padding: 20px;
   }
+
   .form-section {
     padding: 16px;
     margin-bottom: 16px;
@@ -2205,6 +2417,26 @@
   .step-header {
     padding: 10px 12px;
     gap: 10px;
+  }
+
+    .shot-guide {
+    padding: 10px;
+    flex-direction: column;
+    text-align: center;
+    gap: 8px;
+  }
+  
+  .shot-number {
+    align-self: center;
+  }
+  
+  .shot-tips {
+    align-items: center;
+  }
+  
+  .safety-note {
+    padding: 8px 10px;
+    font-size: 10px;
   }
 
   .step-number {

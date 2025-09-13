@@ -433,14 +433,66 @@ const Homepage = () => {
             <div className="step" onClick={(e) => toggleStep(e, 0)}>
               <div className="step-header">
                 <span className="step-number">1</span>
-                <h3 className="step-title">Take Photos</h3>
+                <h3 className="step-title">Take Photos - Quick Guide</h3>
                 <span className="step-toggle">▼</span>
               </div>
               <div className="step-content">
-                <p>
-                  Please upload 3 clear images from different angles (front
-                  view, side view, and close-up)
-                </p>
+                <div className="photo-guide-content">
+                  <p className="guide-intro">
+                    Follow these 3 shots assist with our results:
+                  </p>
+
+                  <div className="guide-shots">
+                    <div className="shot-guide">
+                      <div className="shot-number">1</div>
+                      <div className="shot-info">
+                        <h4>Far Shot (Context)</h4>
+                        <p>
+                          Step back 3-4 meters to show the pothole in road
+                          context
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Include road lanes & surroundings</span>
+                          <span>✓ Show traffic environment</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shot-guide">
+                      <div className="shot-number">2</div>
+                      <div className="shot-info">
+                        <h4>Top View (Size Reference)</h4>
+                        <p>
+                          Stand above pothole and include your foot for scale
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Direct overhead angle</span>
+                          <span>✓ Add size reference object</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shot-guide">
+                      <div className="shot-number">3</div>
+                      <div className="shot-info">
+                        <h4>Close-up (Detail)</h4>
+                        <p>
+                          Focus on edges and depth for detailed damage analysis
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Show damage detail clearly</span>
+                          <span>✓ Use flash if lighting is poor</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="safety-note">
+                    <span>
+                      Safety First: Don't block traffic while taking photos
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -452,20 +504,21 @@ const Homepage = () => {
           >
             <div className="photo-grid">
               <PhotoUpload
-                label="Angle 1: Front/Top View"
-                guideline="Show pothole from the front / top"
+                label="Angle 1: Far Shot (Context)"
+                guideline="Step back 3-4 meters to show the pothole in road
+                          context"
                 onUpload={(file) => handlePhotoUpload(0, file)}
                 photo={formData.photos[0]}
               />
               <PhotoUpload
-                label="Angle 2: Side View"
-                guideline="Capture depth and width"
+                label="Angle 2: Top View (Size Reference)"
+                guideline="Stand above pothole and include your foot for scale"
                 onUpload={(file) => handlePhotoUpload(1, file)}
                 photo={formData.photos[1]}
               />
               <PhotoUpload
-                label="Angle 3: Close-up View"
-                guideline="Detail shot for analysis"
+                label="Angle 3: Close-up (Detail)"
+                guideline="Focus on edges and depth for detailed damage analysis"
                 onUpload={(file) => handlePhotoUpload(2, file)}
                 photo={formData.photos[2]}
               />
