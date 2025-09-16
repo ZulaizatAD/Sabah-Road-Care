@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { formatDistanceToNow, format } from "date-fns";
 import useUserReports from "./useUserReports.jsx";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import LoadingSpinner from "../../components/LoadingSpinner/LoadingSpinner";
-import AnimatedBackground001 from "../../components/VideoBG/AnimatedBackground001";
+import ReportAI from "./section/ReportAI.jsx";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import "./ReportHistory.css";
 
 const ReportHistory = () => {
@@ -19,8 +20,11 @@ const ReportHistory = () => {
   const [sortBy, setSortBy] = useState("date-desc");
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [aiAnalysisStates, setAiAnalysisStates] = useState({});
+  const [aiAnalysisData, setAiAnalysisData] = useState({});
   const [viewMode, setViewMode] = useState("grid");
   const reportsPerPage = 8;
+  const [showAI, setShowAI] = useState({});
 
   const districts = [
     "Kota Kinabalu",
@@ -41,19 +45,24 @@ const ReportHistory = () => {
     "Completed",
     "Rejected",
   ];
-  const severities = ["Low", "Medium", "High", "Critical"];
+  const severities = ["Low", "Medium", "High"];
 
-  const { reports, loading, error, setReports } = useUserReports(filters);
+  // 🔄 Updated hook usage with new functions
+  const {
+    reports,
+    loading,
+    error,
+    setReports,
+    triggerAIAnalysis,
+    refreshReports,
+  } = useUserReports(filters);
 
-  console.log("📋 ReportHistory: reports received from hook:", reports);
-
-  if (loading) return <p>Loading reports...</p>;
-  if (error) return <p>Failed to load reports</p>;
-  if (!reports || reports.length === 0) {
-    return <p>No reports found</p>;
+  // 🔍 Enhanced error handling
+  if (error) {
+    console.error("❌ ReportHistory: Error from hook:", error);
   }
 
-  // Apply filters + search + sorting
+  // Filters + search + sorting
   const filteredReports = reports
     .filter((report) => {
       const matchesSearch =
@@ -87,6 +96,45 @@ const ReportHistory = () => {
       }
     });
 
+  // CSV Export
+  const exportToCSV = () => {
+    if (filteredReports.length === 0) {
+      toast.warning("No reports to export");
+      return;
+    }
+
+    const csvData = filteredReports.map((report) => ({
+      "Report ID": report.case_id,
+      District: report.district,
+      Status: report.status,
+      Severity: report.severity,
+      Priority: report.priority || "N/A",
+      Description: report.description || "N/A",
+      "Date Created": format(new Date(report.date_created), "yyyy-MM-dd"),
+      Location: `${report.latitude}, ${report.longitude}`,
+      "AI Analysis": report.ai_analysis_details ? "Completed" : "Pending",
+    }));
+
+    const csvContent = [
+      Object.keys(csvData[0]).join(","),
+      ...csvData.map((row) =>
+        Object.values(row)
+          .map((val) => `"${val}"`)
+          .join(",")
+      ),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `sabah-road-reports-${format(new Date(), "yyyy-MM-dd")}.csv`;
+    a.click();
+    window.URL.revokeObjectURL(url);
+
+    toast.success("Report data exported successfully!");
+  };
+
   // Pagination
   const indexOfLastReport = currentPage * reportsPerPage;
   const indexOfFirstReport = indexOfLastReport - reportsPerPage;
@@ -98,6 +146,7 @@ const ReportHistory = () => {
 
   const handleFilterChange = (filterType, value) => {
     setFilters((prev) => ({ ...prev, [filterType]: value }));
+    setCurrentPage(1); // Reset to first page when filtering
   };
 
   const getStatusColor = (status) => {
@@ -125,9 +174,147 @@ const ReportHistory = () => {
         return "medium";
       case "Low":
         return "low";
+      case "Analyzing":
+        return "analyzing";
       default:
         return "default";
     }
+  };
+
+  const getPriorityColor = (priority) => {
+    switch (priority) {
+      case "High":
+        return "high";
+      case "Medium":
+        return "medium";
+      case "Low":
+        return "low";
+      default:
+        return "default";
+    }
+  };
+
+  const getAiButtonState = (reportId) => {
+    const state = aiAnalysisStates[reportId];
+    if (!state) return "generate";
+    if (state.status === "generating") return "generating";
+    if (state.status === "generated" && !state.hidden) return "hide";
+    if (state.status === "generated" && state.hidden) return "show";
+    return "generate";
+  };
+
+  const getAiButtonText = (reportId) => {
+    const state = getAiButtonState(reportId);
+    switch (state) {
+      case "generate":
+        return "GENERATE AI ANALYSIS";
+      case "generating":
+        return "GENERATING...";
+      case "hide":
+        return "HIDE AI ANALYSIS";
+      case "show":
+        return "SHOW AI ANALYSIS";
+      default:
+        return "GENERATE AI ANALYSIS";
+    }
+  };
+
+  // AI Analysis click handler
+  const handleAiAnalysisClick = async (reportId) => {
+    const currentState = getAiButtonState(reportId);
+
+    if (currentState === "generate") {
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { status: "generating", hidden: false },
+      }));
+
+      try {
+        console.log(`🤖 Starting real AI analysis for case: ${reportId}`);
+
+        const analysisResult = await triggerAIAnalysis(reportId);
+
+        console.log(`✅ Real AI analysis completed:`, analysisResult);
+
+        // 🔥 FIX: Store AI data
+        setAiAnalysisData((prev) => ({
+          ...prev,
+          [reportId]: analysisResult,
+        }));
+
+        // 🔥 NEW: Also update the main reports array so the badges show correct data
+        setReports((prevReports) =>
+          prevReports.map((report) =>
+            report.case_id === reportId
+              ? {
+                  ...report,
+                  severity:
+                    analysisResult.base_severity ||
+                    analysisResult.severity ||
+                    report.severity,
+                  priority:
+                    analysisResult.final_priority ||
+                    analysisResult.priority ||
+                    report.priority,
+                  ai_analysis_details: analysisResult,
+                }
+              : report
+          )
+        );
+
+        setAiAnalysisStates((prev) => ({
+          ...prev,
+          [reportId]: { status: "generated", hidden: false },
+        }));
+
+        toast.success("AI Analysis generated successfully!");
+      } catch (error) {
+        console.error(`❌ AI analysis failed for ${reportId}:`, error);
+
+        setAiAnalysisStates((prev) => ({
+          ...prev,
+          [reportId]: { status: "error", hidden: false },
+        }));
+
+        toast.error("Failed to generate AI analysis. Please try again.");
+      }
+    } else if (currentState === "hide") {
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { ...prev[reportId], hidden: true },
+      }));
+    } else if (currentState === "show") {
+      setAiAnalysisStates((prev) => ({
+        ...prev,
+        [reportId]: { ...prev[reportId], hidden: false },
+      }));
+    }
+  };
+
+  // Standardized badge text function
+  const getStandardizedText = (text, type) => {
+    const standardTexts = {
+      status: {
+        "Under Review": "REVIEW",
+        Approved: "APPROVED",
+        "In Progress": "PROGRESS",
+        Completed: "COMPLETE",
+        Rejected: "REJECTED",
+      },
+      severity: {
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+        Analyzing: "ANALYZING",
+      },
+      priority: {
+        High: "HIGH",
+        Medium: "MEDIUM",
+        Low: "LOW",
+      },
+    };
+
+    return standardTexts[type]?.[text] || text?.toUpperCase() || "";
   };
 
   if (loading) {
@@ -145,21 +332,24 @@ const ReportHistory = () => {
 
   return (
     <div className="report-history">
-      <AnimatedBackground001 />
       <div className="main-content">
         {/* Header */}
         <header className="history-page-header">
           <div className="history-header-content">
-            <div className="header-title">
-              <h1>Report History</h1>
-              <p>View and track all your submitted reports.</p>
+            <div className="history-header-main">
+              <h1 className="history-title">Report History</h1>
+              <p className="history-subtitle">
+                View and track all your submitted reports.
+              </p>
             </div>
-            <button
-              className="new-report-btn"
-              onClick={() => navigate("/homepage")}
-            >
-              + Submit New Report
-            </button>
+            <div className="history-header-actions">
+              <button
+                className="new-report-btn"
+                onClick={() => navigate("/homepage")}
+              >
+                + Submit New Report
+              </button>
+            </div>
           </div>
         </header>
 
@@ -172,10 +362,10 @@ const ReportHistory = () => {
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
             />
-            <span className="search-icon">🔍</span>
+            <MagnifyingGlassIcon className="search-icon" />
           </div>
 
-          <div className="filters">
+          <div className="report-filters">
             <select
               value={filters.status}
               onChange={(e) => handleFilterChange("status", e.target.value)}
@@ -219,6 +409,32 @@ const ReportHistory = () => {
               <option value="status">Status</option>
             </select>
           </div>
+
+          {/* View Controls and Export Section */}
+          <div className="view-controls">
+            <div className="view-mode-buttons">
+              <button
+                className={`view-btn ${viewMode === "grid" ? "active" : ""}`}
+                onClick={() => setViewMode("grid")}
+                title="Grid View"
+              >
+                <span className="view-icon">⊞</span>
+                Grid
+              </button>
+              <button
+                className={`view-btn ${viewMode === "list" ? "active" : ""}`}
+                onClick={() => setViewMode("list")}
+                title="List View"
+              >
+                <span className="view-icon">☰</span>
+                List
+              </button>
+            </div>
+
+            <button className="export-csv-btn" onClick={exportToCSV}>
+              Export CSV
+            </button>
+          </div>
         </div>
 
         {/* Reports */}
@@ -229,16 +445,11 @@ const ReportHistory = () => {
                 <div className="report-number">#{report.case_id}</div>
                 <div className="report-badges">
                   <span
-                    className={`status-badge ${getStatusColor(report.status)}`}
-                  >
-                    {report.status}
-                  </span>
-                  <span
-                    className={`severity-badge ${getSeverityColor(
-                      report.severity
+                    className={`status-badge standardized ${getStatusColor(
+                      report.status
                     )}`}
                   >
-                    {report.severity}
+                    {getStandardizedText(report.status, "status")}
                   </span>
                 </div>
               </div>
@@ -247,17 +458,55 @@ const ReportHistory = () => {
                 <h3 className="report-title">District: {report.district}</h3>
                 <p className="report-description">{report.description}</p>
 
-                <div className="report-details">
-                  <div className="detail-item">
-                    <span className="detail-label">Submitted:</span>
-                    <span className="detail-value">
-                      {format(new Date(report.date_created), "MMM dd, yyyy")} (
-                      {formatDistanceToNow(new Date(report.date_created), {
-                        addSuffix: true,
-                      })}
-                      )
+                {/* New severity and priority section */}
+                <div className="severity-priority-section">
+                  <div className="severity-item">
+                    <span className="context-label">Severity:</span>
+                    <span
+                      className={`severity-badge standardized ${getSeverityColor(
+                        report.severity
+                      )}`}
+                    >
+                      {getStandardizedText(report.severity, "severity")}
                     </span>
                   </div>
+                  {report.priority && (
+                    <div className="priority-item">
+                      <span className="context-label">Priority:</span>
+                      <span
+                        className={`priority-badge standardized ${getPriorityColor(
+                          report.priority
+                        )}`}
+                      >
+                        {getStandardizedText(report.priority, "priority")}
+                      </span>
+                    </div>
+                  )}
+                </div>
+
+                {/* AI Analysis Section */}
+                <div className="ai-analysis-section">
+                  <button
+                    className={`generate-ai-btn standardized ${getAiButtonState(
+                      report.case_id
+                    )}`}
+                    onClick={() => handleAiAnalysisClick(report.case_id)}
+                    disabled={getAiButtonState(report.case_id) === "generating"}
+                  >
+                    {getAiButtonText(report.case_id)}
+                    {getAiButtonState(report.case_id) === "generating" && (
+                      <LoadingSpinner size="small" />
+                    )}
+                  </button>
+
+                  {aiAnalysisStates[report.case_id]?.status === "generated" &&
+                    !aiAnalysisStates[report.case_id]?.hidden && (
+                      <ReportAI
+                        report={report}
+                        analysisData={aiAnalysisData[report.case_id]}
+                        onClose={() => handleAiAnalysisClick(report.case_id)}
+                      />
+                    )}
                 </div>
               </div>
             </div>

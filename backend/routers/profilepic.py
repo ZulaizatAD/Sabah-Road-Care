@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, UploadFile, File, HTTPException
 from sqlalchemy.orm import Session
-from database.connect import get_db
+from services.database.connect import get_db
 from models import users as models
-from auth.security import get_current_user  # Import the get_current_user dependency
+from services.auth.security import get_current_user  # Import the get_current_user dependency
 from services.cloudinary.service import CloudinaryService
 
 router = APIRouter(

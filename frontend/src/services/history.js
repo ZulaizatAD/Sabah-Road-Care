@@ -20,16 +20,79 @@ api.interceptors.request.use(
 
 /**
  * Get the current user's report history
- * @param {Object} filters Optional filters: { district, start_date, end_date, severity }
- * @returns {Promise<Array>} List of user's pothole reports
+ * @param {Object} filters Optional filters: { status_filter, district_filter, severity_filter }
+ * @returns {Promise<Object>} Response with reports array and metadata
  */
 export const getUserReports = async (filters = {}) => {
   try {
-    const response = await api.get("/api/reports", { params: filters });
+    const response = await api.get("/api/user/reports", {
+      params: filters,
+    });
     return response.data;
   } catch (error) {
     console.error(
-      "Error fetching report history:",
+      "❌ Error fetching report history:",
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Generate AI analysis for a specific report
+ * @param {string} caseId - The case ID of the report to analyze
+ * @returns {Promise<Object>} AI analysis results
+ */
+export const generateAIAnalysis = async (caseId) => {
+  try {
+    const response = await api.post(`/api/${caseId}/analyze`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `❌ Error generating AI analysis for ${caseId}:`,
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Get detailed information for a specific report
+ * @param {string} caseId - The case ID of the report
+ * @returns {Promise<Object>} Detailed report information
+ */
+export const getReportDetails = async (caseId) => {
+  try {
+    console.log(`📋 API Call: getReportDetails for case ${caseId}`);
+
+    const response = await api.get(`/api/${caseId}`);
+
+    console.log("✅ Report Details Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      `❌ Error fetching report details for ${caseId}:`,
+      error.response?.data || error.message
+    );
+    throw error;
+  }
+};
+
+/**
+ * Get AI analysis status for all user reports (optional)
+ * @returns {Promise<Object>} Analysis status summary
+ */
+export const getAnalysisStatus = async () => {
+  try {
+    console.log("📊 API Call: getAnalysisStatus");
+
+    const response = await api.get("/api/analysis-status");
+
+    console.log("✅ Analysis Status Response:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error(
+      "❌ Error fetching analysis status:",
       error.response?.data || error.message
     );
     throw error;

@@ -1,5 +1,5 @@
 import SRC_white from "./SRC_white.svg";
-import SRC_Black from "./SRC-black.jpg";
+import SRC_logo from "./logo_SRC.png";
 import AbuBakarEllah from "./AbuBakarEllah.png";
 import GoogleLogo from "./GoogleLogo.png";
 import TransparentLogo from "./SRCTransparent.png";
@@ -7,6 +7,8 @@ import SRCBackground from "./SRCBackground.png";
 import passwordShow from "./password-show.png";
 import passwordHide from "./password-hide.png";
 import defaultUser from "./user.png";
+import uploadPhoto from "./upload.png";
+import replacePhoto from "./replace.png";
 
 // Sabah History Images
 import historyMain from "./SabahHistory/history-main.png";
@@ -23,7 +25,7 @@ import history10 from "./SabahHistory/history-10.svg";
 
 const assets = {
   SRC_white,
-  SRC_Black,
+  SRC_logo,
   AbuBakarEllah,
   GoogleLogo,
   TransparentLogo,
@@ -31,6 +33,8 @@ const assets = {
   passwordHide,
   defaultUser,
   passwordShow,
+  uploadPhoto,
+  replacePhoto,
 
   historyMain,
   history1,

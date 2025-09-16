@@ -5,8 +5,8 @@ import React from 'react'
 const FormSection = ({ title, children, error}) => {
   return (
     <div className="form-section">
-        <h3 className="section-title">{title}</h3>
-        <div className="section-content">
+        <h3 className="form-section-title">{title}</h3>
+        <div className="form-section-content">
             {children}
         </div>
         {/* Conditional render error message if error exists */}

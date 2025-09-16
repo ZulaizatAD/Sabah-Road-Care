@@ -6,29 +6,24 @@ import FormSection from "./Section/FormSection";
 import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
-import {
-  safeDuplicateCheck as checkDuplicateSubmission,
-  getDuplicateDetectionSummary,
-  formatTimeRemaining,
-  calculatePriorityFromDuplicates,
-  generateLocationHash,
-} from "../../utils/duplicateDetection";
 import { useHomepage } from "./useHomepage";
+import assets from "../../assets/assets";
 import "./Homepage.css";
-
 const Homepage = () => {
   const navigate = useNavigate();
   const { user } = useUser();
-  const token = user?.token; // adjust if stored differently
-  const { addReport } = useHomepage(token);
+  const token = user?.token;
 
-  // Add duplicate detection state
-  const [duplicateDetection, setDuplicateDetection] = useState(null);
-  const [showDuplicateInfo, setShowDuplicateInfo] = useState(false);
+  // ✅ Use all needed functions from hook
+  const { addReport, checkForDuplicates, reports, loading, error } =
+    useHomepage(token);
 
   // Map interaction states
-  const [tempLocation, setTempLocation] = useState(null); // Temporary location from map interaction
-  const [hasLocationChanged, setHasLocationChanged] = useState(false); // Track if user has interacted with map
+  const [tempLocation, setTempLocation] = useState(null);
+  const [hasLocationChanged, setHasLocationChanged] = useState(false);
+
+  // ✅ Add duplicate preview state
+  const [duplicatePreview, setDuplicatePreview] = useState(null);
 
   // Main form state
   const [formData, setFormData] = useState({
@@ -43,66 +38,6 @@ const Homepage = () => {
     description: "",
   });
 
-  // Check for duplicates when location changes
-  useEffect(() => {
-    if (formData.location.latitude && formData.location.longitude && user?.id) {
-      const checkDuplicates = async () => {
-        try {
-          // Fetch user's reports and all reports for comparison
-          const [userReportsResponse, allReportsResponse] = await Promise.all([
-            reportAPI.getUserReports({ userId: user.id }),
-            reportAPI.getNearbyReports({
-              latitude: formData.location.latitude,
-              longitude: formData.location.longitude,
-              radius: 100, // 100 meter radius
-            }),
-          ]);
-
-          const newReport = {
-            location: formData.location,
-            submissionTime: new Date().toISOString(),
-            userId: user.id,
-          };
-
-          const duplicateResult = checkDuplicateSubmission(
-            newReport,
-            userReportsResponse.data.reports || [],
-            allReportsResponse.data.reports || []
-          );
-
-          setDuplicateDetection(duplicateResult);
-
-          if (
-            !duplicateResult.canSubmit ||
-            duplicateResult.similarReportsCount > 0
-          ) {
-            setShowDuplicateInfo(true);
-          }
-        } catch (error) {
-          console.error("Duplicate detection error:", error);
-          // Fallback to local check with recent submissions
-          const newReport = {
-            location: formData.location,
-            submissionTime: new Date().toISOString(),
-            userId: user.id,
-          };
-
-          const duplicateResult = checkDuplicateSubmission(
-            newReport,
-            recentSubmissions.filter((r) => r.userId === user.id),
-            recentSubmissions
-          );
-
-          setDuplicateDetection(duplicateResult);
-        }
-      };
-
-      // Debounce the duplicate check
-      const timeoutId = setTimeout(checkDuplicates, 1000);
-      return () => clearTimeout(timeoutId);
-    }
-  }, [formData.location.latitude, formData.location.longitude, user?.id]);
-
   // Form validation errors & submission state
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -110,65 +45,53 @@ const Homepage = () => {
   // Sabah districts list
   const sabahDistricts = [
     { value: "", label: "Select District" },
-    { value: "kota-kinabalu", label: "Kota Kinabalu" },
-    { value: "sandakan", label: "Sandakan" },
-    { value: "tawau", label: "Tawau" },
-    { value: "penampang", label: "Penampang" },
-    { value: "putatan", label: "Putatan" },
-    { value: "papar", label: "Papar" },
-    { value: "tuaran", label: "Tuaran" },
-    { value: "kudat", label: "Kudat" },
-    { value: "beaufort", label: "Beaufort" },
-    { value: "ranau", label: "Ranau" },
-    { value: "kota-belud", label: "Kota Belud" },
-    { value: "keningau", label: "Keningau" },
-    { value: "semporna", label: "Semporna" },
-    { value: "kuala-penyu", label: "Kuala Penyu" },
-    { value: "lahad-datu", label: "Lahad Datu" },
-    { value: "others", label: "OTHERS" },
+    { value: "Kota Kinabalu", label: "Kota Kinabalu" },
+    { value: "Sandakan", label: "Sandakan" },
+    { value: "Tawau", label: "Tawau" },
+    { value: "Penampang", label: "Penampang" },
+    { value: "Putatan", label: "Putatan" },
+    { value: "Papar", label: "Papar" },
+    { value: "Tuaran", label: "Tuaran" },
+    { value: "Kudat", label: "Kudat" },
+    { value: "Beaufort", label: "Beaufort" },
+    { value: "Ranau", label: "Ranau" },
+    { value: "Kota Belud", label: "Kota Belud" },
+    { value: "Keningau", label: "Keningau" },
+    { value: "Semporna", label: "Semporna" },
+    { value: "Kuala Penyu", label: "Kuala Penyu" },
+    { value: "Lahad Datu", label: "Lahad Datu" },
+    { value: "Others", label: "OTHERS" },
   ];
 
-  const [recentSubmissions] = useState([
-    {
-      id: 1,
-      documentNumber: "RPT-2025-001",
-      location: "Jalan Tuaran, Kota Kinabalu",
-      date: "2025-01-15",
-      status: "Pending",
-      similarReports: 3,
-    },
-    {
-      id: 2,
-      documentNumber: "RPT-2025-002",
-      location: "Jalan Costal, Kota Kinabalu",
-      date: "2025-02-16",
-      status: "Reviewing",
-      similarReports: 7,
-    },
-    {
-      id: 3,
-      documentNumber: "RPT-2025-003",
-      location: "Jalan Beaufort, Beaufort",
-      date: "2025-03-20",
-      status: "Approved",
-      similarReports: 2,
-    },
-    {
-      id: 4,
-      documentNumber: "RPT-2025-004",
-      location: "Jalan Apas, Tawau",
-      date: "2025-01-22",
-      status: "Completed",
-      similarReports: 5,
-    },
-    {
-      id: 5,
-      documentNumber: "RPT-2025-005",
-      location: "Kilimu, Ranau",
-      date: "2025-02-07",
-      status: "Reviewing",
-      similarReports: 1,
-    },
+  // ✅ Add duplicate check useEffect
+  useEffect(() => {
+    if (!formData.location.latitude || !formData.location.longitude) {
+      setDuplicatePreview(null);
+      return;
+    }
+
+    const timeoutId = setTimeout(async () => {
+      const preview = await checkForDuplicates(
+        formData.location.latitude,
+        formData.location.longitude
+      );
+      setDuplicatePreview(preview);
+
+      // Show user-friendly info
+      if (preview?.similar_reports_count > 0) {
+        toast.info(
+          `📍 Found ${preview.similar_reports_count} similar reports nearby. ` +
+            `Your report will be prioritized as ${preview.calculated_priority}!`,
+          { autoClose: 4000 }
+        );
+      }
+    }, 1000);
+
+    return () => clearTimeout(timeoutId);
+  }, [
+    formData.location.latitude,
+    formData.location.longitude,
+    checkForDuplicates,
   ]);
 
   // Handle input changes
@@ -178,7 +101,6 @@ const Homepage = () => {
       [field]: value,
     }));
 
-    // Clear any existing error when user starts typing
     if (errors[field]) {
       setErrors((prev) => ({
         ...prev,
@@ -226,7 +148,7 @@ const Homepage = () => {
     }
   };
 
-  // Handle map interaction (drag/click) - stores temporary location
+  // Handle map interaction
   const handleMapInteraction = (locationData) => {
     setTempLocation({
       latitude: locationData.latitude,
@@ -245,7 +167,6 @@ const Homepage = () => {
         location: tempLocation,
       }));
 
-      // Clear any existing error
       if (errors.location) {
         setErrors((prev) => ({
           ...prev,
@@ -281,25 +202,22 @@ const Homepage = () => {
   const validateForm = () => {
     const newErrors = {};
 
-    // Validate photos
     if (!formData.photos || !Array.isArray(formData.photos)) {
       newErrors.photos = "Photos array not initialized";
       return false;
     }
 
-    const uploadedPhotos = formData.photos.filter(
-      (photo) => photo !== null && photo !== undefined
-    );
-    if (uploadedPhotos.length < 3) {
-      newErrors.photos = "Please upload all 3 photos";
-    }
+    // const uploadedPhotos = formData.photos.filter(
+    //   (photo) => photo !== null && photo !== undefined
+    // );
+    // if (uploadedPhotos.length < 3) {
+    //   newErrors.photos = "Please upload all 3 photos";
+    // }
 
-    // Validate location
     if (!formData.location.latitude || !formData.location.longitude) {
       newErrors.location = "Please select and confirm your location on the map";
     }
 
-    // Validate district
     if (!formData.district) {
       newErrors.district = "Please select a district";
     }
@@ -337,13 +255,13 @@ const Homepage = () => {
     }
   };
 
-  // Form submission
+  // ✅ Fixed Form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!user || !user.id) {
       toast.error("You must be logged in to submit a report.");
-      navigate("/"); // redirect to login/home
+      navigate("/");
       return;
     }
 
@@ -359,86 +277,59 @@ const Homepage = () => {
       return;
     }
 
-    // ... rest of your code
+    console.log("🔍 Submitting with data:", {
+      district: formData.district,
+      latitude: formData.location.latitude,
+      longitude: formData.location.longitude,
+      address: formData.location.address,
+    });
 
-    // Generate location hash for duplicate detection
-    const locationHash = generateLocationHash(
-      formData.location.latitude,
-      formData.location.longitude
-    );
-
-    // BLOCKING CHECK: User duplicate within 72 hours
-    if (duplicateDetection && !duplicateDetection.canSubmit) {
-      const summary = getDuplicateDetectionSummary(duplicateDetection);
-      toast.error(summary.message);
+    // ✅ Check if blocked by duplicates
+    if (duplicatePreview?.is_blocked) {
+      toast.error(duplicatePreview.summary_message);
       return;
     }
+    console.log("🔍 Current duplicatePreview:", duplicatePreview);
 
     setIsSubmitting(true);
-
-    // Show loading toast
     const loadingToast = toast.loading("Submitting your report...");
 
     try {
-      const payload = {
-        case_id: `SRC_${Date.now()}`, // or let backend generate
-        email: user.email,
-        location: {
-          latitude: formData.location.latitude,
-          longitude: formData.location.longitude,
-          address: formData.location.address,
-          remarks: formData.description || "",
-        },
-        district: formData.district,
-        severity: "Low", // later: make this user-selectable
-        status: "Submitted",
-        latitude: formData.location.latitude,
-        longitude: formData.location.longitude,
-        photo_top: formData.photos[0], // should be Cloudinary URL string
-        photo_far: formData.photos[1],
-        photo_close: formData.photos[2],
-        description: formData.description,
-        user_id: user.id,
-      };
+      // ✅ Create FormData exactly as backend expects
+      const submitData = new FormData();
+      submitData.append("district", formData.district);
+      submitData.append("latitude", formData.location.latitude);
+      submitData.append("longitude", formData.location.longitude);
+      submitData.append("address", formData.location.address);
+      submitData.append("remarks", formData.description || "");
+      submitData.append("photo_top", formData.photos[0]);
+      submitData.append("photo_far", formData.photos[1]);
+      submitData.append("photo_close", formData.photos[2]);
 
-      if (duplicateDetection) {
-        const priority = calculatePriorityFromDuplicates(
-          duplicateDetection.similarReportsCount,
-          duplicateDetection.uniqueUsers,
-          "Low"
-        );
-
-        submitData.append(
-          "duplicateMetadata",
-          JSON.stringify({
-            locationHash: duplicateDetection.locationHash,
-            similarReportsCount: duplicateDetection.similarReportsCount,
-            uniqueUsers: duplicateDetection.uniqueUsers,
-            severityMultiplier: duplicateDetection.severityMultiplier,
-            calculatedPriority: priority,
-          })
-        );
+      // ✅ ADD THIS DEBUG:
+      console.log("🔍 FormData contents:");
+      for (let [key, value] of submitData.entries()) {
+        console.log(`  ${key}:`, value);
       }
 
-      if (formData.photos && Array.isArray(formData.photos)) {
-        formData.photos.forEach((photo, index) => {
-          if (photo && photo instanceof File) {
-            submitData.append(`photo_${index + 1}`, photo);
-          }
-        });
-      }
+      console.log("🔍 Photos array:", formData.photos);
+      console.log(
+        "🔍 Photo types:",
+        formData.photos.map((p) => (p ? typeof p : "null"))
+      );
 
-      // Replace simulation with real API call
       const response = await addReport(submitData);
 
       toast.dismiss(loadingToast);
 
-      // Show success message with priority info
-      let successMessage = `Report submitted successfully! Report ID: ${response.case_id}`;
-      if (duplicateDetection?.similarReportsCount > 0) {
-        successMessage += `\n\nPriority boosted due to ${duplicateDetection.similarReportsCount} similar reports!`;
+      // ✅ Show success with backend's response
+      let successMessage = `✅ Report submitted successfully!\nReport ID: ${response.case_id}`;
+      if (response.similar_reports_found > 0) {
+        successMessage += `\n\n🚀 Priority: ${response.priority}`;
+        successMessage += `\n📊 ${response.similar_reports_found} similar reports found`;
       }
-      toast.success(successMessage, { autoClose: 5000 });
+
+      toast.success(successMessage, { autoClose: 6000 });
 
       // Clear draft and reset form
       localStorage.removeItem("potholeReportDraft");
@@ -456,13 +347,20 @@ const Homepage = () => {
       setTempLocation(null);
       setHasLocationChanged(false);
 
-      // Navigate to history page
       setTimeout(() => navigate("/history"), 2000);
     } catch (error) {
       toast.dismiss(loadingToast);
 
-      // Handle errors
-      if (error.response?.status === 413) {
+      if (error.response?.status === 409) {
+        // ✅ Handle duplicate blocking
+        const errorDetail = error.response.data.detail;
+        toast.error(
+          `🚫 ${errorDetail.message}\n\n` +
+            `Previous report: ${errorDetail.previous_report}\n` +
+            `Please wait ${errorDetail.wait_hours} more hours.`,
+          { autoClose: 8000 }
+        );
+      } else if (error.response?.status === 413) {
         toast.error("Files too large. Please compress images and try again.");
       } else if (error.response?.status === 422) {
         toast.error("Invalid data. Please check your inputs.");
@@ -499,7 +397,6 @@ const Homepage = () => {
           savedAt: draftData.savedAt,
         };
 
-        // Only show toast for recent drafts
         const savedAt = new Date(draftData.savedAt);
         const hoursDiff = (new Date() - savedAt) / (1000 * 60 * 60);
 
@@ -517,151 +414,6 @@ const Homepage = () => {
       }
     }
   }, []);
-
-  // Render duplicate information
-  const renderDuplicateInfo = () => {
-    if (!showDuplicateInfo || !duplicateDetection) return null;
-
-    const summary = getDuplicateDetectionSummary(duplicateDetection);
-
-    return (
-      <div className={`duplicate-info ${summary.status}`}>
-        <div className="info-header">
-          <span className="info-icon">
-            {summary.status === "blocked"
-              ? "🚫"
-              : summary.status === "similar_found"
-              ? "📊"
-              : "ℹ️"}
-          </span>
-          <h4>{summary.title}</h4>
-          <button
-            className="close-info"
-            onClick={() => setShowDuplicateInfo(false)}
-          >
-            ✕
-          </button>
-        </div>
-
-        <p>{summary.message}</p>
-
-        {/* BLOCKING: User duplicate */}
-        {summary.status === "blocked" &&
-          duplicateDetection.userDuplicates.length > 0 && (
-            <div className="user-duplicate-details">
-              <h5>Your Previous Report:</h5>
-              {duplicateDetection.userDuplicates.map((duplicate, index) => (
-                <div key={index} className="duplicate-item blocked">
-                  <div className="duplicate-info">
-                    <span className="duplicate-location">
-                      📍 {duplicate.report.location || "Same location"}
-                    </span>
-                    <div className="duplicate-meta">
-                      <span className="distance">
-                        {duplicate.distance}m away
-                      </span>
-                      <span className="time">
-                        {duplicate.timeDiffHours}h ago
-                      </span>
-                      <span className="remaining">
-                        Wait: {formatTimeRemaining(duplicate.remainingHours)}
-                      </span>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-        {/* NON-BLOCKING: Similar reports (good for priority) */}
-        {summary.status === "similar_found" &&
-          duplicateDetection.similarReports.length > 0 && (
-            <div className="similar-reports-details">
-              <h5>Similar Reports (Priority Boost):</h5>
-              <div className="priority-boost-info">
-                <span className="boost-badge">
-                  🚀 Priority:{" "}
-                  {calculatePriorityFromDuplicates(
-                    duplicateDetection.similarReportsCount,
-                    duplicateDetection.uniqueUsers,
-                    "Low"
-                  )}
-                </span>
-                <span className="severity-info">
-                  📈 Severity x{duplicateDetection.severityMultiplier}
-                </span>
-              </div>
-
-              {duplicateDetection.similarReports
-                .slice(0, 3)
-                .map((similar, index) => (
-                  <div key={index} className="duplicate-item similar">
-                    <div className="duplicate-info">
-                      <span className="duplicate-location">
-                        📍 {similar.report.location || "Similar location"}
-                      </span>
-                      <div className="duplicate-meta">
-                        <span className="distance">
-                          {similar.distance}m away
-                        </span>
-                        <span className="time">
-                          {similar.timeDiffHours}h ago
-                        </span>
-                        <span className="user">
-                          {similar.isFromSameUser
-                            ? "Your report"
-                            : "Other user"}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-
-              {duplicateDetection.similarReports.length > 3 && (
-                <p className="more-reports">
-                  +{duplicateDetection.similarReports.length - 3} more similar
-                  reports
-                </p>
-              )}
-            </div>
-          )}
-
-        <div className="info-actions">
-          {summary.status === "blocked" ? (
-            <>
-              <button
-                className="btn-secondary"
-                onClick={() => navigate("/history")}
-              >
-                View Your Reports
-              </button>
-              <button
-                className="btn-info"
-                onClick={() => setShowDuplicateInfo(false)}
-              >
-                Understood
-              </button>
-            </>
-          ) : (
-            <>
-              <button
-                className="btn-secondary"
-                onClick={() => navigate("/history")}
-              >
-                View Similar Reports
-              </button>
-              <button
-                className="btn-primary"
-                onClick={() => setShowDuplicateInfo(false)}
-              >
-                Continue Submission
-              </button>
-            </>
-          )}
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div className="user-report">
@@ -681,39 +433,92 @@ const Homepage = () => {
             <div className="step" onClick={(e) => toggleStep(e, 0)}>
               <div className="step-header">
                 <span className="step-number">1</span>
-                <h3 className="step-title">Take Photos</h3>
+                <h3 className="step-title">Take Photos - Quick Guide</h3>
                 <span className="step-toggle">▼</span>
               </div>
               <div className="step-content">
-                <p>
-                  Please upload 3 clear images from different angles (front
-                  view, side view, and close-up)
-                </p>
+                <div className="photo-guide-content">
+                  <p className="guide-intro">
+                    Follow these 3 shots assist with our results:
+                  </p>
+
+                  <div className="guide-shots">
+                    <div className="shot-guide">
+                      <div className="shot-number">1</div>
+                      <div className="shot-info">
+                        <h4>Far Shot (Context)</h4>
+                        <p>
+                          Step back 3-4 meters to show the pothole in road
+                          context
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Include road lanes & surroundings</span>
+                          <span>✓ Show traffic environment</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shot-guide">
+                      <div className="shot-number">2</div>
+                      <div className="shot-info">
+                        <h4>Top View (Size Reference)</h4>
+                        <p>
+                          Stand above pothole and include your foot for scale
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Direct overhead angle</span>
+                          <span>✓ Add size reference object</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="shot-guide">
+                      <div className="shot-number">3</div>
+                      <div className="shot-info">
+                        <h4>Close-up (Detail)</h4>
+                        <p>
+                          Focus on edges and depth for detailed damage analysis
+                        </p>
+                        <div className="shot-tips">
+                          <span>✓ Show damage detail clearly</span>
+                          <span>✓ Use flash if lighting is poor</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="safety-note">
+                    <span>
+                      Safety First: Don't block traffic while taking photos
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Photos Section */}
           <FormSection
-            title=" PHOTOS (Required: 3 angles)"
+            title="PHOTOS (Required: 3 angles)"
             error={errors.photos}
           >
             <div className="photo-grid">
               <PhotoUpload
-                label="Angle 1: Front/Top View"
-                guideline="Show pothole from the front / top"
+                label="Angle 1: Far Shot (Context)"
+                guideline="Step back 3-4 meters to show the pothole in road
+                          context"
                 onUpload={(file) => handlePhotoUpload(0, file)}
                 photo={formData.photos[0]}
               />
               <PhotoUpload
-                label="Angle 2: Side View"
-                guideline="Capture depth and width"
+                label="Angle 2: Top View (Size Reference)"
+                guideline="Stand above pothole and include your foot for scale"
                 onUpload={(file) => handlePhotoUpload(1, file)}
                 photo={formData.photos[1]}
               />
               <PhotoUpload
-                label="Angle 3: Close-up View"
-                guideline="Detail shot for analysis"
+                label="Angle 3: Close-up (Detail)"
+                guideline="Focus on edges and depth for detailed damage analysis"
                 onUpload={(file) => handlePhotoUpload(2, file)}
                 photo={formData.photos[2]}
               />
@@ -738,7 +543,7 @@ const Homepage = () => {
           </div>
 
           {/* Location Section - ALWAYS SHOW MAP */}
-          <FormSection title=" LOCATION" error={errors.location}>
+          <FormSection title="LOCATION" error={errors.location}>
             {/* Always display the embedded map */}
             <div className="embedded-map-container">
               <MapPicker
@@ -761,18 +566,17 @@ const Homepage = () => {
             {tempLocation && hasLocationChanged && (
               <div className="pending-location-info">
                 <div className="pending-header">
-                  <span className="pending-icon">📍</span>
                   <h4>Location Selected - Please Confirm</h4>
                 </div>
                 <div className="pending-details">
                   <div className="pending-address">
-                    🛣️ {tempLocation.roadName || "Road name not available"}
+                    {tempLocation.roadName || "Road name not available"}
                   </div>
                   <div className="pending-full-address">
                     {tempLocation.address}
                   </div>
                   <div className="pending-coordinates">
-                    📍 {tempLocation.latitude.toFixed(6)},{" "}
+                    {tempLocation.latitude.toFixed(6)},{" "}
                     {tempLocation.longitude.toFixed(6)}
                   </div>
                 </div>
@@ -782,7 +586,7 @@ const Homepage = () => {
                     className="confirm-location-btn"
                     onClick={handleConfirmLocation}
                   >
-                    ✅ Confirm Location
+                    Confirm Location
                   </button>
                   <button
                     type="button"
@@ -793,7 +597,7 @@ const Homepage = () => {
                       toast.info("Location selection cancelled.");
                     }}
                   >
-                    ❌ Cancel
+                    Cancel
                   </button>
                 </div>
               </div>
@@ -804,7 +608,6 @@ const Homepage = () => {
               <div className="location-info confirmed">
                 <div className="location-details">
                   <div className="location-primary">
-                    <span className="location-icon">🛣️</span>
                     <span className="road-name">
                       {formData.location.roadName || "Road name not available"}
                     </span>
@@ -829,7 +632,7 @@ const Homepage = () => {
                     className="clear-location-btn"
                     onClick={handleClearLocation}
                   >
-                    🗑️ Clear & Reselect
+                    Clear & Reselect
                   </button>
                 </div>
               </div>
@@ -838,14 +641,12 @@ const Homepage = () => {
             {/* Instructions */}
             <div className="map-instructions">
               <p>
-                 <strong>Instructions:</strong> Click anywhere on the map or
+                💡 <strong>Instructions:</strong> Click anywhere on the map or
                 drag the marker to select a location, then click "Confirm
                 Location" to proceed.
               </p>
             </div>
           </FormSection>
-
-          {renderDuplicateInfo()}
 
           {/* Step 3 Instruction */}
           <div className="step-instruction">
@@ -865,11 +666,11 @@ const Homepage = () => {
           </div>
 
           {/* District Section */}
-          <FormSection title=" DISTRICT" error={errors.district}>
+          <FormSection title="DISTRICT" error={errors.district}>
             <select
               value={formData.district}
               onChange={(e) => handleInputChange("district", e.target.value)}
-              className={errors.district ? "error" : ""}
+              className={errors.district ? "error" : "district-select"}
             >
               {sabahDistricts.map((district) => (
                 <option key={district.value} value={district.value}>
@@ -897,10 +698,7 @@ const Homepage = () => {
           </div>
 
           {/* Description Section */}
-          <FormSection
-            title=" REMARKS / DESCRIPTION"
-            error={errors.description}
-          >
+          <FormSection title="REMARKS / DESCRIPTION" error={errors.description}>
             <textarea
               value={formData.description}
               onChange={(e) => handleInputChange("description", e.target.value)}
@@ -933,14 +731,14 @@ const Homepage = () => {
               disabled={
                 isSubmitting ||
                 hasLocationChanged ||
-                (duplicateDetection && !duplicateDetection.canSubmit)
+                duplicatePreview?.is_blocked
               }
             >
               {isSubmitting
                 ? "Submitting..."
                 : hasLocationChanged
                 ? "Please Confirm Location First"
-                : duplicateDetection && !duplicateDetection.canSubmit
+                : duplicatePreview?.is_blocked
                 ? "Cannot Submit (Duplicate)"
                 : "Submit Report"}
             </button>
@@ -953,28 +751,29 @@ const Homepage = () => {
         <div className="recent-submissions">
           <h3 className="sidebar-title">Recent Submissions</h3>
           <div className="submissions-list">
-            {recentSubmissions.map((submission, index) => (
-              <div key={submission.id} className="submission-item">
+            {reports.map((submission, index) => (
+              <div key={submission.case_id} className="submission-item">
                 <div className="submission-header">
-                  <span className="document-number">
-                    #{submission.documentNumber}
-                  </span>
+                  <span className="document-number">#{submission.case_id}</span>
                   <span
                     className={`status-badge ${submission.status.toLowerCase()}`}
                   >
                     {submission.status}
                   </span>
                 </div>
-                <h4 className="submission-title">{submission.location}</h4>
+                <h4 className="submission-title">
+                  {submission.location?.address || "Location not specified"}
+                </h4>
                 <div className="submission-meta">
                   <span className="submission-date">
-                    {new Date(submission.date).toLocaleDateString()}
+                    {submission.date_created}
                   </span>
                 </div>
                 <div className="similar-reports">
                   <span className="similar-count">
-                    {submission.similarReports} Similar Report
-                    {submission.similarReports !== 1 ? "s" : ""} submitted
+                    {submission.similar_reports_count} Similar Report
+                    {submission.similar_reports_count !== 1 ? "s" : ""}{" "}
+                    submitted
                   </span>
                 </div>
               </div>

@@ -8,8 +8,8 @@
   overflow: hidden;
 }
 
-background-image::after {
-  content: '';
+.background-image::after {
+  content: "";
   position: absolute;
   top: 0;
   left: 0;
@@ -27,54 +27,68 @@ background-image::after {
   object-fit: cover;
 }
 
-/* Global animated video background component */
+/* Animated Background Component */
 .AnimatedBG {
   position: fixed;
   top: 0;
   left: 0;
   width: 100vw;
   height: 100vh;
-  z-index: -2;
+  z-index: 0;
   pointer-events: none;
+  background: var(--asphalt-black);
 }
 
 .AnimatedBG video {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  opacity: 0.4;
+  filter: brightness(1.0) contrast(1.8);
 }
 
+/* Layout */
 .app-container {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-}
-
-.background-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.5));
-  z-index: -1;
-  pointer-events: none;
+  background-color: var(--asphalt-black);
+  color: var(--road-white);
+  background-image: radial-gradient(
+      circle at 20% 80%,
+      rgba(76, 175, 80, 0.03) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 80% 20%,
+      rgba(76, 175, 80, 0.02) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      circle at 40% 40%,
+      rgba(76, 175, 80, 0.01) 0%,
+      transparent 50%
+    );
 }
 
 .main-content {
   flex: 1;
   margin: 0 auto;
   width: 100%;
-  position: relative; /* Ensure main content is on top of the background */
-  z-index: 1; /* Bring content to the front */
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  min-height: calc(100vh - 140px);
 }
 
-/* Ensure header and footer are above the background */
-header, footer {
+/* Ensure header and footer are above background */
+header,
+footer {
   position: relative;
   z-index: 10;
 }
 
+/* Responsive Design */
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem 0.5rem;

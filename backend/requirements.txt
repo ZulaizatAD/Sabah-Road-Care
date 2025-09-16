@@ -11,3 +11,4 @@ Pillow
 pydantic[email]
 langchain-google-genai 
 python-dotenv
+geopy

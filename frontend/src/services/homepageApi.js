@@ -1,14 +1,29 @@
 // src/services/homepageApi.js
 import axios from "axios";
 
+// Create an Axios instance
 const api = axios.create({
-  baseURL: "http://127.0.0.1:8000", // Your FastAPI backend URL
+  baseURL: "http://127.0.0.1:8000/api", // Your FastAPI backend URL
 });
 
-// ✅ Submit a new pothole report
+// Attach token dynamically before each request
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem("token");
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+/**
+ * ✅ Submit a new pothole report
+ */
 export const submitReport = async (formData, token) => {
   try {
-    const response = await api.post(`/api/homepage/report`, formData, {
+    const response = await api.post(`/report`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
         Authorization: `Bearer ${token}`,
@@ -17,115 +32,58 @@ export const submitReport = async (formData, token) => {
     return response.data;
   } catch (error) {
     console.error("❌ Error submitting report:", error);
+    // ✅ Throw the full error object so we can access status codes
     throw error;
   }
 };
 
-// ✅ Fetch all reports for the current user
-export const getMyReports = async (token) => {
-  try {
-    const response = await api.get(`/api/homepage/my-reports`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("❌ Error fetching reports:", error);
-    throw error;
-  }
-};
-
-// ✅ NEW: Check AI analysis status for specific report
-export const getAIAnalysisStatus = async (caseId, token) => {
-  try {
-    const response = await api.get(`/api/homepage/report/${caseId}/ai-status`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("❌ Error fetching AI status:", error);
-    throw error;
-  }
-};
-
-// ✅ NEW: Get reports still being analyzed by AI
-export const getPendingAIReports = async (token) => {
-  try {
-    const response = await api.get(`/api/homepage/reports/pending-ai`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    return response.data;
-  } catch (error) {
-    console.error("❌ Error fetching pending AI reports:", error);
-    throw error;
-  }
-};
-
-// ✅ NEW: Get recent submissions for dashboard widget
+/**
+ * ✅ Fetch recent submissions for the current user
+ * Backend returns: { success: true, reports: [...] }
+ */
 export const getRecentSubmissions = async (token) => {
   try {
-    const response = await api.get(`/api/homepage/recentsubmission`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+    const response = await api.get(`/recent-submissions`, {
+      headers: { Authorization: `Bearer ${token}` },
     });
-    return response.data;
+    return response.data; // ✅ Return full response (has success + reports)
   } catch (error) {
     console.error("❌ Error fetching recent submissions:", error);
     throw error;
   }
 };
 
-// ✅ NEW: Poll AI status until analysis completes
-export const pollAIAnalysis = async (
-  caseId,
-  token,
-  maxAttempts = 20,
-  interval = 3000
-) => {
-  for (let attempt = 0; attempt < maxAttempts; attempt++) {
-    try {
-      const status = await getAIAnalysisStatus(caseId, token);
+/**
+ * ✅ Check for duplicates before submission
+ */
+export const checkDuplicates = async (latitude, longitude, token) => {
+  try {
+    const formData = new FormData();
+    formData.append("latitude", latitude);
+    formData.append("longitude", longitude);
 
-      if (status.ai_analysis_completed) {
-        return status; // AI analysis complete
-      }
-
-      // Wait before next check
-      await new Promise((resolve) => setTimeout(resolve, interval));
-    } catch (error) {
-      console.error(`❌ Polling attempt ${attempt + 1} failed:`, error);
-      if (attempt === maxAttempts - 1) throw error;
-    }
+    const response = await api.post(`/check-duplicates`, formData, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("❌ Error checking duplicates:", error);
+    throw error;
   }
-
-  throw new Error("AI analysis timeout - taking longer than expected");
 };
 
-// ✅ NEW: Submit report and wait for AI analysis
-export const submitReportWithAI = async (formData, token, onProgress) => {
+/**
+ * ✅ Get nearby reports count
+ * Backend returns: { success: true, nearby_cases_count: 5, radius_km: 5 }
+ */
+export const getNearbyReportsCount = async (lat, lng, radiusKm = 5) => {
   try {
-    // Step 1: Submit report
-    onProgress?.("Uploading images...");
-    const submitResult = await submitReport(formData, token);
-
-    // Step 2: Poll for AI completion
-    onProgress?.("AI analysis in progress...");
-    const aiResult = await pollAIAnalysis(submitResult.case_id, token);
-
-    onProgress?.("Analysis complete!");
-
-    return {
-      ...submitResult,
-      ai_analysis: aiResult,
-    };
+    const response = await api.get(`/nearby-reports`, {
+      params: { lat, lng, radius_km: radiusKm },
+    });
+    return response.data.nearby_cases_count; // ✅ Return just the count
   } catch (error) {
-    console.error("❌ Error in submit with AI:", error);
-    throw error;
+    console.error("❌ Error fetching nearby reports count:", error);
+    return 0; // ✅ Return 0 on error instead of throwing
   }
 };

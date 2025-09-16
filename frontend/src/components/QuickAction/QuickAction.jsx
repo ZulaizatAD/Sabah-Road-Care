@@ -8,21 +8,18 @@ const QuickAction = () => {
   const quickActions = [
     {
       id: "reports",
-      icon: "📊",
       text: "My Reports",
       path: "/history",
       description: "View your submission history",
     },
     {
       id: "dashboard",
-      icon: "🏠",
       text: "Dashboard",
       path: "/dashboard",
       description: "Overview and analytics",
     },
     {
       id: "profile",
-      icon: "👤",
       text: "Update Profile",
       path: "/profileupdate",
       description: "Manage your account",
@@ -35,7 +32,7 @@ const QuickAction = () => {
 
   return (
     <div className="quick-actions">
-      <h3 className="sidebar-title">Quick Actions</h3>
+      <h3 className="quick-actions-title">Quick Actions</h3>
       <div className="action-buttons">
         {quickActions.map((action) => (
           <button

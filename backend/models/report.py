@@ -1,6 +1,6 @@
 from sqlalchemy import Column, Integer, String, Text, DateTime, Float, ForeignKey, JSON, Boolean
 from sqlalchemy.sql import func
-from database.connect import Base
+from services.database.connect import Base
 from sqlalchemy.orm import relationship
 
 class PotholeReport(Base):

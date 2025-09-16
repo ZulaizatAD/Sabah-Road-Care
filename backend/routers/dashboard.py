@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import func
 from typing import Optional
 import models
-from database.connect import get_db
+from services.database.connect import get_db
 import logging
 
 # Set up logging
@@ -76,12 +76,37 @@ def get_charts_data(
     """Get chart data based on filters."""
     query = get_filtered_reports(district, start_date, end_date, severity, db)
 
-    # Pie chart data
-    severity_counts = query.with_entities(models.PotholeReport.severity, func.count(models.PotholeReport.severity)).group_by(models.PotholeReport.severity).all()
-    pie_data = [{"name": severity, "value": count, "color": get_color(severity)} for severity, count in severity_counts]
+    # 🔥 UPDATED: Filter pie chart to only show Low, Medium, High
+    allowed_severities = ["Low", "Medium", "High"]
+    
+    # Get severity counts but filter to only allowed severities
+    severity_counts = (
+        query.with_entities(
+            models.PotholeReport.severity, 
+            func.count(models.PotholeReport.severity)
+        )
+        .filter(models.PotholeReport.severity.in_(allowed_severities))  # 🔥 NEW: Filter here
+        .group_by(models.PotholeReport.severity)
+        .all()
+    )
+    
+    # 🔥 UPDATED: Ensure all three severities are included even if count is 0
+    pie_data = []
+    severity_dict = {severity: count for severity, count in severity_counts}
+    
+    for severity in allowed_severities:
+        count = severity_dict.get(severity, 0)  # Default to 0 if not found
+        pie_data.append({
+            "name": severity,
+            "value": count,
+            "color": get_color(severity)
+        })
 
-    # Trend data
-    trend_data = query.with_entities(func.to_char(models.PotholeReport.date_created, 'YYYY-MM').label('month'), func.count(models.PotholeReport.case_id)).group_by('month').all()
+    # Trend data (unchanged)
+    trend_data = query.with_entities(
+        func.to_char(models.PotholeReport.date_created, 'YYYY-MM').label('month'), 
+        func.count(models.PotholeReport.case_id)
+    ).group_by('month').all()
     trend_data = [{"month": month, "cases": count} for month, count in trend_data]
 
     return {"pieData": pie_data, "trendData": trend_data}
@@ -134,6 +159,5 @@ def get_color(severity):
         "Low": "#82ca9d",
         "Medium": "#ffc658",
         "High": "#ff7c7c",
-        "Critical": "#ff4444"
     }
     return colors.get(severity, "#000000")  # Defa
