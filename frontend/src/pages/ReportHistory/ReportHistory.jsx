@@ -23,7 +23,7 @@ const ReportHistory = () => {
   const [aiAnalysisStates, setAiAnalysisStates] = useState({});
   const [aiAnalysisData, setAiAnalysisData] = useState({});
   const [viewMode, setViewMode] = useState("grid");
-  const reportsPerPage = 8;
+  const reportsPerPage = 9;
   const [showAI, setShowAI] = useState({});
 
   const districts = [
