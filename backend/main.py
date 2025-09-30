@@ -153,6 +153,74 @@ def test_database_connection():
                 "password_set": bool(os.getenv('dB_PASSWORD'))
             }
         }
+        
+@app.get("/debug/connection-test", tags=["debug"])
+def test_multiple_connections():
+    """Test multiple connection methods"""
+    import os
+    import psycopg2
+    
+    results = {}
+    
+    # Test 1: Direct connection
+    try:
+        conn_params = {
+            'host': 'db.jtcjvnymygzqeugetpqg.supabase.co',
+            'port': '5432',
+            'database': 'postgres',
+            'user': 'postgres',
+            'password': os.getenv('dB_PASSWORD'),
+            'sslmode': 'require',
+            'connect_timeout': 10
+        }
+        
+        conn = psycopg2.connect(**conn_params)
+        conn.close()
+        results['direct_connection'] = "✅ Success"
+    except Exception as e:
+        results['direct_connection'] = f"❌ {str(e)[:100]}"
+    
+    # Test 2: Pooler with project ID
+    try:
+        conn_params = {
+            'host': 'aws-1-ap-southeast-1.pooler.supabase.com',
+            'port': '6543',
+            'database': 'postgres',
+            'user': 'postgres.jtcjvnymygzqeugetpqg',
+            'password': os.getenv('dB_PASSWORD'),
+            'sslmode': 'require',
+            'connect_timeout': 10
+        }
+        
+        conn = psycopg2.connect(**conn_params)
+        conn.close()
+        results['pooler_transaction'] = "✅ Success"
+    except Exception as e:
+        results['pooler_transaction'] = f"❌ {str(e)[:100]}"
+    
+    # Test 3: Pooler session mode
+    try:
+        conn_params = {
+            'host': 'aws-1-ap-southeast-1.pooler.supabase.com',
+            'port': '5432',
+            'database': 'postgres',
+            'user': 'postgres.jtcjvnymygzqeugetpqg',
+            'password': os.getenv('dB_PASSWORD'),
+            'sslmode': 'require',
+            'connect_timeout': 10
+        }
+        
+        conn = psycopg2.connect(**conn_params)
+        conn.close()
+        results['pooler_session'] = "✅ Success"
+    except Exception as e:
+        results['pooler_session'] = f"❌ {str(e)[:100]}"
+    
+    return {
+        "status": "completed",
+        "results": results,
+        "recommendation": "Use the connection method that shows ✅ Success"
+    }
 
 if __name__ == "__main__":
     import uvicorn
