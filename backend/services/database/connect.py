@@ -21,34 +21,32 @@ DB_HOST = os.getenv("dB_HOST")
 DB_PORT = os.getenv("dB_PORT", "5432")
 DB_NAME = os.getenv("dB_NAME")
 
+DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
 if os.getenv("ENVIRONMENT") == "production":
-    DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?sslmode=require&connect_timeout=30"
-
-    # SQLAlchemy setup
-    engine = create_engine(
-    DATABASE_URL,
-    pool_size=5,
-    max_overflow=10,
-    pool_pre_ping=True,  # Verify connections before use
-    pool_recycle=300,  # Recycle connections every 5 minutes
-    echo=False,
-    connect_args={
-        "sslmode": "require",
-        "connect_timeout": 30,
-        "keepalives_idle": 600,
-        "keepalives_interval": 30,
-        "keepalives_count": 3,
-    },
-)
-else:
-    DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    engine = create_engine(DATABASE_URL)
-
+    DATABASE_URL += "?sslmode=require&connect_timeout=30"
+    
 print(f"🔗 Database URL: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'Invalid URL'}")
+
+if os.getenv("ENVIRONMENT") == "production":
+    engine = create_engine(
+        DATABASE_URL,
+        pool_size=5,
+        max_overflow=10,
+        pool_pre_ping=True,
+        pool_recycle=300,
+        echo=False,
+        connect_args={
+            "sslmode": "require",
+            "connect_timeout": 30,
+            "application_name": "sabah_road_care"
+        }
+    )
+else:
+    engine = create_engine(DATABASE_URL)
     
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
-
 
 def init_table():
     Base.metadata.create_all(engine)
