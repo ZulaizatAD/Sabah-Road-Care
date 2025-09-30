@@ -20,9 +20,13 @@ DB_PASSWORD = os.getenv("dB_PASSWORD")
 DB_HOST = os.getenv("dB_HOST", "localhost")
 DB_PORT = os.getenv("dB_PORT", "5432")
 DB_NAME = os.getenv("dB_NAME")
-DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
-print(f"Connecting to: {DB_HOST}")
+if os.getenv("ENVIRONMENT") == "production":
+    DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}?sslmode=require"
+else:
+    DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
+
+print(f"Database URL: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'Invalid URL'}")
 
 # SQLAlchemy setup
 engine = create_engine(
