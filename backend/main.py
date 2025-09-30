@@ -1,16 +1,16 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware # Enable Cross-Origin Resource Sharing
-from fastapi.security import OAuth2PasswordRequestForm # Handle OAuth2 password flow
+from fastapi.middleware.cors import (
+    CORSMiddleware,
+)  # Enable Cross-Origin Resource Sharing
+from fastapi.security import OAuth2PasswordRequestForm  # Handle OAuth2 password flow
 from sqlalchemy.orm import Session  # Database session management
-from decouple import config # Environment variable management
+from decouple import config  # Environment variable management
 
-# Custom router imports for modular endpoint organization
-from routers import profilepic # Profile picture upload/management endpoints
-from routers import dashboard, history, homepage # Main application routers
-
-# Database and model imports for report functionality
+# Import database engine and models for reports
 from services.database.connect import engine as report_engine
 import models.report as report_models
+from routers import profilepic,dashboard, history, homepage
 
 # Authentication and database imports with fallback handling
 try:
@@ -95,7 +95,7 @@ def health():
 def read_root():
     return {
         "message": "Welcome to the Sabah Road Care API",
-        "mode": "Portfolio Showcase",
+        "mode": "Production",
         "docs": "/docs",
     }
 
@@ -103,12 +103,12 @@ def read_root():
 if __name__ == "__main__":
     import uvicorn
 
-    environment = config("ENVIRONMENT", default="portfolio")
+    port = int(os.environ.get("PORT", 8000))
 
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
-        port=8000,
-        reload=environment in ["development", "portfolio"],
+        port=port,
+        reload=False,
         log_level="info",
     )
