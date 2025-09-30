@@ -101,40 +101,58 @@ def read_root():
     }
 
 
-@app.get("/debug/database", tags=["debug"])
-def debug_database():
-    """Debug database connection"""
+@app.get("/debug/db-test", tags=["debug"])
+def test_database_connection():
+    """Test database connection with detailed error info"""
+    import os
     try:
-        from services.database.connect import engine, DATABASE_URL
-        from sqlalchemy import text
-
-        # Test database connection
-        with engine.connect() as connection:
-            result = connection.execute(text("SELECT version()"))
-            version = result.fetchone()[0]
-
-            # Test if users table exists
-            table_check = connection.execute(
-                text("""
-                SELECT table_name 
-                FROM information_schema.tables 
-                WHERE table_schema = 'public' AND table_name = 'users'
-            """)
-            )
-            users_table_exists = table_check.fetchone() is not None
-
-            return {
-                "status": "connected",
-                "database_version": version[:50],
-                "users_table_exists": users_table_exists,
-                "connection_host": DATABASE_URL.split("@")[1].split("/")[0]
-                if "@" in DATABASE_URL
-                else "unknown",
+        from services.database.connect import DATABASE_URL
+        import psycopg2
+        
+        # Get connection parameters
+        db_params = {
+            'host': os.getenv('dB_HOST'),
+            'port': os.getenv('dB_PORT'),
+            'database': os.getenv('dB_NAME'),
+            'user': os.getenv('dB_USERNAME'),
+            'password': os.getenv('dB_PASSWORD'),
+            'sslmode': 'require'
+        }
+        
+        # Test direct psycopg2 connection
+        conn = psycopg2.connect(**db_params)
+        cursor = conn.cursor()
+        cursor.execute("SELECT version()")
+        version = cursor.fetchone()[0]
+        cursor.close()
+        conn.close()
+        
+        return {
+            "status": "success",
+            "message": "Database connection successful",
+            "database_version": version[:100],
+            "connection_params": {
+                "host": db_params['host'],
+                "port": db_params['port'],
+                "database": db_params['database'],
+                "user": db_params['user'],
+                "password_set": bool(db_params['password'])
             }
-
+        }
+        
     except Exception as e:
-        return {"status": "error", "error": str(e), "error_type": type(e).__name__}
-
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__,
+            "connection_params": {
+                "host": os.getenv('dB_HOST'),
+                "port": os.getenv('dB_PORT'),
+                "database": os.getenv('dB_NAME'),
+                "user": os.getenv('dB_USERNAME'),
+                "password_set": bool(os.getenv('dB_PASSWORD'))
+            }
+        }
 
 if __name__ == "__main__":
     import uvicorn
