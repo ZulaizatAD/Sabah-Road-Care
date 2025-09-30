@@ -5,8 +5,14 @@ import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
 import { signIn, signUp } from "../../services/userApi";
 import LogoLoopVideoAnimation from "../../components/VideoBG/LogoLoopVideo/LogoLoopVideoAnimation";
+import {
+  showErrorToast,
+  showSuccessToast,
+  showInfoToast,
+} from "../../utils/toast";
+import useBackendStatus from "../../utils/useBackendStatus";
+import BackendStatus from "./components/BackendStatus";
 import "./Login.css";
-import { showErrorToast, showSuccessToast, showInfoToast } from "../../utils/toast";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -20,6 +26,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
+  const { isConnected, isChecking } = useBackendStatus();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -189,6 +196,10 @@ const Login = () => {
 
   return (
     <div className="login-container">
+      <BackendStatus
+        isConnected={isConnected}
+        isChecking={isChecking}
+      />
       <div className="left-panel">
         <div className="welcome-content">
           <h1>WELCOME</h1>
@@ -206,7 +217,7 @@ const Login = () => {
         <div className="logo-container">
           <LogoLoopVideoAnimation />
         </div>
-        <div className={`neumorphic-card ${isSignUp ? 'signup-mode' : ''}`}>
+        <div className={`neumorphic-card ${isSignUp ? "signup-mode" : ""}`}>
           <div className="card-header">
             <h2>{isSignUp ? "SIGN UP" : "SIGN IN"}</h2>
             <p>
