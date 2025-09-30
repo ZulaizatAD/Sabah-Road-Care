@@ -50,6 +50,7 @@ app.add_middleware(
         "http://localhost:3000",
         "http://127.0.0.1:3000",
         "https://road-care-75.web.app",
+        "https://sabah-road-care.onrender.com",
     ],
     allow_credentials=True,
     allow_methods=["*"],
