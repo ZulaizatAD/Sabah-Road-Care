@@ -10,7 +10,7 @@ from decouple import config  # Environment variable management
 # Import database engine and models for reports
 from services.database.connect import engine as report_engine
 import models.report as report_models
-from routers import profilepic,dashboard, history, homepage
+from routers import profilepic, dashboard, history, homepage
 
 # Authentication and database imports with fallback handling
 try:
@@ -99,6 +99,41 @@ def read_root():
         "mode": "Production",
         "docs": "/docs",
     }
+
+
+@app.get("/debug/database", tags=["debug"])
+def debug_database():
+    """Debug database connection"""
+    try:
+        from services.database.connect import engine, DATABASE_URL
+        from sqlalchemy import text
+
+        # Test database connection
+        with engine.connect() as connection:
+            result = connection.execute(text("SELECT version()"))
+            version = result.fetchone()[0]
+
+            # Test if users table exists
+            table_check = connection.execute(
+                text("""
+                SELECT table_name 
+                FROM information_schema.tables 
+                WHERE table_schema = 'public' AND table_name = 'users'
+            """)
+            )
+            users_table_exists = table_check.fetchone() is not None
+
+            return {
+                "status": "connected",
+                "database_version": version[:50],
+                "users_table_exists": users_table_exists,
+                "connection_host": DATABASE_URL.split("@")[1].split("/")[0]
+                if "@" in DATABASE_URL
+                else "unknown",
+            }
+
+    except Exception as e:
+        return {"status": "error", "error": str(e), "error_type": type(e).__name__}
 
 
 if __name__ == "__main__":
