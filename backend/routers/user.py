@@ -1,6 +1,17 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+"""
+User Management Router
+
+Handles all user-related endpoints including:
+- User registration
+- User authentication (login)
+- Profile management (update/delete)
+"""
+
+from fastapi import APIRouter, Depends, HTTPException, status, Body
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from datetime import timedelta
+
 import models
 import schemas
 from services.database.connect import get_db
@@ -11,7 +22,6 @@ from services.auth.security import (
     ACCESS_TOKEN_EXPIRE_MINUTES, 
     get_current_user
 )
-from datetime import timedelta
 
 router = APIRouter(prefix="/users", tags=["users"])
 
@@ -81,8 +91,6 @@ def delete_user_account(
     return {"detail": "User account deleted successfully"}
 
 # --------------UPDATE PROFILE----------------------------------
-from fastapi import Body
-
 @router.put("/me", response_model=schemas.UserOut)
 def update_user_profile(
     payload: schemas.UserUpdate,   # we'll define this schema

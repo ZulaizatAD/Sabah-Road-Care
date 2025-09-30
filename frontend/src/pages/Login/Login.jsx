@@ -180,8 +180,8 @@ const Login = () => {
   // Demo login function
   const handleDemoLogin = () => {
     setFormData({
-      email: "zul@example.com",
-      password: "password123",
+      email: "admin@roadcare.com",
+      password: "Password123",
       confirmPassword: "",
     });
     showInfoToast("Demo credentials filled! Click Sign In to continue.");
