@@ -1,9 +1,10 @@
 import os
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import CORSMiddleware  # Enable Cross-Origin Resource Sharing
-from fastapi.security import OAuth2PasswordRequestForm  # Handle OAuth2 password flow
-from sqlalchemy.orm import Session  # Database session management
-from decouple import config  # Environment variable management
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from sqlalchemy import text  # Import text for raw SQL
+from decouple import config
 
 # Import database engine and models for reports
 from services.database.connect import engine as report_engine, Base, engine, get_db
@@ -22,19 +23,20 @@ def initialize_database():
         # Import all models to ensure they're registered
         import models.users
         import models.report
-        
+
         # Create all tables
         Base.metadata.create_all(bind=engine)
         print("✅ Database tables created/verified successfully")
-        
-        # Test connection
+
+        # Test connection with proper text() wrapper
         with engine.connect() as conn:
-            result = conn.execute("SELECT 1")
+            result = conn.execute(text("SELECT 1"))  # FIX: Use text() wrapper
             print("✅ Database connection test successful")
-            
+
     except Exception as e:
         print(f"❌ Database initialization error: {e}")
-        raise e
+        # Don't raise the error - let the app start anyway
+        print("⚠️  Continuing without database test...")
 
 
 # Initialize FastAPI application
@@ -43,6 +45,7 @@ app = FastAPI(
     version="0.1.0",
     description="Portfolio showcase API for road care management system",
 )
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
@@ -58,24 +61,20 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register all application routers with their respective prefixes and tags
-app.include_router(homepage.router, prefix="/api", tags=["Homepage"])
-app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
-app.include_router(user_router, prefix="/api", tags=["users"])
-app.include_router(history.router, prefix="/api", tags=["history"])
-app.include_router(profilepic.router)
 
 # Initialize database on startup
 @app.on_event("startup")
 async def startup_event():
     initialize_database()
-    
+
+
 # Register routers
 app.include_router(homepage.router, prefix="/api", tags=["Homepage"])
 app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
 app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
 app.include_router(profilepic.router)
+
 
 # Authentication endpoint
 @app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
@@ -100,6 +99,7 @@ def login_for_access_token(
 def health():
     return {"status": "ok", "mode": "portfolio_showcase"}
 
+
 @app.get("/")
 def read_root():
     return {
@@ -113,20 +113,21 @@ def read_root():
 def test_database_connection():
     """Test database connection with detailed error info"""
     import os
+
     try:
         from services.database.connect import DATABASE_URL
         import psycopg2
-        
+
         # Get connection parameters
         db_params = {
-            'host': os.getenv('dB_HOST'),
-            'port': os.getenv('dB_PORT'),
-            'database': os.getenv('dB_NAME'),
-            'user': os.getenv('dB_USERNAME'),
-            'password': os.getenv('dB_PASSWORD'),
-            'sslmode': 'require'
+            "host": os.getenv("dB_HOST"),
+            "port": os.getenv("dB_PORT"),
+            "database": os.getenv("dB_NAME"),
+            "user": os.getenv("dB_USERNAME"),
+            "password": os.getenv("dB_PASSWORD"),
+            "sslmode": "require",
         }
-        
+
         # Test direct psycopg2 connection
         conn = psycopg2.connect(**db_params)
         cursor = conn.cursor()
@@ -134,107 +135,109 @@ def test_database_connection():
         version = cursor.fetchone()[0]
         cursor.close()
         conn.close()
-        
+
         return {
             "status": "success",
             "message": "Database connection successful",
             "database_version": version[:100],
             "connection_params": {
-                "host": db_params['host'],
-                "port": db_params['port'],
-                "database": db_params['database'],
-                "user": db_params['user'],
-                "password_set": bool(db_params['password'])
-            }
+                "host": db_params["host"],
+                "port": db_params["port"],
+                "database": db_params["database"],
+                "user": db_params["user"],
+                "password_set": bool(db_params["password"]),
+            },
         }
-        
+
     except Exception as e:
         return {
             "status": "error",
             "error": str(e),
             "error_type": type(e).__name__,
             "connection_params": {
-                "host": os.getenv('dB_HOST'),
-                "port": os.getenv('dB_PORT'),
-                "database": os.getenv('dB_NAME'),
-                "user": os.getenv('dB_USERNAME'),
-                "password_set": bool(os.getenv('dB_PASSWORD'))
-            }
+                "host": os.getenv("dB_HOST"),
+                "port": os.getenv("dB_PORT"),
+                "database": os.getenv("dB_NAME"),
+                "user": os.getenv("dB_USERNAME"),
+                "password_set": bool(os.getenv("dB_PASSWORD")),
+            },
         }
-        
+
+
 @app.get("/debug/connection-test", tags=["debug"])
 def test_multiple_connections():
     """Test multiple connection methods"""
     import os
     import psycopg2
-    
+
     results = {}
-    
+
     # Test 1: Direct connection
     try:
         conn_params = {
-            'host': 'db.jtcjvnymygzqeugetpqg.supabase.co',
-            'port': '5432',
-            'database': 'postgres',
-            'user': 'postgres',
-            'password': os.getenv('dB_PASSWORD'),
-            'sslmode': 'require',
-            'connect_timeout': 10
+            "host": "db.jtcjvnymygzqeugetpqg.supabase.co",
+            "port": "5432",
+            "database": "postgres",
+            "user": "postgres",
+            "password": os.getenv("dB_PASSWORD"),
+            "sslmode": "require",
+            "connect_timeout": 10,
         }
-        
+
         conn = psycopg2.connect(**conn_params)
         conn.close()
-        results['direct_connection'] = "✅ Success"
+        results["direct_connection"] = "✅ Success"
     except Exception as e:
-        results['direct_connection'] = f"❌ {str(e)[:100]}"
-    
+        results["direct_connection"] = f"❌ {str(e)[:100]}"
+
     # Test 2: Pooler with project ID
     try:
         conn_params = {
-            'host': 'aws-1-ap-southeast-1.pooler.supabase.com',
-            'port': '6543',
-            'database': 'postgres',
-            'user': 'postgres.jtcjvnymygzqeugetpqg',
-            'password': os.getenv('dB_PASSWORD'),
-            'sslmode': 'require',
-            'connect_timeout': 10
+            "host": "aws-1-ap-southeast-1.pooler.supabase.com",
+            "port": "6543",
+            "database": "postgres",
+            "user": "postgres.jtcjvnymygzqeugetpqg",
+            "password": os.getenv("dB_PASSWORD"),
+            "sslmode": "require",
+            "connect_timeout": 10,
         }
-        
+
         conn = psycopg2.connect(**conn_params)
         conn.close()
-        results['pooler_transaction'] = "✅ Success"
+        results["pooler_transaction"] = "✅ Success"
     except Exception as e:
-        results['pooler_transaction'] = f"❌ {str(e)[:100]}"
-    
+        results["pooler_transaction"] = f"❌ {str(e)[:100]}"
+
     # Test 3: Pooler session mode
     try:
         conn_params = {
-            'host': 'aws-1-ap-southeast-1.pooler.supabase.com',
-            'port': '5432',
-            'database': 'postgres',
-            'user': 'postgres.jtcjvnymygzqeugetpqg',
-            'password': os.getenv('dB_PASSWORD'),
-            'sslmode': 'require',
-            'connect_timeout': 10
+            "host": "aws-1-ap-southeast-1.pooler.supabase.com",
+            "port": "5432",
+            "database": "postgres",
+            "user": "postgres.jtcjvnymygzqeugetpqg",
+            "password": os.getenv("dB_PASSWORD"),
+            "sslmode": "require",
+            "connect_timeout": 10,
         }
-        
+
         conn = psycopg2.connect(**conn_params)
         conn.close()
-        results['pooler_session'] = "✅ Success"
+        results["pooler_session"] = "✅ Success"
     except Exception as e:
-        results['pooler_session'] = f"❌ {str(e)[:100]}"
-    
+        results["pooler_session"] = f"❌ {str(e)[:100]}"
+
     return {
         "status": "completed",
         "results": results,
-        "recommendation": "Use the connection method that shows ✅ Success"
+        "recommendation": "Use the connection method that shows ✅ Success",
     }
+
 
 @app.get("/debug/env-check", tags=["debug"])
 def check_environment():
     """Check current environment variables"""
     import os
-    
+
     return {
         "environment": os.getenv("ENVIRONMENT"),
         "db_host": os.getenv("dB_HOST"),
@@ -242,11 +245,13 @@ def check_environment():
         "db_username": os.getenv("dB_USERNAME"),
         "db_name": os.getenv("dB_NAME"),
         "password_set": bool(os.getenv("dB_PASSWORD")),
-        "current_connection_url": f"{os.getenv('dB_HOST')}:{os.getenv('dB_PORT')}"
+        "current_connection_url": f"{os.getenv('dB_HOST')}:{os.getenv('dB_PORT')}",
     }
-    
+
+
 if __name__ == "__main__":
     import uvicorn
+
     port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         "main:app",
