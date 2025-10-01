@@ -18,27 +18,17 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60"))
 
 pwd_context = CryptContext(
-    schemes=["bcrypt"], 
-    deprecated="auto",
-    bcrypt__rounds=12,
-    bcrypt__ident="2b" 
+    schemes=["argon2", "bcrypt"], 
+    deprecated="auto"
 )
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def get_password_hash(password: str) -> str:
-    """Hash password with bcrypt, ensuring it doesn't exceed 72 bytes"""
-    # Truncate password to 72 bytes if necessary (bcrypt limitation)
-    if len(password.encode('utf-8')) > 72:
-        password = password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-    
+    """Hash password with Argon2 (no length limitation)"""
     return pwd_context.hash(password)
 
 def verify_password(plain_password: str, password_hash: str) -> bool:
     """Verify password against hash"""
-    # Apply same truncation for verification
-    if len(plain_password.encode('utf-8')) > 72:
-        plain_password = plain_password.encode('utf-8')[:72].decode('utf-8', errors='ignore')
-    
     return pwd_context.verify(plain_password, password_hash)
 
 def create_access_token(subject: dict, expires_delta: timedelta | None = None) -> str:
