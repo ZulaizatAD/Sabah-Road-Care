@@ -1,14 +1,8 @@
 """
 Database Connection and Configuration Module
-
-This module handles:
-- Database connection setup using SQLAlchemy
-- Environment variable configuration
-- Session management
-- Database URL construction
 """
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, text
 from sqlalchemy.orm import sessionmaker, declarative_base
 import os
 from dotenv import load_dotenv
@@ -21,13 +15,15 @@ DB_HOST = os.getenv("dB_HOST")
 DB_PORT = os.getenv("dB_PORT", "5432")
 DB_NAME = os.getenv("dB_NAME")
 
+# Construct database URL
 DATABASE_URL = f"postgresql://{DB_USERNAME}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 
 if os.getenv("ENVIRONMENT") == "production":
     DATABASE_URL += "?sslmode=require&connect_timeout=30"
-    
-print(f"🔗 Database URL: {DATABASE_URL.split('@')[1] if '@' in DATABASE_URL else 'Invalid URL'}")
 
+print(f"🔗 Connecting to: {DB_HOST}:{DB_PORT}/{DB_NAME}")
+
+# Create engine with proper configuration
 if os.getenv("ENVIRONMENT") == "production":
     engine = create_engine(
         DATABASE_URL,
@@ -39,17 +35,25 @@ if os.getenv("ENVIRONMENT") == "production":
         connect_args={
             "sslmode": "require",
             "connect_timeout": 30,
-            "application_name": "sabah_road_care"
-        }
+            "application_name": "sabah_road_care",
+        },
     )
 else:
-    engine = create_engine(DATABASE_URL)
-    
+    engine = create_engine(
+        DATABASE_URL,
+        echo=True,  # Enable SQL logging in development
+    )
+
+# Test connection immediately
+try:
+    with engine.connect() as conn:
+        result = conn.execute(text("SELECT 1"))
+        print("✅ Database connection successful!")
+except Exception as e:
+    print(f"❌ Database connection failed: {e}")
+
 SessionLocal = sessionmaker(bind=engine)
 Base = declarative_base()
-
-def init_table():
-    Base.metadata.create_all(engine)
 
 
 def get_db():

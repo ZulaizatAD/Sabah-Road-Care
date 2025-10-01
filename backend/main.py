@@ -1,39 +1,40 @@
 import os
 from fastapi import FastAPI, Depends, HTTPException
-from fastapi.middleware.cors import (
-    CORSMiddleware,
-)  # Enable Cross-Origin Resource Sharing
+from fastapi.middleware.cors import CORSMiddleware  # Enable Cross-Origin Resource Sharing
 from fastapi.security import OAuth2PasswordRequestForm  # Handle OAuth2 password flow
 from sqlalchemy.orm import Session  # Database session management
 from decouple import config  # Environment variable management
 
 # Import database engine and models for reports
-from services.database.connect import engine as report_engine
+from services.database.connect import engine as report_engine, Base, engine, get_db
 import models.report as report_models
+import models.users
+import models
+import schemas
+from services.auth import verify_password, create_access_token
 from routers import profilepic, dashboard, history, homepage
-
-# Authentication and database imports with fallback handling
-try:
-    from services.database.connect import Base, engine, get_db
-    import models
-    import schemas
-    from services.auth import verify_password, create_access_token
-except ImportError:
-    from services.database.connect import Base, engine, get_db
-    import models
-    import schemas
-    from services.auth.security import verify_password, create_access_token
-    from routers.user import router as user_router
+from routers.user import router as user_router
 
 
 def initialize_database():
     """Initialize database tables for both report and auth systems."""
     try:
-        report_models.Base.metadata.create_all(bind=report_engine)
+        # Import all models to ensure they're registered
+        import models.users
+        import models.report
+        
+        # Create all tables
         Base.metadata.create_all(bind=engine)
-        print("Database tables created/verified successfully")
+        print("✅ Database tables created/verified successfully")
+        
+        # Test connection
+        with engine.connect() as conn:
+            result = conn.execute("SELECT 1")
+            print("✅ Database connection test successful")
+            
     except Exception as e:
-        print(f"Database table creation warning: {e}")
+        print(f"❌ Database initialization error: {e}")
+        raise e
 
 
 # Initialize FastAPI application
@@ -64,17 +65,25 @@ app.include_router(user_router, prefix="/api", tags=["users"])
 app.include_router(history.router, prefix="/api", tags=["history"])
 app.include_router(profilepic.router)
 
+# Initialize database on startup
+@app.on_event("startup")
+async def startup_event():
+    initialize_database()
+    
+# Register routers
+app.include_router(homepage.router, prefix="/api", tags=["Homepage"])
+app.include_router(dashboard.router, prefix="/api", tags=["dashboard"])
+app.include_router(user_router, prefix="/api", tags=["users"])
+app.include_router(history.router, prefix="/api", tags=["history"])
+app.include_router(profilepic.router)
 
-# Authentication endpoint to get access token
+# Authentication endpoint
 @app.post("/auth/token", response_model=schemas.Token, tags=["auth"])
 def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    # Accept email in "username" field
     identifier = form_data.username.strip().lower()
-
-    # Query the user from the database
     user = db.query(models.User).filter(models.User.email == identifier).first()
 
     if not user or not verify_password(form_data.password, user.password_hash):
@@ -82,15 +91,14 @@ def login_for_access_token(
     if not user.is_active:
         raise HTTPException(status_code=403, detail="User is inactive.")
 
-    # Generate JWT token with user ID and email as payload
     token = create_access_token(subject={"sub": str(user.id), "email": user.email})
     return {"access_token": token, "token_type": "bearer"}
 
 
+# Health check
 @app.get("/health", tags=["health"])
 def health():
     return {"status": "ok", "mode": "portfolio_showcase"}
-
 
 @app.get("/")
 def read_root():
@@ -239,9 +247,7 @@ def check_environment():
     
 if __name__ == "__main__":
     import uvicorn
-
     port = int(os.environ.get("PORT", 8000))
-
     uvicorn.run(
         "main:app",
         host="0.0.0.0",
