@@ -222,6 +222,21 @@ def test_multiple_connections():
         "recommendation": "Use the connection method that shows ✅ Success"
     }
 
+@app.get("/debug/env-check", tags=["debug"])
+def check_environment():
+    """Check current environment variables"""
+    import os
+    
+    return {
+        "environment": os.getenv("ENVIRONMENT"),
+        "db_host": os.getenv("dB_HOST"),
+        "db_port": os.getenv("dB_PORT"),
+        "db_username": os.getenv("dB_USERNAME"),
+        "db_name": os.getenv("dB_NAME"),
+        "password_set": bool(os.getenv("dB_PASSWORD")),
+        "current_connection_url": f"{os.getenv('dB_HOST')}:{os.getenv('dB_PORT')}"
+    }
+    
 if __name__ == "__main__":
     import uvicorn
 
