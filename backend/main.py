@@ -11,7 +11,7 @@ import models.report as report_models
 import models.users
 import models
 import schemas
-from services.auth import verify_password, create_access_token
+from services.auth.security import verify_password, create_access_token
 from routers import profilepic, dashboard, history, homepage
 from routers.user import router as user_router
 
