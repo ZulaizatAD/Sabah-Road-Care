@@ -12,6 +12,8 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import IntegrityError
 from datetime import timedelta
+import traceback
+import logging
 
 import models
 import schemas
@@ -24,6 +26,9 @@ from services.auth.security import (
     get_current_user,
 )
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 router = APIRouter(prefix="/users", tags=["users"])
 
 # --------------SIGN UP----------------------------------
@@ -34,6 +39,8 @@ router = APIRouter(prefix="/users", tags=["users"])
 )
 def register_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
     try:
+        logger.info(f"Registration attempt for email: {payload.email}")
+
         # Check if email already exists
         existing_user = (
             db.query(models.User)
@@ -42,15 +49,18 @@ def register_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
         )
 
         if existing_user:
+            logger.warning(f"Email already exists: {payload.email}")
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Email already registered.",
             )
 
         # Hash password
+        logger.info("Hashing password...")
         hashed_password = get_password_hash(payload.password)
 
         # Create user
+        logger.info("Creating user object...")
         user = models.User(
             email=payload.email.lower(),
             password_hash=hashed_password,
@@ -58,25 +68,30 @@ def register_user(payload: schemas.UserCreate, db: Session = Depends(get_db)):
             is_active=True,
         )
 
+        logger.info("Adding user to database...")
         db.add(user)
         db.commit()
         db.refresh(user)
 
-        print(f"✅ User created successfully: {user.email}")
+        logger.info(f"✅ User created successfully: {user.email} with ID: {user.id}")
         return user
 
+    except HTTPException:
+        # Re-raise HTTP exceptions (like email already exists)
+        raise
     except IntegrityError as e:
         db.rollback()
-        print(f"❌ Database integrity error: {e}")
+        logger.error(f"❌ Database integrity error: {e}")
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered."
         )
     except Exception as e:
         db.rollback()
-        print(f"❌ Registration error: {e}")
+        logger.error(f"❌ Registration error: {e}")
+        logger.error(f"❌ Full traceback: {traceback.format_exc()}")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Registration failed. Please try again.",
+            detail=f"Registration failed: {str(e)}",  # Include actual error for debugging
         )
 
 
@@ -100,8 +115,7 @@ def login(
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        subject={"sub": str(user.id)},  # user.id stored in JWT
-        expires_delta=access_token_expires,
+        subject={"sub": str(user.id)}, expires_delta=access_token_expires
     )
 
     return {"access_token": access_token, "token_type": "bearer"}

@@ -247,6 +247,67 @@ def check_environment():
         "password_set": bool(os.getenv("dB_PASSWORD")),
         "current_connection_url": f"{os.getenv('dB_HOST')}:{os.getenv('dB_PORT')}",
     }
+    
+@app.get("/debug/test-user-creation", tags=["debug"])
+def test_user_creation():
+    """Test user creation directly"""
+    try:
+        from services.database.connect import get_db
+        from services.auth.security import get_password_hash
+        
+        # Get database session
+        db = next(get_db())
+        
+        # Test password hashing
+        test_password = "testpass123"
+        hashed = get_password_hash(test_password)
+        
+        # Test user creation (but don't save)
+        test_user = models.User(
+            email="test@example.com",
+            password_hash=hashed,
+            full_name="Test User",
+            is_active=True
+        )
+        
+        return {
+            "status": "success",
+            "message": "User object created successfully",
+            "user_email": test_user.email,
+            "password_hashed": bool(test_user.password_hash),
+            "hash_length": len(test_user.password_hash)
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error",
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
+
+@app.get("/debug/test-db-query", tags=["debug"])
+def test_db_query():
+    """Test basic database query"""
+    try:
+        from services.database.connect import get_db
+        
+        db = next(get_db())
+        
+        # Test query
+        user_count = db.query(models.User).count()
+        
+        return {
+            "status": "success",
+            "user_count": user_count,
+            "message": "Database query successful"
+        }
+        
+    except Exception as e:
+        return {
+            "status": "error", 
+            "error": str(e),
+            "error_type": type(e).__name__
+        }
 
 
 if __name__ == "__main__":
