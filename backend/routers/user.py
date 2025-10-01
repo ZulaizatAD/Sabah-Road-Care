@@ -174,3 +174,10 @@ def update_user_profile(
     db.refresh(user)
 
     return user
+
+@router.get("/me", response_model=schemas.UserOut)
+def get_current_user_info(
+    current_user=Depends(get_current_user)
+):
+    """Get current user information"""
+    return current_user
