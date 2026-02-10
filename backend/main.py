@@ -6,13 +6,9 @@ from sqlalchemy.orm import Session
 from routers import profilepic
 from decouple import config
 
-
-# Import database engine and models for reports
 from services.database.connect import engine as report_engine
 import models.report as report_models
 from routers import dashboard, history, homepage
-# Remove the old photos import
-# from routers import photos  # Import the photos router
 
 try:
     from services.database.connect import Base, engine, get_db  # Shared auth DB/session
