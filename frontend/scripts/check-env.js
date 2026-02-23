@@ -27,7 +27,8 @@ if (!fs.existsSync(envPath)) {
 const envContent = fs.readFileSync(envPath, 'utf8');
 const envLines = envContent.split('\n').filter(line => line.trim() && !line.startsWith('#'));
 
-const requiredVars = [
+const isDemoMode = envLines.some(line => line.trim() === 'VITE_DEMO_MODE=true');
+const requiredVars = isDemoMode ? [] : [
   'VITE_GOOGLE_MAPS_API_KEY'
 ];
 
@@ -49,6 +50,10 @@ console.log('✅ Configured variables:');
 configuredVars.forEach(varName => {
   console.log(`   ${varName}`);
 });
+
+if (isDemoMode) {
+  console.log('ℹ️ Demo mode detected. Google Maps API key is optional.');
+}
 
 if (missingVars.length > 0) {
   console.log('\n❌ Missing or incomplete variables:');

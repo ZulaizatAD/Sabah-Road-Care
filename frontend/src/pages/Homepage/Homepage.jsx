@@ -6,6 +6,7 @@ import FormSection from "./Section/FormSection";
 import PhotoUpload from "./Section/PhotoUpload";
 import QuickAction from "../../components/QuickAction/QuickAction";
 import MapPicker from "../../components/MapPicker/MapPicker";
+import { reportAPI } from "../../services/api";
 import {
   safeDuplicateCheck as checkDuplicateSubmission,
   getDuplicateDetectionSummary,
@@ -380,26 +381,17 @@ const Homepage = () => {
     const loadingToast = toast.loading("Submitting your report...");
 
     try {
-      const payload = {
-        case_id: `SRC_${Date.now()}`, // or let backend generate
-        email: user.email,
-        location: {
-          latitude: formData.location.latitude,
-          longitude: formData.location.longitude,
-          address: formData.location.address,
-          remarks: formData.description || "",
-        },
-        district: formData.district,
-        severity: "Low", // later: make this user-selectable
-        status: "Submitted",
-        latitude: formData.location.latitude,
-        longitude: formData.location.longitude,
-        photo_top: formData.photos[0], // should be Cloudinary URL string
-        photo_far: formData.photos[1],
-        photo_close: formData.photos[2],
-        description: formData.description,
-        user_id: user.id,
-      };
+      const submitData = new FormData();
+      submitData.append("case_id", `SRC_${Date.now()}`);
+      submitData.append("email", user.email || "demo@sabahroadcare.com");
+      submitData.append("district", formData.district);
+      submitData.append("severity", "Low");
+      submitData.append("status", "Under Review");
+      submitData.append("latitude", String(formData.location.latitude));
+      submitData.append("longitude", String(formData.location.longitude));
+      submitData.append("address", formData.location.address || "");
+      submitData.append("description", formData.description || "");
+      submitData.append("user_id", String(user.id));
 
       if (duplicateDetection) {
         const priority = calculatePriorityFromDuplicates(
@@ -411,7 +403,7 @@ const Homepage = () => {
         submitData.append(
           "duplicateMetadata",
           JSON.stringify({
-            locationHash: duplicateDetection.locationHash,
+            locationHash: duplicateDetection.locationHash || locationHash,
             similarReportsCount: duplicateDetection.similarReportsCount,
             uniqueUsers: duplicateDetection.uniqueUsers,
             severityMultiplier: duplicateDetection.severityMultiplier,
@@ -430,11 +422,13 @@ const Homepage = () => {
 
       // Replace simulation with real API call
       const response = await addReport(submitData);
+      const reportId =
+        response?.case_id || response?.data?.case_id || `SRC_${Date.now()}`;
 
       toast.dismiss(loadingToast);
 
       // Show success message with priority info
-      let successMessage = `Report submitted successfully! Report ID: ${response.case_id}`;
+      let successMessage = `Report submitted successfully! Report ID: ${reportId}`;
       if (duplicateDetection?.similarReportsCount > 0) {
         successMessage += `\n\nPriority boosted due to ${duplicateDetection.similarReportsCount} similar reports!`;
       }

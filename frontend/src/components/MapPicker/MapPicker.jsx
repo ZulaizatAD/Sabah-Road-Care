@@ -21,6 +21,7 @@ const MapPicker = ({
   );
   const [address, setAddress] = useState("");
   const [isLoading, setIsLoading] = useState(true);
+  const canUseGoogleMaps = Boolean(config.googleMaps.apiKey);
 
   // Validate configuration on component mount
   useEffect(() => {
@@ -28,12 +29,15 @@ const MapPicker = ({
       toast.error(
         "Google Maps configuration is missing. Please check your environment variables."
       );
-      return;
     }
   }, []);
 
   useEffect(() => {
-    if (!isVisible || !config.googleMaps.apiKey) return;
+    if (!isVisible) return;
+    if (!canUseGoogleMaps) {
+      setIsLoading(false);
+      return;
+    }
 
     const initializeMap = async () => {
       try {
@@ -119,7 +123,7 @@ const MapPicker = ({
     };
 
     initializeMap();
-  }, [isVisible]);
+  }, [isVisible, canUseGoogleMaps]);
 
   // Modified updateLocation function to accept mapInstance
   const updateLocation = (location, markerInstance, google, mapInstance) => {
@@ -148,6 +152,33 @@ const MapPicker = ({
       // For non-interactive mode, just do geocoding
       reverseGeocode(location, google);
     }
+  };
+
+  const updateLocationWithoutMap = (location, addressText) => {
+    const fallbackAddress =
+      addressText ||
+      `Lat: ${location.lat.toFixed(6)}, Lng: ${location.lng.toFixed(6)}`;
+
+    setSelectedLocation(location);
+    setAddress(fallbackAddress);
+
+    if (onLocationSelect) {
+      onLocationSelect({
+        latitude: location.lat,
+        longitude: location.lng,
+        address: fallbackAddress,
+        roadName: fallbackAddress.split(",")[0].trim(),
+      });
+    }
+  };
+
+  const useDefaultSabahLocation = () => {
+    const defaultLocation = {
+      lat: config.defaultLocation.lat,
+      lng: config.defaultLocation.lng,
+    };
+    updateLocationWithoutMap(defaultLocation, config.defaultLocation.name);
+    toast.success("Using default Sabah location for demo.");
   };
 
   const reverseGeocode = async (location, google) => {
@@ -255,6 +286,8 @@ const MapPicker = ({
         if (map && marker) {
           updateLocation(currentLocation, marker, window.google, map);
           map.setZoom(17);
+        } else {
+          updateLocationWithoutMap(currentLocation, "Current location");
         }
 
         toast.dismiss(locationToast);
@@ -320,22 +353,51 @@ const MapPicker = ({
         </div>
 
         <div className="embedded-map-container">
-          {isLoading && (
-            <div className="map-loading">
-              <div className="loading-spinner"></div>
-              <p>Loading map...</p>
+          {!canUseGoogleMaps ? (
+            <div
+              style={{
+                minHeight: "220px",
+                border: "1px dashed rgba(255,255,255,0.3)",
+                borderRadius: "8px",
+                padding: "16px",
+                display: "flex",
+                flexDirection: "column",
+                gap: "12px",
+                justifyContent: "center",
+              }}
+            >
+              <p>
+                Demo mode fallback: Google Maps key is missing, so a default
+                location selector is shown.
+              </p>
+              <button
+                type="button"
+                className="current-location-btn embedded"
+                onClick={useDefaultSabahLocation}
+              >
+                📍 Use Sabah Default Location
+              </button>
             </div>
+          ) : (
+            <>
+              {isLoading && (
+                <div className="map-loading">
+                  <div className="loading-spinner"></div>
+                  <p>Loading map...</p>
+                </div>
+              )}
+              <div
+                ref={mapRef}
+                className="google-map embedded"
+                style={{
+                  width: "100%",
+                  height: "450px",
+                  display: isLoading ? "none" : "block",
+                  borderRadius: "8px",
+                }}
+              />
+            </>
           )}
-          <div
-            ref={mapRef}
-            className="google-map embedded"
-            style={{
-              width: "100%",
-              height: "450px",
-              display: isLoading ? "none" : "block",
-              borderRadius: "8px",
-            }}
-          />
         </div>
 
         <div className="embedded-map-instructions">
@@ -384,21 +446,50 @@ const MapPicker = ({
           </div>
 
           <div className="map-container">
-            {isLoading && (
-              <div className="map-loading">
-                <div className="loading-spinner"></div>
-                <p>Loading map...</p>
+            {!canUseGoogleMaps ? (
+              <div
+                style={{
+                  minHeight: "220px",
+                  border: "1px dashed rgba(255,255,255,0.3)",
+                  borderRadius: "8px",
+                  padding: "16px",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "12px",
+                  justifyContent: "center",
+                }}
+              >
+                <p>
+                  Google Maps key is not configured. Use fallback location for
+                  demo.
+                </p>
+                <button
+                  type="button"
+                  className="current-location-btn"
+                  onClick={useDefaultSabahLocation}
+                >
+                  📍 Use Sabah Default Location
+                </button>
               </div>
+            ) : (
+              <>
+                {isLoading && (
+                  <div className="map-loading">
+                    <div className="loading-spinner"></div>
+                    <p>Loading map...</p>
+                  </div>
+                )}
+                <div
+                  ref={mapRef}
+                  className="google-map"
+                  style={{
+                    width: "100%",
+                    height: "500px",
+                    display: isLoading ? "none" : "block",
+                  }}
+                />
+              </>
             )}
-            <div
-              ref={mapRef}
-              className="google-map"
-              style={{
-                width: "100%",
-                height: "500px",
-                display: isLoading ? "none" : "block",
-              }}
-            />
           </div>
 
           <div className="map-instructions">

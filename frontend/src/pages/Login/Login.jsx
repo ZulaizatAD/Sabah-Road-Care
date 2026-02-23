@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
 import { useUser } from "../../context/UserContext";
 import assets from "../../assets/assets";
 import { signIn, signUp } from "../../services/userApi";
@@ -8,9 +7,11 @@ import LogoLoopVideoAnimation from "../../components/VideoBG/LogoLoopVideo/LogoL
 import "./Login.css";
 import { showErrorToast, showSuccessToast, showInfoToast } from "../../utils/toast";
 
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+
 const Login = () => {
   const navigate = useNavigate();
-  const { login, isAuthenticated } = useUser();
+  const { login, isLoggedIn } = useUser();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -23,10 +24,10 @@ const Login = () => {
 
   // Redirect if already authenticated
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isLoggedIn) {
       navigate("/homepage", { replace: true });
     }
-  }, [isAuthenticated, navigate]);
+  }, [isLoggedIn, navigate]);
 
   // Load remembered user on component mount
   useEffect(() => {
@@ -179,11 +180,27 @@ const Login = () => {
 
   // Demo login function
   const handleDemoLogin = () => {
-    setFormData({
+    const demoUser = {
+      id: "demo-user-001",
+      name: "Demo User",
       email: "zul@example.com",
+      token: "demo-token",
+      demoMode: true,
+    };
+
+    setFormData({
+      email: demoUser.email,
       password: "password123",
       confirmPassword: "",
     });
+
+    if (DEMO_MODE) {
+      login(demoUser);
+      showSuccessToast("Demo mode active. Logged in with demo account.");
+      navigate("/homepage");
+      return;
+    }
+
     showInfoToast("Demo credentials filled! Click Sign In to continue.");
   };
 

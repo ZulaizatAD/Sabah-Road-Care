@@ -1,4 +1,8 @@
 const config = {
+  demo: {
+    enabled: import.meta.env.VITE_DEMO_MODE === "true",
+  },
+
   // Google Maps Configuration
   googleMaps: {
     apiKey: import.meta.env.VITE_GOOGLE_MAPS_API_KEY,
@@ -38,6 +42,10 @@ const config = {
 
 // Validation function
 export const validateConfig = () => {
+  if (config.demo.enabled) {
+    return true;
+  }
+
   const requiredKeys = ['VITE_GOOGLE_MAPS_API_KEY'];
 
   const missingKeys = requiredKeys.filter((key) => !import.meta.env[key]);

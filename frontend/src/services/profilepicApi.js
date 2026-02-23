@@ -1,14 +1,14 @@
 import axios from "axios";
 
-// Create an Axios instance
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
+const DEMO_MODE = import.meta.env.VITE_DEMO_MODE === "true";
+
 const api = axios.create({
-  baseURL: "http://localhost:8000", // Replace with your FastAPI server URL
+  baseURL: API_BASE_URL,
 });
 
-// Add a request interceptor to attach tokens dynamically if needed
 api.interceptors.request.use(
   (config) => {
-    // Adjust this key based on where you store your token: "authToken", "userToken", etc.
     const token = localStorage.getItem("token");
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
@@ -18,11 +18,29 @@ api.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-/**
- * Get the current user's profile
- * @returns {Promise<Object>} The user's profile data
- */
+const getStoredUser = () => {
+  try {
+    const raw = localStorage.getItem("user");
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const saveStoredUser = (user) => {
+  localStorage.setItem("user", JSON.stringify(user));
+};
+
 export const getProfile = async () => {
+  if (DEMO_MODE) {
+    const user = getStoredUser();
+    return {
+      full_name: user?.name || user?.full_name || "Demo User",
+      email: user?.email || "demo@sabahroadcare.com",
+      profile_picture: user?.profile_picture || user?.profileImage || null,
+    };
+  }
+
   try {
     const response = await api.get("/profile/me");
     return response.data;
@@ -35,12 +53,18 @@ export const getProfile = async () => {
   }
 };
 
-/**
- * Upload a new profile picture
- * @param {File} file - The file to upload
- * @returns {Promise<Object>} The response data containing the new profile picture URL
- */
 export const uploadProfilePicture = async (file) => {
+  if (DEMO_MODE) {
+    const existing = getStoredUser() || {};
+    const previewUrl = URL.createObjectURL(file);
+    saveStoredUser({
+      ...existing,
+      profile_picture: previewUrl,
+      profileImage: previewUrl,
+    });
+    return { profile_picture: previewUrl };
+  }
+
   try {
     const formData = new FormData();
     formData.append("file", file);
@@ -48,7 +72,6 @@ export const uploadProfilePicture = async (file) => {
     const response = await api.post("/profile/picture", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        // Authorization header is already auto-attached by interceptor
       },
     });
 
@@ -62,11 +85,17 @@ export const uploadProfilePicture = async (file) => {
   }
 };
 
-/**
- * Delete the current user's profile picture
- * @returns {Promise<Object>} The response data confirming deletion
- */
 export const deleteProfilePicture = async () => {
+  if (DEMO_MODE) {
+    const existing = getStoredUser() || {};
+    saveStoredUser({
+      ...existing,
+      profile_picture: null,
+      profileImage: null,
+    });
+    return { message: "Profile picture removed" };
+  }
+
   try {
     const response = await api.delete("/profile/picture");
     return response.data;

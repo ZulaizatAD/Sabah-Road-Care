@@ -24,10 +24,13 @@ export const useHomepage = (token) => {
   const addReport = async (reportData) => {
     setLoading(true);
     try {
-      const formData = new FormData();
-      Object.entries(reportData).forEach(([key, value]) => {
-        formData.append(key, value);
-      });
+      const formData =
+        reportData instanceof FormData
+          ? reportData
+          : Object.entries(reportData).reduce((fd, [key, value]) => {
+              fd.append(key, value);
+              return fd;
+            }, new FormData());
       const result = await submitReport(formData, token);
       await fetchReports(); // ✅ refresh reports after submit
       return result;

@@ -1,6 +1,15 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 
 const UserContext = createContext();
+const DEFAULT_DEMO_USER = {
+  id: "demo-user-001",
+  name: "Demo User",
+  email: "demo@sabahroadcare.com",
+  token: "demo-token",
+  demoMode: true,
+  photoURL: null,
+  createdAt: new Date().toISOString(),
+};
 
 export const useUser = () => {
   const context = useContext(UserContext);
@@ -11,28 +20,24 @@ export const useUser = () => {
 };
 
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState({
-    id: "demo-user-001",
-    name: "Demo User",
-    email: "demo@sabahroadcare.com",
-    photoURL: null,
-    createdAt: new Date().toISOString(),
-  });
+  const [user, setUser] = useState(DEFAULT_DEMO_USER);
   const [isLoggedIn, setIsLoggedIn] = useState(true);
 
   // Simple login function (for demo purposes)
   const login = (userData) => {
-    setUser(
+    const nextUser =
       userData || {
-        id: "demo-user-001",
-        name: "Demo User",
-        email: "demo@sabahroadcare.com",
-        photoURL: null,
+        ...DEFAULT_DEMO_USER,
         createdAt: new Date().toISOString(),
-      }
-    );
+      };
+
+    setUser(nextUser);
     setIsLoggedIn(true);
-    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("user", JSON.stringify(nextUser));
+    if (nextUser?.token) {
+      localStorage.setItem("token", nextUser.token);
+      localStorage.setItem("authToken", nextUser.token);
+    }
   };
 
   // Update user profile
@@ -58,28 +63,51 @@ export const UserProvider = ({ children }) => {
     setUser(null);
     setIsLoggedIn(false);
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("authToken");
   };
   // Load user data on app start
-  React.useEffect(() => {
+  useEffect(() => {
     const savedUser = localStorage.getItem("user");
     if (savedUser) {
       try {
-        setUser(JSON.parse(savedUser));
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
         setIsLoggedIn(true);
+        if (parsedUser?.token) {
+          localStorage.setItem("token", parsedUser.token);
+          localStorage.setItem("authToken", parsedUser.token);
+        }
       } catch (error) {
         console.error("Error loading saved user:", error);
-        // Fallback to default user
-        login();
+        const freshUser = {
+          ...DEFAULT_DEMO_USER,
+          createdAt: new Date().toISOString(),
+        };
+        setUser(freshUser);
+        setIsLoggedIn(true);
+        localStorage.setItem("user", JSON.stringify(freshUser));
+        localStorage.setItem("token", freshUser.token);
+        localStorage.setItem("authToken", freshUser.token);
       }
     } else {
       // Auto-login with default user for capstone
-      login();
+      const freshUser = {
+        ...DEFAULT_DEMO_USER,
+        createdAt: new Date().toISOString(),
+      };
+      setUser(freshUser);
+      setIsLoggedIn(true);
+      localStorage.setItem("user", JSON.stringify(freshUser));
+      localStorage.setItem("token", freshUser.token);
+      localStorage.setItem("authToken", freshUser.token);
     }
   }, []);
 
   const value = {
     user,
     isLoggedIn,
+    isAuthenticated: isLoggedIn,
     login,
     logout,
     updateUser,
