@@ -6,11 +6,26 @@ from decouple import config
 from typing import Dict, Any
 
 # Configure Cloudinary
-cloudinary.config(
-    cloud_name=config('CLOUDINARY_CLOUD_NAME'),
-    api_key=config('CLOUDINARY_API_KEY'),
-    api_secret=config('CLOUDINARY_API_SECRET')
+CLOUDINARY_CLOUD_NAME = config("CLOUDINARY_CLOUD_NAME", default=None)
+CLOUDINARY_API_KEY = config("CLOUDINARY_API_KEY", default=None)
+CLOUDINARY_API_SECRET = config("CLOUDINARY_API_SECRET", default=None)
+
+_CLOUDINARY_CONFIGURED = all(
+    [CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET]
 )
+
+if _CLOUDINARY_CONFIGURED:
+    cloudinary.config(
+        cloud_name=CLOUDINARY_CLOUD_NAME,
+        api_key=CLOUDINARY_API_KEY,
+        api_secret=CLOUDINARY_API_SECRET,
+    )
+
+def _cloudinary_not_configured() -> Dict[str, Any]:
+    return {
+        "success": False,
+        "error": "Cloudinary is not configured. Set CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET.",
+    }
 
 class CloudinaryService:
     @staticmethod
@@ -18,6 +33,9 @@ class CloudinaryService:
         """
         Upload user profile picture to Cloudinary
         """
+        if not _CLOUDINARY_CONFIGURED:
+            return _cloudinary_not_configured()
+
         try:
             folder_path = "profile_pictures"
             public_id = f"{folder_path}/{filename.split('.')[0]}"
@@ -59,6 +77,9 @@ class CloudinaryService:
         Returns:
             Dict containing upload result with public_id and secure_url
         """
+        if not _CLOUDINARY_CONFIGURED:
+            return _cloudinary_not_configured()
+
         try:
             # ✅ FIXED: Map image types to consistent naming
             image_type_mapping = {
@@ -104,6 +125,9 @@ class CloudinaryService:
     @staticmethod
     async def delete_image(public_id: str) -> Dict[str, Any]:
         """Delete image from Cloudinary"""
+        if not _CLOUDINARY_CONFIGURED:
+            return _cloudinary_not_configured()
+
         try:
             result = cloudinary.uploader.destroy(public_id)
             return {
@@ -121,6 +145,9 @@ class CloudinaryService:
         """
         Get all image URLs for a specific case
         """
+        if not _CLOUDINARY_CONFIGURED:
+            return {"error": _cloudinary_not_configured()["error"]}
+
         try:
             folder_path = f"pothole_reports/{case_id}"
             result = cloudinary.api.resources(
@@ -164,6 +191,9 @@ class CloudinaryService:
         ✅ NEW: Delete all images for a specific case
         Useful for cleanup when report is deleted
         """
+        if not _CLOUDINARY_CONFIGURED:
+            return _cloudinary_not_configured()
+
         try:
             folder_path = f"pothole_reports/{case_id}"
             

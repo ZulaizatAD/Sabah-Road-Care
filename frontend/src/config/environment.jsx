@@ -40,19 +40,21 @@ const config = {
   },
 };
 
+let warnedMissingGoogleMapsKey = false;
+
 // Validation function
 export const validateConfig = () => {
   if (config.demo.enabled) {
     return true;
   }
 
-  const requiredKeys = ['VITE_GOOGLE_MAPS_API_KEY'];
-
-  const missingKeys = requiredKeys.filter((key) => !import.meta.env[key]);
-
-  if (missingKeys.length > 0) {
-    console.error("Missing required environment variables:", missingKeys);
-    return false;
+  // Google Maps key is optional for backend integration mode.
+  // MapPicker has a fallback flow when this key is missing.
+  if (!config.googleMaps.apiKey && !warnedMissingGoogleMapsKey) {
+    warnedMissingGoogleMapsKey = true;
+    console.warn(
+      "VITE_GOOGLE_MAPS_API_KEY is not set. Map features will run in fallback mode."
+    );
   }
 
   return true;

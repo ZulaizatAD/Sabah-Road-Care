@@ -10,4 +10,8 @@ cloudinary
 Pillow
 pydantic[email]
 langchain-google-genai 
+langchain-core
 python-dotenv
+supabase
+alembic
+pytest

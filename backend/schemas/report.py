@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, ConfigDict, EmailStr
 from typing import Optional, Dict
 from datetime import datetime
 
@@ -27,5 +27,4 @@ class CaseResponse(CaseBase):
     date_created: datetime
     last_date_status_update: datetime
 
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

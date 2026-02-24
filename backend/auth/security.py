@@ -17,7 +17,9 @@ SECRET_KEY = os.getenv("JWT_SECRET", "CHANGE_ME_DEV_ONLY_SUPER_SECRET")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("JWT_EXPIRE_MINUTES", "60"))
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Python 3.14 environments currently show bcrypt backend instability in passlib.
+# Use pbkdf2_sha256 as default hashing scheme while keeping bcrypt verification support.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
 
 def get_password_hash(password: str) -> str:
@@ -58,6 +60,5 @@ async def get_current_user(
     if user is None or not user.is_active:
         raise credentials_exception
     return user
-
 
 

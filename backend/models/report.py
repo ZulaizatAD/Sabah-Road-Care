@@ -45,12 +45,18 @@ class PotholeReport(Base):
     ai_analysis_details = Column(JSON, nullable=True)
 
     # Image URLs
-    photo_top = Column(Text, nullable=False)    # Cloudinary URL
-    photo_far = Column(Text, nullable=False)    # Cloudinary URL
-    photo_close = Column(Text, nullable=False)  # Cloudinary URL
+    photo_top = Column(Text, nullable=True)    # Cloudinary/Supabase URL
+    photo_far = Column(Text, nullable=True)    # Cloudinary/Supabase URL
+    photo_close = Column(Text, nullable=True)  # Cloudinary/Supabase URL
 
     # Relationships
     user = relationship("User", back_populates="reports")
+    ai_job = relationship(
+        "AIJob",
+        back_populates="report",
+        uselist=False,
+        cascade="all, delete-orphan"
+    )
 
     def __repr__(self):
         return f"<PotholeReport(case_id='{self.case_id}', severity='{self.severity}', priority='{self.priority}')>"

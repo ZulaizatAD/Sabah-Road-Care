@@ -8,6 +8,9 @@ const api = axios.create({
   baseURL: API_BASE_URL,
 });
 
+const getAuthToken = (token) =>
+  token || localStorage.getItem("token") || localStorage.getItem("authToken");
+
 const readDemoReports = () => {
   try {
     const raw = localStorage.getItem(DEMO_REPORTS_KEY);
@@ -72,10 +75,11 @@ export const submitReport = async (formData, token) => {
   }
 
   try {
+    const authToken = getAuthToken(token);
     const response = await api.post(`/api/homepage/report`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken ? `Bearer ${authToken}` : undefined,
       },
     });
     return response.data;
@@ -92,9 +96,10 @@ export const getMyReports = async (token) => {
   }
 
   try {
+    const authToken = getAuthToken(token);
     const response = await api.get(`/api/homepage/my-reports`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken ? `Bearer ${authToken}` : undefined,
       },
     });
     return response.data;
@@ -115,9 +120,10 @@ export const getAIAnalysisStatus = async (caseId, token) => {
   }
 
   try {
+    const authToken = getAuthToken(token);
     const response = await api.get(`/api/homepage/report/${caseId}/ai-status`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken ? `Bearer ${authToken}` : undefined,
       },
     });
     return response.data;
@@ -133,9 +139,10 @@ export const getPendingAIReports = async (token) => {
   }
 
   try {
+    const authToken = getAuthToken(token);
     const response = await api.get(`/api/homepage/reports/pending-ai`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken ? `Bearer ${authToken}` : undefined,
       },
     });
     return response.data;
@@ -151,9 +158,10 @@ export const getRecentSubmissions = async (token) => {
   }
 
   try {
+    const authToken = getAuthToken(token);
     const response = await api.get(`/api/homepage/recentsubmission`, {
       headers: {
-        Authorization: `Bearer ${token}`,
+        Authorization: authToken ? `Bearer ${authToken}` : undefined,
       },
     });
     return response.data;

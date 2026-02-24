@@ -10,7 +10,10 @@ from sqlalchemy import func
 from datetime import datetime, timedelta  # kept if you log/use later
 
 from langchain_google_genai import ChatGoogleGenerativeAI
-from langchain.schema import HumanMessage
+try:
+    from langchain_core.messages import HumanMessage
+except Exception:  # pragma: no cover
+    from langchain.schema import HumanMessage
 
 
 # =========================
@@ -58,11 +61,13 @@ class PotholeAnalyzer:
     """
 
     def __init__(self):
-        self.llm = ChatGoogleGenerativeAI(
-            model="gemini-2.0-flash-exp",  # Vision-capable model
-            temperature=0.0,               # Consistent responses
-            api_key=GEMINI_API_KEY
-        )
+        self.llm = None
+        if GEMINI_API_KEY:
+            self.llm = ChatGoogleGenerativeAI(
+                model="gemini-2.0-flash-exp",  # Vision-capable model
+                temperature=0.0,               # Consistent responses
+                api_key=GEMINI_API_KEY
+            )
 
     async def analyze_pothole_priority(
         self,
@@ -136,6 +141,9 @@ class PotholeAnalyzer:
         """
         Send images to Gemini AI for analysis and parse response.
         """
+        if self.llm is None:
+            return self._get_default_analysis()
+
         try:
             images_b64 = {
                 "top": base64.b64encode(top_image).decode("utf-8"),

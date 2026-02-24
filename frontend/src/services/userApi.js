@@ -10,6 +10,9 @@ const api = axios.create({
   },
 });
 
+const getToken = () =>
+  localStorage.getItem("token") || localStorage.getItem("authToken");
+
 const DEMO_USER = {
   id: "demo-user-001",
   full_name: "Demo User",
@@ -59,7 +62,7 @@ export const signUp = async (
     };
   }
 
-  const response = await api.post("api/users/register", {
+  const response = await api.post("/api/users/register", {
     email,
     full_name: fullName,
     password,
@@ -94,14 +97,40 @@ export const signIn = async (email, password) => {
   params.append("username", email);
   params.append("password", password);
 
-  const response = await api.post("api/users/login", params, {
+  const response = await api.post("/api/users/login", params, {
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
   });
 
-  localStorage.setItem("token", response.data.access_token);
-  localStorage.setItem("authToken", response.data.access_token);
+  const accessToken = response.data.access_token;
+  localStorage.setItem("token", accessToken);
+  localStorage.setItem("authToken", accessToken);
 
-  return response.data;
+  let profile = null;
+  try {
+    const profileResponse = await api.get("/profile/me", {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    profile = profileResponse.data;
+  } catch (error) {
+    console.warn("Could not fetch profile after login:", error?.message);
+  }
+
+  return {
+    ...response.data,
+    user: profile
+      ? {
+          id: profile.id,
+          full_name: profile.full_name,
+          email: profile.email,
+          profile_picture: profile.profile_picture,
+        }
+      : {
+          id: null,
+          full_name: email?.split("@")?.[0] || "User",
+          email,
+          profile_picture: null,
+        },
+  };
 };
 
 export const getCurrentUser = async () => {
@@ -118,10 +147,10 @@ export const getCurrentUser = async () => {
     };
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) throw new Error("No token found. Please sign in.");
 
-  const response = await api.get("/users/me", {
+  const response = await api.get("/profile/me", {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -138,7 +167,7 @@ export const getMyProfile = async () => {
     return getCurrentUser();
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) throw new Error("No token found. Please sign in.");
 
   const response = await api.get("/profile/me", {
@@ -160,7 +189,7 @@ export const uploadProfilePicture = async (file) => {
     return { profile_picture: previewUrl };
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) throw new Error("No token found. Please sign in.");
 
   const formData = new FormData();
@@ -187,7 +216,7 @@ export const deleteProfilePicture = async () => {
     return { message: "Profile picture deleted successfully" };
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) throw new Error("No token found. Please sign in.");
 
   const response = await api.delete("/profile/picture", {
@@ -212,10 +241,10 @@ export const updateProfile = async (data) => {
     return updatedUser;
   }
 
-  const token = localStorage.getItem("token");
+  const token = getToken();
   if (!token) throw new Error("No token found. Please sign in.");
 
-  const response = await api.put("api/users/me", data, {
+  const response = await api.put("/api/users/me", data, {
     headers: { Authorization: `Bearer ${token}` },
   });
 

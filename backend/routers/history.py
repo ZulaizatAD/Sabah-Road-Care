@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, Query
 from sqlalchemy.orm import Session
-from typing import Optional, List
+from typing import Optional
 from datetime import datetime
 import models
 from database.connect import get_db
 from auth.security import get_current_user
-from schemas.report import CaseBase
+from services.reports.report_query_service import query_user_reports
 
 router = APIRouter()
 
@@ -18,25 +18,26 @@ def get_user_reports(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user)
 ):
-    query = db.query(models.PotholeReport).filter(models.PotholeReport.user_id == current_user.id)
-
-    # Apply filters
-    if district:
-        query = query.filter(models.PotholeReport.district == district)
+    start_date_obj = None
+    end_date_obj = None
     if start_date:
         try:
             start_date_obj = datetime.strptime(start_date, "%Y-%m-%d")
-            query = query.filter(models.PotholeReport.date_created >= start_date_obj)
         except ValueError:
             return []
     if end_date:
         try:
             end_date_obj = datetime.strptime(end_date, "%Y-%m-%d")
-            query = query.filter(models.PotholeReport.date_created <= end_date_obj)
         except ValueError:
             return []
-    if severity:
-        query = query.filter(models.PotholeReport.severity == severity)
+    query = query_user_reports(
+        db,
+        user_id=current_user.id,
+        district=district,
+        start_date=start_date_obj,
+        end_date=end_date_obj,
+        severity=severity,
+    )
 
     reports = query.order_by(models.PotholeReport.date_created.desc()).all()
     return reports

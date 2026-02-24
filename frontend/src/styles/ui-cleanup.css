@@ -1,0 +1,377 @@
+:root {
+  --ui-surface: rgba(14, 19, 22, 0.72);
+  --ui-surface-soft: rgba(255, 255, 255, 0.08);
+  --ui-border: rgba(255, 255, 255, 0.16);
+  --ui-border-strong: rgba(255, 255, 255, 0.26);
+  --ui-text: #f4f7fb;
+  --ui-muted: #b7c0cb;
+  --ui-accent: #58d26d;
+  --ui-accent-strong: #34b958;
+  --ui-danger: #f75f5f;
+  --ui-shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --ui-shadow-soft: 0 8px 22px rgba(0, 0, 0, 0.25);
+  --ui-radius-lg: 20px;
+  --ui-radius-md: 14px;
+  --ui-radius-sm: 10px;
+}
+
+* {
+  font-family: "Manrope", "Segoe UI", "Helvetica Neue", sans-serif;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+.brand-name,
+.dashboard-title {
+  font-family: "Sora", "Manrope", "Segoe UI", sans-serif;
+  letter-spacing: -0.02em;
+}
+
+body {
+  color: var(--ui-text);
+  background:
+    radial-gradient(circle at 20% 0%, rgba(88, 210, 109, 0.12), transparent 40%),
+    radial-gradient(circle at 100% 100%, rgba(44, 111, 214, 0.09), transparent 45%),
+    #0f1418 !important;
+}
+
+.app-container > .main-content {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 20px 18px 26px;
+}
+
+.header,
+.footer {
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+}
+
+.header {
+  background: linear-gradient(
+    180deg,
+    rgba(8, 12, 15, 0.75) 0%,
+    rgba(12, 17, 21, 0.62) 100%
+  );
+  border-bottom: 1px solid var(--ui-border);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.header-container {
+  max-width: 1480px;
+  margin: 0 auto;
+  height: 76px;
+  padding: 0 20px;
+}
+
+.nav-item {
+  border: 1px solid transparent;
+  border-radius: 999px;
+  padding: 10px 14px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+  border-color: rgba(88, 210, 109, 0.35);
+  box-shadow: 0 10px 24px rgba(5, 8, 10, 0.35);
+}
+
+.dropdown-menu {
+  border: 1px solid var(--ui-border-strong);
+  border-radius: 16px;
+  box-shadow: var(--ui-shadow);
+}
+
+.quick-actions,
+.history-page-header,
+.controls-section,
+.report-header,
+.report-form,
+.neumorphic-card,
+.welcome-content,
+.dashboard-container,
+.filter-container {
+  background: linear-gradient(165deg, var(--ui-surface-soft), var(--ui-surface));
+  border: 1px solid var(--ui-border);
+  border-radius: var(--ui-radius-lg);
+  box-shadow: var(--ui-shadow-soft);
+}
+
+.quick-actions-title,
+.sidebar-title {
+  border-bottom-color: rgba(88, 210, 109, 0.45);
+  color: var(--ui-text);
+}
+
+.action-btn,
+.view-btn,
+.google-btn,
+.save-draft-btn,
+.submit-btn,
+.new-report-btn,
+.green-signin-btn,
+.view-all-btn {
+  border-radius: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.action-btn:hover,
+.view-btn:hover,
+.google-btn:hover,
+.save-draft-btn:hover,
+.submit-btn:hover,
+.new-report-btn:hover,
+.green-signin-btn:hover,
+.view-all-btn:hover {
+  transform: translateY(-1px);
+}
+
+.submit-btn,
+.new-report-btn,
+.green-signin-btn,
+.btn-primary {
+  background: linear-gradient(145deg, var(--ui-accent), var(--ui-accent-strong));
+  color: #0f1612;
+  border: 1px solid rgba(89, 216, 120, 0.8);
+  box-shadow: 0 12px 24px rgba(32, 146, 67, 0.28);
+}
+
+.submit-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.save-draft-btn,
+.google-btn,
+.view-all-btn,
+.action-btn,
+.view-btn,
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.07);
+  color: var(--ui-text);
+  border: 1px solid var(--ui-border);
+}
+
+.search-bar input,
+.filters select,
+.login-input-group input,
+.filter-select,
+.filter-date,
+textarea,
+select {
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--ui-text);
+}
+
+.search-bar input:focus,
+.filters select:focus,
+.login-input-group input:focus,
+.filter-select:focus,
+.filter-date:focus,
+textarea:focus,
+select:focus {
+  border-color: rgba(88, 210, 109, 0.6);
+  box-shadow: 0 0 0 3px rgba(88, 210, 109, 0.18);
+}
+
+.login-container {
+  min-height: calc(100vh - 130px);
+  gap: 28px;
+  padding: 18px;
+}
+
+.left-panel {
+  padding: 1rem;
+  margin: 0;
+}
+
+.welcome-content {
+  margin-left: 0;
+  max-width: 720px;
+  padding: 2.4rem;
+}
+
+.left-panel h1 {
+  font-size: clamp(2.2rem, 3.5vw, 3.2rem);
+}
+
+.right-panel {
+  padding: 1rem;
+}
+
+.neumorphic-card {
+  width: min(100%, 540px);
+  padding: 2.2rem;
+}
+
+.card-header {
+  margin-bottom: 1.7rem;
+}
+
+.card-header h2 {
+  font-size: clamp(1.6rem, 3vw, 2rem);
+}
+
+.user-report {
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 24px;
+  max-width: 1480px;
+  padding: 4px;
+}
+
+.report-header,
+.report-form,
+.recent-submissions,
+.quick-actions {
+  border-radius: var(--ui-radius-lg);
+}
+
+.step {
+  border-radius: var(--ui-radius-md);
+}
+
+.step-header {
+  padding: 14px 16px;
+}
+
+.step-title {
+  font-size: 15px;
+}
+
+.step-content p,
+.map-instructions p,
+.instructions-note p,
+.submission-meta,
+.submission-date,
+.action-description,
+.header-title p {
+  color: var(--ui-muted) !important;
+}
+
+.submission-item,
+.report-card {
+  border-radius: var(--ui-radius-md);
+  border: 1px solid var(--ui-border);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.report-history {
+  grid-template-columns: minmax(0, 1fr) 330px;
+  max-width: 1480px;
+  gap: 24px;
+  padding: 4px;
+}
+
+.reports-container.grid {
+  gap: 16px;
+}
+
+.report-number,
+.document-number {
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.history-page-header,
+.controls-section {
+  padding: 18px;
+}
+
+.dashboard-main {
+  max-width: 1480px;
+  padding: 4px;
+}
+
+.dashboard-container {
+  padding: 22px;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-title {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+}
+
+.dashboard-subtitle {
+  color: var(--ui-muted);
+}
+
+.filter-container {
+  min-width: 0;
+  padding: 1.1rem;
+}
+
+.filter-group label {
+  color: #e4edf8;
+}
+
+.footer {
+  background: rgba(10, 15, 19, 0.85);
+  border-top: 1px solid var(--ui-border);
+}
+
+.footer-container {
+  max-width: 1480px;
+  padding: 14px 20px;
+}
+
+.footer-link {
+  border-radius: 8px;
+}
+
+.footer-link:hover {
+  color: var(--ui-accent);
+}
+
+@media (max-width: 1180px) {
+  .login-container,
+  .user-report,
+  .report-history {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar,
+  .sidebar-history {
+    position: static;
+    order: 2;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-container > .main-content {
+    padding: 14px 12px 20px;
+  }
+
+  .header-container {
+    height: 68px;
+    padding: 0 12px;
+  }
+
+  .brand-name {
+    font-size: 18px;
+  }
+
+  .login-container {
+    padding: 8px;
+    gap: 14px;
+  }
+
+  .welcome-content,
+  .neumorphic-card,
+  .report-form,
+  .history-page-header,
+  .controls-section,
+  .dashboard-container {
+    padding: 16px;
+  }
+}

@@ -1,4 +1,5 @@
 # Import necessary modules from FastAPI and other libraries
+import os
 from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordRequestForm
@@ -14,32 +15,37 @@ from routers import dashboard, history, homepage
 # Remove the old photos import
 # from routers import photos  # Import the photos router
 
-try:
-    from database.connect import Base, engine, get_db  # Shared auth DB/session
-    import models, schemas
-    from backend.auth import verify_password, create_access_token
-except ImportError:
-    # Fallback if the imports above fail (e.g., if the structure is flat)
-    from database.connect import Base, engine, get_db
-    import models
-    import schemas
-    from auth.security import verify_password, create_access_token
-    from routers.user import router as user_router
+from database.connect import Base, engine, get_db  # Shared auth DB/session
+import models
+import schemas
+from auth.security import verify_password, create_access_token
+from routers.user import router as user_router
 
-# Create tables (DEV ONLY). Keep your original report tables + auth tables.
-report_models.Base.metadata.create_all(bind=report_engine)
-Base.metadata.create_all(bind=engine)
+# Optional table creation on boot (disabled by default for Supabase deployments).
+if os.getenv("AUTO_CREATE_TABLES", "false").lower() == "true":
+    report_models.Base.metadata.create_all(bind=report_engine)
+    Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI application
 app = FastAPI(title="Sabah Road Care API", version="0.1.0")
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[
+
+cors_allow_origins = [
+    origin.strip()
+    for origin in os.getenv("CORS_ALLOW_ORIGINS", "").split(",")
+    if origin.strip()
+]
+if not cors_allow_origins:
+    cors_allow_origins = [
         "http://localhost:5173",
         "http://127.0.0.1:5173",
         "http://localhost:3000",
         "http://127.0.0.1:3000",
-    ],
+    ]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=cors_allow_origins,
+    allow_origin_regex=r"https?://(localhost|127\.0\.0\.1)(:\d+)?",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -87,5 +93,5 @@ if __name__ == "__main__":
         "main:app", 
         host="0.0.0.0", 
         port=8000, 
-        reload=config("ENVIRONMENT") == "development"
+        reload=config("ENVIRONMENT", default="development") == "development"
     )

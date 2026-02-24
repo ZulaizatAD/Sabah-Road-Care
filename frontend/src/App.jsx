@@ -6,18 +6,19 @@ import DevTools from "./utils/DevTools/DevTools";
 import Header from "./components/Header/Header";
 import Footer from "./components/Footer/Footer";
 import AnimatedBG from "./components/VideoBG/AnimatedBG";
-import Landing from "./pages/Landing/Landing";
-import Login from "./pages/Login/Login";
-import Homepage from "./pages/Homepage/Homepage";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import ProfileUpdate from "./pages/ProfileUpdate/ProfileUpdate";
-import Confirm from "./pages/Confirm/Confirm";
-import ReportHistory from "./pages/ReportHistory/ReportHistory";
-import ContactUs from "./pages/ContactUs/ContactUs";
-import FAQs from "./pages/FAQs/FAQs";
+import Landing from "./pages/public/Landing/Landing";
+import Login from "./pages/auth/Login/Login";
+import Homepage from "./pages/reports/Homepage/Homepage";
+import Dashboard from "./pages/analytics/Dashboard/Dashboard";
+import ProfileUpdate from "./pages/account/ProfileUpdate/ProfileUpdate";
+import Confirm from "./pages/reports/Confirm/Confirm";
+import ReportHistory from "./pages/reports/ReportHistory/ReportHistory";
+import ContactUs from "./pages/support/ContactUs/ContactUs";
+import FAQs from "./pages/support/FAQs/FAQs";
 import FunFactMainPage from "./pages/Information/FunFactPage/FunFactMainPage";
 import "./App.css";
 import "react-toastify/dist/ReactToastify.css";
+import "./styles/ui-cleanup.css";
 
 const App = () => {
   return (
