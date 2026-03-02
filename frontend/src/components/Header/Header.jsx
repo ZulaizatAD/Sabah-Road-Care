@@ -32,6 +32,25 @@ const Header = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // Prevent background scroll while mobile menu is open
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = previousOverflow || "";
+    }
+
+    return () => {
+      document.body.style.overflow = previousOverflow || "";
+    };
+  }, [isMobileMenuOpen]);
+
+  // Always close mobile menu when route changes
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   // Don't show header on login page
   if (location.pathname === "/" || location.pathname === "/login") {
     return null;
@@ -226,6 +245,7 @@ const Header = () => {
           className="mobile-menu-toggle"
           onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           aria-label="Toggle menu"
+          aria-expanded={isMobileMenuOpen}
         >
           <span className={`hamburger ${isMobileMenuOpen ? "open" : ""}`}>
             <span></span>
